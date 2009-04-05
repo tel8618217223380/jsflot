@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<taglib
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.1">
+
+	<display-name>JSFlot</display-name>
+	<tlib-version>3.3.0</tlib-version>
+	<short-name>jsflot</short-name>
+	<uri>http://www.jsflot.org/taglib/jsflot</uri>
+	<tag>
+		<description>
+			Renderers a Chart based on the Flot JavaScript Charting Library
+		</description>
+		<name>flotChart</name>
+		<tag-class>org.jsflot.components.FlotChartComponent</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The ID of the chart</description>
+			<name>id</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>An initial value or a value binding</description>
+			<name>value</name>
+			<deferred-value>
+				<type>java.lang.Object</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if this component is rendered or not</description>
+			<name>rendered</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart shows datapoints (marks on the graph).</description>
+			<name>showDataPoints</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart shows helper lines</description>
+			<name>showLines</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart lines are filled</description>
+			<name>fillLines</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the width of the chart</description>
+			<name>width</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the height of the chart</description>
+			<name>height</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>If the chart has a single datalist, the legend can be specified</description>
+			<name>legend</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The background Color of the Legend</description>
+			<name>legendColor</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The mode of the graph. Either Series, Time or Bar. Default is Series</description>
+			<name>mode</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+	</tag>
+	<tag>
+		<description>
+			Renders Resources needed for JSFlot. Needed for inside the head tag of the XHTML page
+		</description>
+		<name>resources</name>
+		<tag-class>org.jsflot.components.ResourcesComponent</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>Determines if any of the JS libraries shall be excluded</description>
+			<name>excludes</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+	</tag>
+</taglib>
