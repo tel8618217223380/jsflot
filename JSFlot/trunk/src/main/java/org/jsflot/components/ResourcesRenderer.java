@@ -85,7 +85,7 @@ public class ResourcesRenderer extends Renderer {
 		if (renderFlotr) {
 			writer.startElement("script", component);
 			writer.writeAttribute("type", "text/javascript", null);
-			writer.writeAttribute("src", contextRoot + "/jsflot/flotr-0.2.0-alpha.js.jsf", null);
+			writer.writeAttribute("src", contextRoot + "/jsflot/flotr.js.jsf", null);
 			writer.endElement("script");
 			writer.write("\n");
 		}

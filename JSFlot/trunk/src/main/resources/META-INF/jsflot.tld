@@ -93,6 +93,20 @@
 				<type>java.lang.String</type>
 			</deferred-value>
 		</attribute>
+		<attribute>
+			<description>Determines if the graph should show a chosshair. Values are none, x, y or xy</description>
+			<name>crosshair</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the graph should show a spreadsheet.</description>
+			<name>spreadsheet</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
 	</tag>
 	<tag>
 		<description>

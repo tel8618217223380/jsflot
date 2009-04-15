@@ -62,9 +62,19 @@ public class FlotChartRenderer extends Renderer {
 			if (mode == null) {
 				mode = "Series";
 			}
+			
+			String crosshair = (String)get(component, context, "crosshair");
+			if (crosshair == null) {
+				crosshair = "none";
+			}
+			
+			Boolean spreadsheet  = new Boolean((String)get(component, context, "spreadsheet"));
+			if (spreadsheet == null) {
+				spreadsheet = new Boolean(false);
+			}
 
 			List<XYDataPoint> xyList = (List<XYDataPoint>) get(component, context, "value");
-			String functionBody = generateFunctionBody(xyList, id, showDataPoints, showLines, legend, fillLines, legendColor, mode);
+			String functionBody = generateFunctionBody(xyList, id, showDataPoints, showLines, legend, fillLines, legendColor, mode, crosshair, spreadsheet);
 
 			writer.startElement("div", component);
 			writer.writeAttribute("id", id, null);
@@ -92,7 +102,7 @@ public class FlotChartRenderer extends Renderer {
 			return component.getAttributes().get(name);
 	}
 
-	private String generateFunctionBody(List<XYDataPoint> xyList, String id, Boolean showDataPoints, Boolean showLines, String legend, Boolean fillLines, String legendColor, String mode) {
+	private String generateFunctionBody(List<XYDataPoint> xyList, String id, Boolean showDataPoints, Boolean showLines, String legend, Boolean fillLines, String legendColor, String mode, String crosshair, Boolean spreadsheet) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("var d1 = [");
 		if (xyList != null) {
@@ -107,14 +117,14 @@ public class FlotChartRenderer extends Renderer {
 		sb.append("];");
 		
 		String dataArrayString = generateDataOptions(legend, fillLines);
-		String chartOptions = generateChartOptions(showDataPoints, showLines, legendColor, mode);
+		String chartOptions = generateChartOptions(showDataPoints, showLines, legendColor, mode, crosshair, spreadsheet);
 		
 		sb.append("\n").append("var f = Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],").append(chartOptions).append(");");
 		
 		return sb.toString();
 	}
 	
-	private String generateChartOptions(Boolean showDataPoints, Boolean showLines, String legendColor, String mode) {
+	private String generateChartOptions(Boolean showDataPoints, Boolean showLines, String legendColor, String mode, String crosshair, Boolean spreadsheet) {
 		String retVal = "";
 		try {
 			JSONObject chartOptions = new JSONObject();
@@ -135,7 +145,7 @@ public class FlotChartRenderer extends Renderer {
 			JSONObject mouseOptions = new JSONObject();
 			mouseOptions.put("track", true);
 			mouseOptions.put("relative", true);
-			mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +', y = ' + obj.y; }");
+			mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + dateFormat(new Date(obj.x*1)) +'<br/>y = ' + yaxisConverter(obj.y); }");
 			chartOptions.put("mouse", mouseOptions);
 			
 			
@@ -160,6 +170,19 @@ public class FlotChartRenderer extends Renderer {
 			JSONObject pointsOptions = new JSONObject();
 			pointsOptions.put("show", showDataPoints.booleanValue());
 			chartOptions.put("points", pointsOptions);
+			
+			if (crosshair.equals("x") || crosshair.equals("y") || crosshair.equals("xy")) {
+				JSONObject crosshairOptions = new JSONObject();
+				crosshairOptions.put("mode", spreadsheet);
+				chartOptions.put("crosshair", crosshairOptions);
+			}
+			
+			if (spreadsheet.booleanValue()) {
+				JSONObject spreadsheetOptions = new JSONObject();
+				spreadsheetOptions.put("show", "true");
+				chartOptions.put("spreadsheet", spreadsheetOptions);
+			}
+			
 			retVal = chartOptions.toString(3).replace("\"", ""); 
 		} catch (JSONException je) {
 			
