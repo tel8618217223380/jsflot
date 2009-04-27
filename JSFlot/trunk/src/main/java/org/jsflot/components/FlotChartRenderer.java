@@ -11,14 +11,15 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 
+import org.jsflot.xydata.XYDataList;
 import org.jsflot.xydata.XYDataPoint;
+import org.jsflot.xydata.XYDataSetCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FlotChartRenderer extends Renderer {
 
 	private static final Logger log = Logger.getLogger(FlotChartRenderer.class.getName());
-	private static final String RENDERED_SCRIPT_KEY = "JSFLOW_SCRIPT_KEY";
 
 	@Override
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
@@ -34,51 +35,45 @@ public class FlotChartRenderer extends Renderer {
 
 		if (rendered) {
 			ResponseWriter writer = context.getResponseWriter();
-			//renderScriptOnce(context, component, writer);
-			Boolean showDataPoints = new Boolean((String)get(component, context, "showDataPoints"));
-			if (showDataPoints == null) {
-				showDataPoints = new Boolean("false");
-			}
-			Boolean showLines = new Boolean((String)get(component, context, "showLines"));
-			if (showLines == null) {
-				showLines = new Boolean("false");
-			}
-			String width = (String)get(component, context, "width");
-			if (width == null) {
-				width = "600";
-			}
-			String height = (String)get(component, context, "height");
-			if (height == null) {
-				height = "300";
-			}
-			String legend = (String)get(component, context, "legend");
-			
-			Boolean fillLines = new Boolean((String)get(component, context, "fillLines"));
-			if (fillLines == null) {
-				fillLines = new Boolean(false);
-			}
-			String legendColor = (String)get(component, context, "legendColor");
-			String mode= (String)get(component, context, "mode");
-			if (mode == null) {
-				mode = "Series";
-			}
-			
-			String crosshair = (String)get(component, context, "crosshair");
-			if (crosshair == null) {
-				crosshair = "none";
-			}
-			
-			Boolean spreadsheet  = new Boolean((String)get(component, context, "spreadsheet"));
-			if (spreadsheet == null) {
-				spreadsheet = new Boolean(false);
-			}
+			// renderScriptOnce(context, component, writer);
 
-			List<XYDataPoint> xyList = (List<XYDataPoint>) get(component, context, "value");
-			String functionBody = generateFunctionBody(xyList, id, showDataPoints, showLines, legend, fillLines, legendColor, mode, crosshair, spreadsheet);
+			FlotChartRendererData chartData = new FlotChartRendererData();
+			chartData.setShowDataPoints(get(component, context, "showDataPoints"));
+			chartData.setShowLines(get(component, context, "showLines"));
+			chartData.setWidth((String) get(component, context, "width"));
+			chartData.setHeight((String) get(component, context, "height"));
+			chartData.setLegend((String) get(component, context, "legend"));
+			chartData.setFillLines(get(component, context, "fillLines"));
+			chartData.setLegendColor((String) get(component, context, "legendColor"));
+			chartData.setMode((String) get(component, context, "mode"));
+			chartData.setLegendPosition((String) get(component, context, "legendPosition"));
+			chartData.setCrosshair((String) get(component, context, "crosshair"));
+			chartData.setSpreadsheet(get(component, context, "spreadsheet"));
+			chartData.setTitle((String) get(component, context, "title"));
+			chartData.setSubtitle((String) get(component, context, "subtitle"));
+			chartData.setLegendColumns((Integer) get(component, context, "legendColumns"));
+			chartData.setShowTooltip(get(component, context, "showTooltip"));
+			chartData.setTooltipPosition((String)get(component, context, "tooltipPosition"));
+			chartData.setTooltipFollowMouse(get(component, context, "tooltipFollowMouse"));
+			chartData.setLegendOpacity((Double) get(component, context, "legendOpacity"));
+			chartData.setChartType((String)get(component, context, "chartType"));
+			chartData.setXaxisTitle((String)get(component, context, "xaxisTitle"));
+			chartData.setShowXaxisLabels(get(component, context, "showXaxisLabels"));
+			chartData.setYaxisTitle((String)get(component, context, "yaxisTitle"));
+			chartData.setShowYaxisLabels(get(component, context, "showYaxisLabels"));
+			chartData.setNumberOfXAxisTicks((Integer) get(component, context, "numberOfXAxisTicks"));
+			chartData.setXaxisMinValue((Double) get(component, context, "xaxisMinValue"));
+			chartData.setXaxisMaxValue((Double) get(component, context, "xaxisMaxValue"));
+			chartData.setNumberOfYAxisTicks((Integer) get(component, context, "numberOfYAxisTicks"));
+			chartData.setYaxisMinValue((Double) get(component, context, "yaxisMinValue"));
+			chartData.setYaxisMaxValue((Double) get(component, context, "yaxisMaxValue"));
+			
+			XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
+			String functionBody = generateFunctionBody(xyCollection, id, chartData);
 
 			writer.startElement("div", component);
 			writer.writeAttribute("id", id, null);
-			writer.writeAttribute("style", "width:" + width + "px;height:" + height + "px;", null);
+			writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + chartData.getHeight() + "px;", null);
 			writer.endElement("div");
 			writer.write("\n");
 
@@ -89,8 +84,7 @@ public class FlotChartRenderer extends Renderer {
 			writer.write(functionBody);
 			writer.endElement("script");
 			writer.write("\n");
-			
-			 
+
 		}
 	}
 
@@ -102,114 +96,203 @@ public class FlotChartRenderer extends Renderer {
 			return component.getAttributes().get(name);
 	}
 
-	private String generateFunctionBody(List<XYDataPoint> xyList, String id, Boolean showDataPoints, Boolean showLines, String legend, Boolean fillLines, String legendColor, String mode, String crosshair, Boolean spreadsheet) {
+	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, FlotChartRendererData chartData) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("var d1 = [");
-		if (xyList != null) {
-			for (int i = 0; i < xyList.size() - 1; i++) {
-				XYDataPoint p = xyList.get(i);
-				sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]").append(", ");
+		int index = 0;
+		for (XYDataList list : xyCollection.getDataList()) {
+			String label = id + index;
+
+			sb.append("var ").append(label).append("JSONData").append(" = [");
+			if (list != null) {
+				for (int i = 0; i < list.size() - 1; i++) {
+					XYDataPoint p = list.get(i);
+					sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]").append(", ");
+				}
+				// Last Row
+				XYDataPoint p = list.get(list.size() - 1);
+				sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]");
 			}
-			// Last Row
-			XYDataPoint p = xyList.get(xyList.size() - 1);
-			sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]");
+			sb.append("];");
+			index++;
 		}
-		sb.append("];");
-		
-		String dataArrayString = generateDataOptions(legend, fillLines);
-		String chartOptions = generateChartOptions(showDataPoints, showLines, legendColor, mode, crosshair, spreadsheet);
-		
+
+		String dataArrayString = generateDataOptions(xyCollection, id, chartData.getLegend(), chartData.getFillLines());
+		String chartOptions = generateChartOptions(chartData);
+
 		sb.append("\n").append("var f = Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],").append(chartOptions).append(");");
-		
+
 		return sb.toString();
 	}
-	
-	private String generateChartOptions(Boolean showDataPoints, Boolean showLines, String legendColor, String mode, String crosshair, Boolean spreadsheet) {
+
+	private String generateChartOptions(FlotChartRendererData chartData) {
 		String retVal = "";
 		try {
 			JSONObject chartOptions = new JSONObject();
-		
-			//Revert to default color if none is selected
-			if (legendColor == null) {
-				legendColor = "#D2E8FF";
-			}
-			if (!legendColor.startsWith("#")) {
-				legendColor = "#" + legendColor;
-			}
+
 			
+
 			JSONObject legendOptions = new JSONObject();
-			legendOptions.put("position", "'ne'");
-			legendOptions.put("backgroundColor", "'" + legendColor + "'");
+			
+			legendOptions.put("position", "'" + chartData.getLegendPosition() + "'");
+			legendOptions.put("backgroundColor", "'" + chartData.getLegendColor() + "'");
+			legendOptions.put("noColumns", chartData.getLegendColumns());
+			legendOptions.put("backgroundOpacity", chartData.getLegendOpacity());
 			chartOptions.put("legend", legendOptions);
-			
-			JSONObject mouseOptions = new JSONObject();
-			mouseOptions.put("track", true);
-			mouseOptions.put("relative", true);
-			mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + dateFormat(new Date(obj.x*1)) +'<br/>y = ' + yaxisConverter(obj.y); }");
-			chartOptions.put("mouse", mouseOptions);
-			
-			
+
+			if (chartData.getShowTooltip().booleanValue()) {
+				JSONObject mouseOptions = new JSONObject();
+				mouseOptions.put("track", true);
+				mouseOptions.put("relative", chartData.getTooltipFollowMouse().booleanValue());
+				if (chartData.getTooltipPosition() != null) {
+					mouseOptions.put("position", "'" + chartData.getTooltipPosition() + "'");
+				}
+				if (chartData.getMode().equalsIgnoreCase("Time")) {
+					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + dateFormat(new Date(obj.x*1)) +'<br/>y = ' + yaxisConverter(obj.y); }");
+				} else {
+					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y); }");
+				}
+				chartOptions.put("mouse", mouseOptions);
+			}
+
 			JSONObject xaxisOptions = new JSONObject();
+			xaxisOptions.put("showLabels", chartData.getShowXaxisLabels().booleanValue());
+			if (chartData.getNumberOfXAxisTicks() != null) {
+				xaxisOptions.put("noTicks", chartData.getNumberOfXAxisTicks());
+			}
+			if (chartData.getXaxisMinValue() != null) {
+				xaxisOptions.put("min", chartData.getXaxisMinValue());
+			}
+			if (chartData.getXaxisMaxValue() != null) {
+				xaxisOptions.put("max", chartData.getXaxisMaxValue());
+			}
 			
-			if (mode.equalsIgnoreCase("Time")) {
+			if (chartData.getXaxisTitle() != null && chartData.getXaxisTitle().length() > 0) {
+				xaxisOptions.put("title", "'" + chartData.getXaxisTitle() + "'");
+				xaxisOptions.put("titleAngle", "90");
+			}
+			if (chartData.getMode().equalsIgnoreCase("Time")) {
 				xaxisOptions.put("tickFormatter", "function(n){ return dateFormat(new Date(n*1)); }");
 			}
-			
+
 			if (xaxisOptions.length() > 0) {
 				chartOptions.put("xaxis", xaxisOptions);
 			}
 			
+			
 			JSONObject yaxisOptions = new JSONObject();
 			yaxisOptions.put("tickFormatter", "function(n){ return yaxisConverter(n); }");
+			yaxisOptions.put("showLabels", chartData.getShowYaxisLabels().booleanValue());
+			if (chartData.getNumberOfYAxisTicks() != null) {
+				yaxisOptions.put("noTicks", chartData.getNumberOfYAxisTicks());
+			}
+			if (chartData.getYaxisMinValue() != null) {
+				yaxisOptions.put("min", chartData.getYaxisMinValue());
+			}
+			if (chartData.getYaxisMaxValue() != null) {
+				yaxisOptions.put("max", chartData.getYaxisMaxValue());
+			}
+			if (chartData.getYaxisTitle() != null && chartData.getYaxisTitle().length() > 0) {
+				yaxisOptions.put("title", "'" + chartData.getYaxisTitle() + "'");
+			}
 			chartOptions.put("yaxis", yaxisOptions);
-			
+
+			//Lines makes only sense in a XY Plot
 			JSONObject lineOptions = new JSONObject();
-			lineOptions.put("show", showLines.booleanValue());
+			lineOptions.put("show", chartData.getShowLines().booleanValue());
+			lineOptions.put("fill", chartData.getFillLines().booleanValue());
 			chartOptions.put("lines", lineOptions);
-			
-			JSONObject pointsOptions = new JSONObject();
-			pointsOptions.put("show", showDataPoints.booleanValue());
-			chartOptions.put("points", pointsOptions);
-			
-			if (crosshair.equals("x") || crosshair.equals("y") || crosshair.equals("xy")) {
-				JSONObject crosshairOptions = new JSONObject();
-				crosshairOptions.put("mode", spreadsheet);
-				chartOptions.put("crosshair", crosshairOptions);
+
+			//Select chart type
+			JSONObject chartTypeOptions = new JSONObject();
+			if (chartData.getChartType().equals("bar")) {
+				chartTypeOptions.put("show", true);
+				chartOptions.put("bars", chartTypeOptions);
+			} else if (chartData.getChartType().equals("candles")) {
+				chartTypeOptions.put("fill", true);
+				chartTypeOptions.put("show", true);
+				chartOptions.put("candles", chartTypeOptions);
+			} else if (chartData.getChartType().equals("pie")) {
+				chartTypeOptions.put("show", true);
+				chartOptions.put("pie", chartTypeOptions);
 			}
 			
-			if (spreadsheet.booleanValue()) {
+			JSONObject pointsOptions = new JSONObject();
+			pointsOptions.put("show", chartData.getShowDataPoints().booleanValue());
+			chartOptions.put("points", pointsOptions);
+
+			if (chartData.getCrosshair().equals("x") || chartData.getCrosshair().equals("y") || chartData.getCrosshair().equals("xy")) {
+				JSONObject crosshairOptions = new JSONObject();
+				crosshairOptions.put("mode", chartData.getCrosshair());
+				chartOptions.put("crosshair", crosshairOptions);
+			}
+
+			if (chartData.getSpreadsheet() != null && chartData.getSpreadsheet().booleanValue()) {
 				JSONObject spreadsheetOptions = new JSONObject();
 				spreadsheetOptions.put("show", "true");
 				chartOptions.put("spreadsheet", spreadsheetOptions);
 			}
+
+			if (chartData.getTitle() != null && chartData.getTitle().length() >= 0) {
+				chartOptions.put("title", "'" + chartData.getTitle() + "'");
+			}
+
+			if (chartData.getSubtitle() != null && chartData.getSubtitle().length() >= 0) {
+				chartOptions.put("subtitle", "'" + chartData.getSubtitle() + "'");
+			}
 			
-			retVal = chartOptions.toString(3).replace("\"", ""); 
+			
+
+			retVal = chartOptions.toString(3).replace("\"", "");
 		} catch (JSONException je) {
-			
+
 		}
-		
+
 		return retVal;
 	}
-	
-	private String generateDataOptions(String legend, Boolean fillLines) {
+
+	private String generateDataOptions(XYDataSetCollection xyCollection, String id, String legend, Boolean fillLines) {
 		String retVal = "";
-		
+
 		try {
-			JSONObject jSonData = new JSONObject();
-			jSonData.put("data", "d1");
-		
-			JSONObject lineJson = new JSONObject();
-			lineJson.put("fill", fillLines.booleanValue());
-			
-			jSonData.put("lines", lineJson);
-			if (legend != null) {
-				jSonData.put("label", "'" + legend + "'");
+			int index = 0;
+			for (XYDataList list : xyCollection.getDataList()) {
+
+				JSONObject jSonData = new JSONObject();
+				String label = id + index;
+				jSonData.put("data", label + "JSONData");
+
+				if (list.isFillLines() || list.isShowLines()) {
+					JSONObject lineJson = new JSONObject();
+					if (list.isFillLines()) {
+						lineJson.put("fill", list.isFillLines());
+					}
+					if (list.isShowLines()) {
+						lineJson.put("lines", list.isShowLines());
+					}
+					jSonData.put("lines", lineJson);
+				}
+
+				if (list.isShowDataPoints()) {
+					JSONObject pointsOptions = new JSONObject();
+					pointsOptions.put("show", list.isShowDataPoints());
+					jSonData.put("points", pointsOptions);
+				}
+
+				if (list.getLabel() != null) {
+					jSonData.put("label", "'" + list.getLabel() + "'");
+				}
+
+				retVal += jSonData.toString(3).replace("\"", "");
+				if (index != xyCollection.size() - 1) {
+					// No comma separator for the last row
+					retVal += ",";
+				}
+				index++;
 			}
-			retVal = jSonData.toString(3).replace("\"", "");;
 		} catch (JSONException je) {
-			
+
 		}
-		
+
 		return retVal;
 	}
 }

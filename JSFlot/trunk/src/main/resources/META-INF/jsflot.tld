@@ -107,6 +107,104 @@
 				<type>java.lang.Boolean</type>
 			</deferred-value>
 		</attribute>
+		<attribute>
+			<description>If specified, a graph title will be displayed</description>
+			<name>title</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>If specified, a graph sutitle will be displayed</description>
+			<name>subtitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the number of columns the legens has (defaults to 1)</description>
+			<name>legendColumns</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the opacity of the legend. Default 0.85</description>
+			<name>legendOpacity</name>
+			<deferred-value>
+				<type>java.lang.Double</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the where the legend is placed. Possible values are n, e, w, s, ne, nw, sw, se</description>
+			<name>legendPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the background color of the legend</description>
+			<name>legendBackgroundColor</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the data points have tooltips or not</description>
+			<name>showTooltip</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the where the tooltip is placed. Possible values are n, e, w, s, ne, nw, sw, se</description>
+			<name>tooltipPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the tooltop follows the mouse cursor</description>
+			<name>tooltipFollowMouse</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the Chart Type, Line, Pie or Bar</description>
+			<name>chartType</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the labels on the X Axis are displayed</description>
+			<name>showXaxisLabels</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the title for the X Axis</description>
+			<name>xaxisTitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the labels on the Y Axis are displayed</description>
+			<name>showYaxisLabels</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the title for the X Axis</description>
+			<name>yaxisTitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
 	</tag>
 	<tag>
 		<description>
