@@ -1,0 +1,34 @@
+Version 0.X.X - Fix for XXX
+- Fixed cast bug in FlotChartRendererData where some values were cast to the wrong type.
+ 
+Version 0.1.1 - Initial Release
+XYDataPoint.java
+- The XYDataPoint is simply what it states, and holds a single set of X and Y coordinates.
+XYDataList
+- The XYDataList serves two purposes. First it holds a java.util.List<XYDataPoint> list of a set of XYDataPoints to represent a complete data series.
+- Second it has additional fields for storing the seires label, as well as information regarding this series line and data point rendering.
+XYDataSetCollection
+- This class is simply a collection of XYDataList. A fully populated XYDataSetCollection holds a minimum of 1 XYDataList references.
+- The jsflot:flotChart taglib expects to get a reference to a XYDataSetCollection in its Value parameter.
+
+Data Points configuration
+- Data points can be rendered as values, or as JavaScript dates.
+- Each data point can be either hidden or shown on the chart. Settings are both globally (for all series), or on a per series basis.
+- An optional Tooltip is available to show extra information regarding the data point that the mouse points to.
+- The tooltip position can be either corner. Alternatively the tooltip can follow the mouse.
+Axis Configuration
+- The X and Y Axis can have an optional title.
+- The values for both X and Y axis are chosen based on the data being rendered. However, custom ranges can be defined for either axis.
+- By default both the X and Y axis show 5 ticks (labels). This number can be overridden by suggesting any number. JSFlot will determine the closest match automatically.
+Chart Title Configuration
+- Both a title and a subtitle are available, which can be shown at the same time.
+Legend Configuration
+- The graph can show a legend, positioned at either corner of the graph
+- The legend can be arranged in any number of columns ranging from 1 to the number of series currently displayed
+- Both a background color and a background color opacity can be configured
+Chart Line Options
+- The chart lines can optionally be filled to create an area chart. This can be configured globally, or per series.
+- If data points are shown, the chart line can optionally be switched off
+Chart Dimensions
+- By default the chart occupies 600 by 300 pixels. Both the width and the height can be configured to any number
+

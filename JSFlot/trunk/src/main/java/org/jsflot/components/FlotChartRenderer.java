@@ -73,22 +73,22 @@ public class FlotChartRenderer extends Renderer {
 			chartData.setSpreadsheet(get(component, context, "spreadsheet"));
 			chartData.setTitle((String) get(component, context, "title"));
 			chartData.setSubtitle((String) get(component, context, "subtitle"));
-			chartData.setLegendColumns((Integer) get(component, context, "legendColumns"));
+			chartData.setLegendColumns(get(component, context, "legendColumns"));
 			chartData.setShowTooltip(get(component, context, "showTooltip"));
 			chartData.setTooltipPosition((String)get(component, context, "tooltipPosition"));
 			chartData.setTooltipFollowMouse(get(component, context, "tooltipFollowMouse"));
-			chartData.setLegendOpacity((Double) get(component, context, "legendOpacity"));
+			chartData.setLegendOpacity(get(component, context, "legendOpacity"));
 			chartData.setChartType((String)get(component, context, "chartType"));
 			chartData.setXaxisTitle((String)get(component, context, "xaxisTitle"));
 			chartData.setShowXaxisLabels(get(component, context, "showXaxisLabels"));
 			chartData.setYaxisTitle((String)get(component, context, "yaxisTitle"));
 			chartData.setShowYaxisLabels(get(component, context, "showYaxisLabels"));
-			chartData.setNumberOfXAxisTicks((Integer) get(component, context, "numberOfXAxisTicks"));
-			chartData.setXaxisMinValue((Double) get(component, context, "xaxisMinValue"));
-			chartData.setXaxisMaxValue((Double) get(component, context, "xaxisMaxValue"));
-			chartData.setNumberOfYAxisTicks((Integer) get(component, context, "numberOfYAxisTicks"));
-			chartData.setYaxisMinValue((Double) get(component, context, "yaxisMinValue"));
-			chartData.setYaxisMaxValue((Double) get(component, context, "yaxisMaxValue"));
+			chartData.setNumberOfXAxisTicks(get(component, context, "numberOfXAxisTicks"));
+			chartData.setXaxisMinValue(get(component, context, "xaxisMinValue"));
+			chartData.setXaxisMaxValue(get(component, context, "xaxisMaxValue"));
+			chartData.setNumberOfYAxisTicks(get(component, context, "numberOfYAxisTicks"));
+			chartData.setYaxisMinValue(get(component, context, "yaxisMinValue"));
+			chartData.setYaxisMaxValue(get(component, context, "yaxisMaxValue"));
 			
 			XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
 			String functionBody = generateFunctionBody(xyCollection, id, chartData);
@@ -160,6 +160,8 @@ public class FlotChartRenderer extends Renderer {
 			legendOptions.put("noColumns", chartData.getLegendColumns());
 			legendOptions.put("backgroundOpacity", chartData.getLegendOpacity());
 			chartOptions.put("legend", legendOptions);
+			
+			chartOptions.put("HtmlText", false);
 
 			if (chartData.getShowTooltip().booleanValue()) {
 				JSONObject mouseOptions = new JSONObject();
@@ -178,6 +180,8 @@ public class FlotChartRenderer extends Renderer {
 
 			JSONObject xaxisOptions = new JSONObject();
 			xaxisOptions.put("showLabels", chartData.getShowXaxisLabels().booleanValue());
+			xaxisOptions.put("labelsAngle", 45);
+			
 			if (chartData.getNumberOfXAxisTicks() != null) {
 				xaxisOptions.put("noTicks", chartData.getNumberOfXAxisTicks());
 			}
@@ -190,7 +194,6 @@ public class FlotChartRenderer extends Renderer {
 			
 			if (chartData.getXaxisTitle() != null && chartData.getXaxisTitle().length() > 0) {
 				xaxisOptions.put("title", "'" + chartData.getXaxisTitle() + "'");
-				xaxisOptions.put("titleAngle", "90");
 			}
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
 				xaxisOptions.put("tickFormatter", "function(n){ return dateFormat(new Date(n*1)); }");
@@ -215,6 +218,7 @@ public class FlotChartRenderer extends Renderer {
 			}
 			if (chartData.getYaxisTitle() != null && chartData.getYaxisTitle().length() > 0) {
 				yaxisOptions.put("title", "'" + chartData.getYaxisTitle() + "'");
+				yaxisOptions.put("titleAngle", "90");
 			}
 			chartOptions.put("yaxis", yaxisOptions);
 
@@ -228,6 +232,7 @@ public class FlotChartRenderer extends Renderer {
 			JSONObject chartTypeOptions = new JSONObject();
 			if (chartData.getChartType().equals("bar")) {
 				chartTypeOptions.put("show", true);
+				chartTypeOptions.put("barWidth", 0.5d);
 				chartOptions.put("bars", chartTypeOptions);
 			} else if (chartData.getChartType().equals("candles")) {
 				chartTypeOptions.put("fill", true);

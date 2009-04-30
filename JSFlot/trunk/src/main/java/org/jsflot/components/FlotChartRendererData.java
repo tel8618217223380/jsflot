@@ -226,6 +226,19 @@ public class FlotChartRendererData {
 	public void setLegendColumns(Integer legendColumns) {
 		this.legendColumns = legendColumns;
 	}
+	
+	public void setLegendColumns(Object legendColumnsObj) {
+		if (legendColumnsObj instanceof Integer) {
+			setLegendColumns((Integer)legendColumnsObj);
+		} else if (legendColumnsObj instanceof String) {
+			try {
+				this.legendColumns = Integer.parseInt((String)legendColumnsObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do. Reset to 1 column;
+				this.legendColumns = 1;
+			}
+		}
+	}
 
 	public Boolean getShowTooltip() {
 		return showTooltip;
@@ -257,6 +270,19 @@ public class FlotChartRendererData {
 
 	public void setLegendOpacity(Double legendOpacity) {
 		this.legendOpacity = legendOpacity;
+	}
+	
+	public void setLegendOpacity(Object legendOpacityObj) {
+		if (legendOpacityObj instanceof Double) {
+			setLegendOpacity((Double)legendOpacityObj);
+		} else if (legendOpacityObj instanceof String) {
+			try {
+				this.legendOpacity = Double.parseDouble((String)legendOpacityObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do. Reset to 1 column;
+				this.legendOpacity = 0.85d;
+			}
+		}
 	}
 	
 	public Boolean getTooltipFollowMouse() {
@@ -339,12 +365,37 @@ public class FlotChartRendererData {
 		this.numberOfXAxisTicks = numberOfXAxisTicks;
 	}
 	
+	public void setNumberOfXAxisTicks(Object numberofXAxisTicksObj) {
+		if (numberofXAxisTicksObj instanceof Integer) {
+			setNumberOfXAxisTicks((Integer)numberofXAxisTicksObj);
+		} else if (numberofXAxisTicksObj instanceof String) {
+			try {
+				this.numberOfXAxisTicks = Integer.parseInt((String)numberofXAxisTicksObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+				
+			}
+		}
+	}
+	
 	public Integer getNumberOfYAxisTicks() {
 		return numberOfYAxisTicks;
 	}
 
 	public void setNumberOfYAxisTicks(Integer numberOfYAxisTicks) {
 		this.numberOfYAxisTicks = numberOfYAxisTicks;
+	}
+	
+	public void setNumberOfYAxisTicks(Object numberofYAxisTicksObj) {
+		if (numberofYAxisTicksObj instanceof Integer) {
+			setNumberOfYAxisTicks((Integer)numberofYAxisTicksObj);
+		} else if (numberofYAxisTicksObj instanceof String) {
+			try {
+				this.numberOfYAxisTicks = Integer.parseInt((String)numberofYAxisTicksObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+			}
+		}
 	}
 
 	public Double getXaxisMinValue() {
@@ -354,6 +405,19 @@ public class FlotChartRendererData {
 	public void setXaxisMinValue(Double xaxisMinValue) {
 		this.xaxisMinValue = xaxisMinValue;
 	}
+	
+	public void setXaxisMinValue(Object xaxisMinValueObj) {
+		if (xaxisMinValueObj instanceof Double) {
+			setXaxisMinValue((Double)xaxisMinValueObj);
+		} else if (xaxisMinValueObj instanceof String) {
+			try {
+				this.xaxisMinValue = Double.parseDouble((String)xaxisMinValueObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+				
+			}
+		}
+	}
 
 	public Double getXaxisMaxValue() {
 		return xaxisMaxValue;
@@ -362,13 +426,39 @@ public class FlotChartRendererData {
 	public void setXaxisMaxValue(Double xaxisMaxValue) {
 		this.xaxisMaxValue = xaxisMaxValue;
 	}
-
+	
+	public void setXaxisMaxValue(Object xaxisMaxValueObj) {
+		if (xaxisMaxValueObj instanceof Double) {
+			setXaxisMaxValue((Double)xaxisMaxValueObj);
+		} else if (xaxisMaxValueObj instanceof String) {
+			try {
+				this.xaxisMaxValue = Double.parseDouble((String)xaxisMaxValueObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+				
+			}
+		}
+	}
+		
 	public Double getYaxisMinValue() {
 		return yaxisMinValue;
 	}
 
 	public void setYaxisMinValue(Double yaxisMinValue) {
 		this.yaxisMinValue = yaxisMinValue;
+	}
+	
+	public void setYaxisMinValue(Object yaxisMinValueObj) {
+		if (yaxisMinValueObj instanceof Double) {
+			setYaxisMinValue((Double)yaxisMinValueObj);
+		} else if (yaxisMinValueObj instanceof String) {
+			try {
+				this.yaxisMinValue = Double.parseDouble((String)yaxisMinValueObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+				
+			}
+		}
 	}
 
 	public Double getYaxisMaxValue() {
@@ -377,6 +467,19 @@ public class FlotChartRendererData {
 
 	public void setYaxisMaxValue(Double yaxisMaxValue) {
 		this.yaxisMaxValue = yaxisMaxValue;
+	}
+	
+	public void setYaxisMaxValue(Object yaxisMaxValueObj) {
+		if (yaxisMaxValueObj instanceof Double) {
+			setYaxisMaxValue((Double)yaxisMaxValueObj);
+		} else if (yaxisMaxValueObj instanceof String) {
+			try {
+				this.yaxisMaxValue = Double.parseDouble((String)yaxisMaxValueObj);
+			} catch (NumberFormatException nfe) {
+				//Nothing to do.
+				
+			}
+		}
 	}
 
 	
