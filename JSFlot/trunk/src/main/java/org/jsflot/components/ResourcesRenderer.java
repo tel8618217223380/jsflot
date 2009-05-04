@@ -70,28 +70,38 @@ public class ResourcesRenderer extends Renderer {
 		}
 		requestMap.put(RENDERED_SCRIPT_KEY, Boolean.TRUE);
 		String contextRoot = context.getExternalContext().getRequestContextPath();
+		String servletPath = context.getExternalContext().getRequestServletPath();
+		
+		String facesSuffix = ".jsf";
+		String facesPrefix = "";
+		if (servletPath.endsWith(".faces")) {
+			facesSuffix = ".faces";
+		} else if (servletPath.equals("/faces")) {
+			facesPrefix = "/faces";
+			facesSuffix = "";
+		}
 
 		if (renderPrototype) {
 			writer.startElement("script", component);
 				writer.writeAttribute("type", "text/javascript", null);
-				writer.writeAttribute("src", contextRoot + "/jsflot/prototype-1.6.0.2.js.jsf", null); 
+				writer.writeAttribute("src", contextRoot + facesPrefix + "/jsflot/prototype-1.6.0.2.js" + facesSuffix, null); 
 			writer.endElement("script"); 
 			writer.write("\n");
 		}
 		
 		if (renderBase64) {
 			writer.write("<!--[if IE]><script language=\"javascript\" type=\"text/javascript\" src=\"" + contextRoot
-					+ "/jsflot/base64.js.jsf\"></script><![endif]-->");
+					+ "/jsflot/base64.js" + facesSuffix + facesPrefix + "\"></script><![endif]-->");
 		}
 		if (renderExcanvas) {
 			writer.write("<!--[if IE]><script language=\"javascript\" type=\"text/javascript\" src=\"" + contextRoot
-				+ "/jsflot/excanvas.js.jsf\"></script><![endif]-->");
+				+ "/jsflot/excanvas.js" + facesSuffix + facesPrefix + "\"></script><![endif]-->");
 		}
 
 		if (renderCanvas2Image) {
 			writer.startElement("script", component);
 			writer.writeAttribute("type", "text/javascript", null);
-			writer.writeAttribute("src", contextRoot + "/jsflot/canvas2image.js.jsf", null);
+			writer.writeAttribute("src", contextRoot + facesPrefix + "/jsflot/canvas2image.js" + facesSuffix, null);
 			writer.endElement("script");
 			writer.write("\n");
 		}
@@ -99,7 +109,7 @@ public class ResourcesRenderer extends Renderer {
 		if (renderCanvastext) {
 			writer.startElement("script", component);
 			writer.writeAttribute("type", "text/javascript", null);
-			writer.writeAttribute("src", contextRoot + "/jsflot/canvastext.js.jsf", null);
+			writer.writeAttribute("src", contextRoot + facesPrefix + "/jsflot/canvastext.js" + facesSuffix, null);
 			writer.endElement("script");
 			writer.write("\n");
 		}
@@ -107,14 +117,14 @@ public class ResourcesRenderer extends Renderer {
 		if (renderFlotr) {
 			writer.startElement("script", component);
 			writer.writeAttribute("type", "text/javascript", null);
-			writer.writeAttribute("src", contextRoot + "/jsflot/flotr.js.jsf", null);
+			writer.writeAttribute("src", contextRoot + facesPrefix + "/jsflot/flotr.js" + facesSuffix, null);
 			writer.endElement("script");
 			writer.write("\n");
 		}
 		
 		writer.startElement("script", component);
 		writer.writeAttribute("type", "text/javascript", null);
-		writer.writeAttribute("src", contextRoot + "/jsflot/dateformat.js.jsf", null);
+		writer.writeAttribute("src", contextRoot + facesPrefix +"/jsflot/dateformat.js" + facesSuffix, null);
 		writer.endElement("script");
 		writer.write("\n");
 	}

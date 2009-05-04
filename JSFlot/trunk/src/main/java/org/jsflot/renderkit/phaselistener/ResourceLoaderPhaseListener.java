@@ -54,20 +54,27 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 	}
 
 	public void afterPhase(PhaseEvent event) {
-		//log.info("afterPhase()");
 		FacesContext facesContext = event.getFacesContext();
 		String viewRootId = facesContext.getViewRoot().getViewId();
 		log.info("viewRootId: " + viewRootId);
-		if (viewRootId.startsWith("/jsflot/") && viewRootId.endsWith(".jsf")) {
-			int endPoint = viewRootId.length() -4;
-			String resourceName = viewRootId.substring("/jsflot/".length(), endPoint);
+		if (viewRootId.startsWith(RESOURCE_LOADER_VIEW_ID)) {
+			//If viewRootId starts with RESOURCE_LOADER_VIEW_ID, we are assuming that we are
+			//loading resources
+			String resourceName = viewRootId.substring(RESOURCE_LOADER_VIEW_ID.length()); //remove prefix
+			while (!resourceName.endsWith(".js")) { //Process JavaScript file
+				int endPoint = resourceName.lastIndexOf('.');
+				if (endPoint == -1) {
+					return;
+				}
+				resourceName = resourceName.substring(0, endPoint);
+			}
+			//Serve JavaScript file
 			serveResource(facesContext, resourceName);
 		}		
 	}
 
 	private void serveResource(FacesContext facesContext, String resourceName) {
 		log.info("serverResource(): resourceName: " + resourceName);
-		Map requestMap = facesContext.getExternalContext().getRequestParameterMap();
 
 		String resourceType = getResourceType(resourceName);
 		String contentType = getContentType(resourceType);
@@ -91,7 +98,6 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			}
 
 			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
 			response.setContentType(contentType);
 			response.setStatus(200);
