@@ -76,6 +76,16 @@ public class XYDataList {
 		return dataPointList.add(new XYDataPoint(x, y));
 	}
 	
+	public double calculateAvgPointDistance() {
+		double pointDistance = 1.0d;
+		if (dataPointList.size() > 1) {
+			double xAxisRange = dataPointList.get(dataPointList.size() -1).getX().doubleValue() - dataPointList.get(0).getX().doubleValue();
+			pointDistance = xAxisRange / dataPointList.size();
+		}
+		
+		return pointDistance;
+	}
+	
 	public boolean removeDataPoint(XYDataPoint point) {
 		return dataPointList.remove(point);
 	}

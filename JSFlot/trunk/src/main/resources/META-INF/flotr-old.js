@@ -1,4 +1,4 @@
-/* $Id: flotr.js 110 2009-04-27 17:43:43Z fabien.menager $ */
+/* $Id: flotr.js 108 2009-04-14 13:32:27Z fabien.menager $ */
 
 /** 
  * @projectDescription Flotr is a javascript plotting library based on the Prototype Javascript Framework.
@@ -400,9 +400,7 @@ Flotr.Graph = Class.create({
 				lineColor: '#FF3F19',  // => line color of points that are drawn when mouse comes near a value of a series
 				trackDecimals: 1,      // => decimals for the track values
 				sensibility: 2,        // => the lower this number, the more precise you have to aim to show a value
-				radius: 3,             // => radius of the track point
- 				fillColor: null,       // => color to fill our select bar with only applies to bar and similar graphs (only bars for now)
-				fillOpacity: 0.4       // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill 
+				radius: 3              // => radius of the track point
 			},
 			shadowSize: 4,             // => size of the 'fake' shadow
 			defaultType: 'lines',      // => default series type
@@ -535,7 +533,7 @@ Flotr.Graph = Class.create({
 		if (!this.canvas) {
 			c = this.canvas = $(document.createElement('canvas'));
 			c.className = 'flotr-canvas';
-			c.writeAttribute('style', 'position:absolute;left:0px;top:0px;');
+			c = c.writeAttribute('style', 'position:absolute;left:0px;top:0px;');
 		}
 		c = this.canvas.writeAttribute(size).show();
 		el.insert(c);
@@ -544,14 +542,14 @@ Flotr.Graph = Class.create({
 		if (!this.overlay) {
 			oc = this.overlay = $(document.createElement('canvas'));
 			oc.className = 'flotr-overlay';
-			oc.writeAttribute('style', 'position:absolute;left:0px;top:0px;');
+			oc = oc.writeAttribute('style', 'position:absolute;left:0px;top:0px;');
 		}
 		oc = this.overlay.writeAttribute(size).show();
 		el.insert(oc);
 		
 		if(Prototype.Browser.IE){
-			window.G_vmlCanvasManager.initElement(c);
-			window.G_vmlCanvasManager.initElement(oc);
+			c  = window.G_vmlCanvasManager.initElement(c);
+			oc = window.G_vmlCanvasManager.initElement(oc);
 		}
 		this.ctx = c.getContext('2d');
 		this.octx = oc.getContext('2d');
@@ -947,9 +945,9 @@ Flotr.Graph = Class.create({
 								}
 							}
 					    
-							for (var j in stackedSums) {
-								newmax = Math.max(stackedSums[j], newmax);
-							}
+              for (var j in stackedSums) {
+                newmax = Math.max(stackedSums[j], newmax);
+              }
 						}
 					}
 				}
@@ -1902,8 +1900,7 @@ Flotr.Graph = Class.create({
 		this.plotBarsShadows(series, bw, 0, series.bars.fill);
 
 		if(series.bars.fill){
-			var color = series.bars.fillColor || series.color;
-			ctx.fillStyle = Flotr.parseColor(color).scale(null, null, null, series.bars.fillOpacity).toString();
+			ctx.fillStyle = series.bars.fillColor != null ? series.bars.fillColor : Flotr.parseColor(series.color).scale(null, null, null, series.bars.fillOpacity).toString();
 		}
     
 		this.plotBars(series, bw, 0, series.bars.fill);
@@ -1929,12 +1926,12 @@ Flotr.Graph = Class.create({
 			// Stacked bars
 			var stackOffset = 0;
 			if(series.bars.stacked) {
-				$H(xa.values).each(function(pair) {
-					if (pair.key == x) {
-						stackOffset = pair.value.stack || 0;
-						pair.value.stack = stackOffset + y;
-					}
-				});
+        $H(xa.values).each(function(pair) {
+          if (pair.key == x) {
+            stackOffset = pair.value.stack || 0;
+            pair.value.stack = stackOffset + y;
+          }
+        });
 			}
 
 			// @todo: fix horizontal bars support
@@ -2015,10 +2012,10 @@ Flotr.Graph = Class.create({
 			var stackOffset = 0;
 			if(series.bars.stacked) {
 				$H(xa.values).each(function(pair) {
-					if (pair.key == x) {
-						stackOffset = pair.value.stackShadow || 0;
-						pair.value.stackShadow = stackOffset + y;
-					}
+  				if (pair.key == x) {
+  					stackOffset = pair.value.stackShadow || 0;
+  					pair.value.stackShadow = stackOffset + y;
+  				}
 				});
 			}
 			
@@ -2026,7 +2023,7 @@ Flotr.Graph = Class.create({
 			if(series.bars.horizontal) 
 				var left = stackOffset, right = x + stackOffset, bottom = y, top = y + barWidth;
 			else 
-				var left = x - (series.bars.centered ? barWidth/2 : 0), right = x + barWidth - (series.bars.centered ? barWidth/2 : 0), bottom = stackOffset, top = y + stackOffset;
+        var left = x - (series.bars.centered ? barWidth/2 : 0), right = x + barWidth - (series.bars.centered ? barWidth/2 : 0), bottom = stackOffset, top = y + stackOffset;
 			
 			if(right < xa.min || left > xa.max || top < ya.min || bottom > ya.max)
 				continue;
@@ -2279,6 +2276,46 @@ Flotr.Graph = Class.create({
 			ctx.strokeStyle = color;
 			ctx.stroke();
 			
+			/*ctx.save();
+			ctx.scale(1, vScale);
+			
+			ctx.moveTo(xOffset, yOffset);
+			ctx.beginPath();
+			ctx.lineTo(xOffset, yOffset+plotTickness);
+			ctx.lineTo(xOffset+Math.cos(slice.startAngle)*radius, yOffset+Math.sin(slice.startAngle)*radius+plotTickness);
+			ctx.lineTo(xOffset+Math.cos(slice.startAngle)*radius, yOffset+Math.sin(slice.startAngle)*radius);
+			ctx.lineTo(xOffset, yOffset);
+			ctx.closePath();
+			ctx.fill();ctx.stroke();
+			
+			ctx.moveTo(xOffset, yOffset);
+			ctx.beginPath();
+			ctx.lineTo(xOffset, yOffset+plotTickness);
+			ctx.lineTo(xOffset+Math.cos(slice.endAngle)*radius, yOffset+Math.sin(slice.endAngle)*radius+plotTickness);
+			ctx.lineTo(xOffset+Math.cos(slice.endAngle)*radius, yOffset+Math.sin(slice.endAngle)*radius);
+			ctx.lineTo(xOffset, yOffset);
+			ctx.closePath();
+			ctx.fill();ctx.stroke();
+			
+			ctx.moveTo(xOffset+Math.cos(slice.startAngle)*radius, yOffset+Math.sin(slice.startAngle)*radius);
+			ctx.beginPath();
+			ctx.lineTo(xOffset+Math.cos(slice.startAngle)*radius, yOffset+Math.sin(slice.startAngle)*radius+plotTickness);
+			ctx.arc(xOffset, yOffset+plotTickness, radius, slice.startAngle, slice.endAngle, false);
+			ctx.lineTo(xOffset+Math.cos(slice.endAngle)*radius, yOffset+Math.sin(slice.endAngle)*radius);
+			ctx.arc(xOffset, yOffset, radius, slice.endAngle, slice.startAngle, true);
+			ctx.closePath();
+			ctx.fill();ctx.stroke();
+			
+			ctx.scale(1, 1/vScale);
+			this.plotSlice(xOffset, yOffset+plotTickness, radius, slice.startAngle, slice.endAngle, false, vScale);
+			ctx.stroke();
+			if(series.pie.fill){
+			ctx.fillStyle = Flotr.parseColor(color).scale(null, null, null, series.pie.fillOpacity).toString();
+			ctx.fill();
+			}
+			
+			ctx.restore();*/
+			
 			var label = options.pie.labelFormatter(slice),
 			    textAlignRight = (Math.cos(bisection) < 0),
 			    distX = xOffset + Math.cos(bisection) * (series.pie.explode + radius),
@@ -2415,24 +2452,10 @@ Flotr.Graph = Class.create({
 		  				rowStarted = true;
 		  			}
 		  
-		  			var legend = options.legend,
-		  			    s = series[i],
-		  			    label = legend.labelFormatter(s.label),
-		  			    boxWidth = legend.labelBoxWidth,
-		  			    boxHeight = legend.labelBoxHeight,
-		  			    opacity = 'opacity:' + s.bars.fillOpacity + ';filter:alpha(opacity=' + s.bars.fillOpacity + ');',
-		  			    color = 'background-color:' + ((s.bars.show && s.bars.fillColor && s.bars.fill) ? s.bars.fillColor : s.color) + ';';
+		  			var label = options.legend.labelFormatter(series[i].label);
 		  			
-					fragments.push(
-						'<td class="flotr-legend-color-box">',
-							'<div style="border:1px solid ', legend.labelBoxBorderColor, ';padding:1px">',
-								'<div style="width:', (boxWidth-1), 'px;height:', (boxHeight-1), 'px;border:1px solid ', series[i].color, '">', 
-									'<div style="width:', boxWidth, 'px;height:', boxHeight, 'px;', opacity, color, '"></div>',
-								'</div>',
-							'</div>',
-						'</td>',
-						'<td class="flotr-legend-label">', label, '</td>'
-					);
+		  			fragments.push('<td class="flotr-legend-color-box"><div style="border:1px solid ' + options.legend.labelBoxBorderColor + ';padding:1px"><div style="width:' + options.legend.labelBoxWidth + 'px;height:' + options.legend.labelBoxHeight + 'px;background-color:' + series[i].color + '"></div></div></td>' +
+		  				'<td class="flotr-legend-label">' + label + '</td>');
 		  		}
 		  		if(rowStarted) fragments.push('</tr>');
 		  		
@@ -2442,7 +2465,8 @@ Flotr.Graph = Class.create({
 		  				$(options.legend.container).update(table);
 		  			}
 					else {
-		  				var pos = '', p = options.legend.position, m = options.legend.margin;
+		  				var pos = '',
+						    p = options.legend.position, m = options.legend.margin;
 		  				
 		  				     if(p.charAt(0) == 'n') pos += 'top:' + (m + plotOffset.top) + 'px;';
 		  				else if(p.charAt(0) == 's') pos += 'bottom:' + (m + plotOffset.bottom) + 'px;';					
@@ -2521,8 +2545,7 @@ Flotr.Graph = Class.create({
     
 		this.lastMousePos.pageX = pos.absX;
 		this.lastMousePos.pageY = pos.absY;	
-    	
-    	//@todo Add another overlay for the crosshair
+    
 		if (this.options.crosshair.mode)
 			this.clearCrosshair();
 			
@@ -2793,81 +2816,37 @@ Flotr.Graph = Class.create({
 	 * Removes the mouse tracking point from the overlay.
 	 */
 	clearHit: function(){
-		if(!this.prevHit) return;
-    
-		var prevHit = this.prevHit,
-		    plotOffset = this.plotOffset,
-		    s = prevHit.series,
-		    lw = s.bars.lineWidth;
-				
-		if(!s.bars.show){
-			var r = s.points.radius;
+		if(this.prevHit){
+			var options = this.options,
+			    plotOffset = this.plotOffset,
+			    prevHit = this.prevHit;
+					
 			this.octx.clearRect(
-				this.tHoz(prevHit.x, prevHit.xaxis) + plotOffset.left - r*2,
-				this.tVert(prevHit.y, prevHit.yaxis) + plotOffset.top - r*2,
-				r*3 + s.points.lineWidth*3, 
-				r*3 + s.points.lineWidth*3
+				this.tHoz(prevHit.x, prevHit.xaxis) + plotOffset.left - options.points.radius*2,
+				this.tVert(prevHit.y, prevHit.yaxis) + plotOffset.top - options.points.radius*2,
+				options.points.radius*3 + options.points.lineWidth*3, 
+				options.points.radius*3 + options.points.lineWidth*3
 			);
-		}
-
-		else {
-			var bw = s.bars.barWidth;
-			this.octx.clearRect(
-				this.tHoz(prevHit.x - bw/2, prevHit.xaxis) + plotOffset.left - lw, 
-				this.tVert(prevHit.y, prevHit.yaxis) + plotOffset.top - lw, 
-				this.tHoz(bw, prevHit.xaxis) + lw * 2, 
-				this.tVert(0, prevHit.yaxis) + lw * 2
-			);
-		}
+			this.prevHit = null;
+		}		
 	},
 	/**
 	 * Updates the mouse tracking point on the overlay.
 	 */
 	drawHit: function(n){
 		var octx = this.octx,
-		    s = n.series,
-		    tHoz = this.tHoz.bind(this),
-		    tVert = this.tVert.bind(this);
-
-		if(s.mouse.lineColor != null){
+		    options = this.options;
+			
+		if(n.mouse.lineColor != null){
 			octx.save();
-			octx.lineWidth = s.points.lineWidth;
-			octx.strokeStyle = s.mouse.lineColor;
-      octx.fillStyle = Flotr.parseColor(s.mouse.fillColor || '#ffffff').scale(null,null,null, s.mouse.fillOpacity).toString();
-      
-			if(!s.bars.show){
-				octx.translate(this.plotOffset.left, this.plotOffset.top);
-				octx.beginPath();
-				octx.arc(tHoz(n.x, n.xaxis), tVert(n.y, n.yaxis), s.mouse.radius, 0, 2 * Math.PI, true);
-				octx.fill();
-				octx.stroke();
-			}
-
-			else {
-				var bw = s.bars.barWidth;
-				
-				octx.save();
-				octx.translate(this.plotOffset.left, this.plotOffset.top);
-				octx.beginPath();
-				octx.moveTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-				octx.lineTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-				octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-				octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-				octx.stroke();
-				octx.closePath();
-				
-				if(s.mouse.fillColor){ 
-					octx.beginPath();
-					octx.moveTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-					octx.lineTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-					octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-					octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-					octx.fill();
-					octx.closePath();
-				}
-        
-				octx.restore();
-			}
+			octx.translate(this.plotOffset.left, this.plotOffset.top);
+			octx.lineWidth = options.points.lineWidth;
+			octx.strokeStyle = n.mouse.lineColor;
+			octx.fillStyle = '#ffffff';
+			octx.beginPath();
+			octx.arc(this.tHoz(n.x, n.xaxis), this.tVert(n.y, n.yaxis), options.mouse.radius, 0, 2 * Math.PI, true);
+			octx.fill();
+			octx.stroke();
 			octx.restore();
 		}
 		this.prevHit = n;
@@ -2884,7 +2863,7 @@ Flotr.Graph = Class.create({
 			prevHit = this.prevHit,
 			plotOffset = this.plotOffset,
 			octx = this.octx, 
-			data, xsens, ysens, x, y, xa, ya, mx, my, 
+			data, xsens, ysens, xa, ya, mx, my, 
 			/**
 			 * Nearest data element.
 			 */
@@ -2898,9 +2877,7 @@ Flotr.Graph = Class.create({
 				absY:mouse.absY,
 				mouse:null,
 				xaxis:null,
-				yaxis:null,
-				series:null,
-				index:null
+				yaxis:null
 			};
 		
 		for(i = 0; i < series.length; i++){
@@ -2909,67 +2886,50 @@ Flotr.Graph = Class.create({
 			data = s.data;
 			xa = s.xaxis;
 			ya = s.yaxis;
-			xsens = (2*options.points.lineWidth)/xa.scale * s.mouse.sensibility;
-			ysens = (2*options.points.lineWidth)/ya.scale * s.mouse.sensibility;
+			xsens = (2*options.points.lineWidth)/xa.scale;
+			ysens = (2*options.points.lineWidth)/ya.scale;
 			mx =  mouse.relX/xa.scale + xa.min;
 			my = -mouse.relY/ya.scale + ya.max;
-			
 			for(var j = 0, xpow, ypow; j < data.length; j++){
-				x = data[j][0];
-				y = data[j][1];
+				if (data[j][1] === null || 
+				    xa.min > data[j][0] || xa.max < data[j][0] || 
+				    ya.min > data[j][1] || ya.max < data[j][1]) continue;
 				
-				if (y === null || 
-				    xa.min > x || xa.max < x || 
-				    ya.min > y || ya.max < y) continue;
+				var xdiff = Math.abs(data[j][0] - mx),
+				    ydiff = Math.abs(data[j][1] - my);
 				
-				var xdiff = Math.abs(x - mx),
-				    ydiff = Math.abs(y - my);
-				
-				// we use a different set of criteria to determin if there has been a hit
-				// depending on what type of graph we have
-				if(((!s.bars.show) && xdiff < xsens && ydiff < ysens) || 
-				    (s.bars.show && xdiff < s.bars.barWidth/2 && my > ya.min && my < y)){
+				if(xdiff < xsens && ydiff < ysens){
 					var distance = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 					if(distance < n.dist){
 						n.dist = distance;
-						n.x = x;
-						n.y = y;
+						n.x = data[j][0];
+						n.y = data[j][1];
 						n.xaxis = xa;
 						n.yaxis = ya;
 						n.mouse = s.mouse;
-						n.series = s;
-						n.index = j;
 					}
 				}
 			}
 		}
 		
-		if(n.series && (n.mouse && n.mouse.track && !prevHit || (prevHit /*&& (n.x != prevHit.x || n.y != prevHit.y)*/))){
+		if(n.mouse && n.mouse.track && !prevHit || (prevHit/* && (n.x != prevHit.x || n.y != prevHit.y)*/)){
 			var mt = this.mouseTrack || this.el.select(".flotr-mouse-value")[0],
 			    pos = '', 
-			    s = n.series,
-			    p = n.mouse.position, 
-			    m = n.mouse.margin,
+			    p = (n.mouse || options.mouse).position, 
+			    m = (n.mouse || options.mouse).margin,
 			    elStyle = 'opacity:0.7;background-color:#000;color:#fff;display:none;position:absolute;padding:2px 8px;-moz-border-radius:4px;border-radius:4px;white-space:nowrap;';
-			
-			if (!n.mouse.relative) { // absolute to the canvas
+
+			if (!(n.mouse || options.mouse).relative) { // absolute to the canvas
 				     if(p.charAt(0) == 'n') pos += 'top:' + (m + plotOffset.top) + 'px;';
 				else if(p.charAt(0) == 's') pos += 'bottom:' + (m + plotOffset.bottom) + 'px;';					
 				     if(p.charAt(1) == 'e') pos += 'right:' + (m + plotOffset.right) + 'px;';
 				else if(p.charAt(1) == 'w') pos += 'left:' + (m + plotOffset.left) + 'px;';
 			}
-			else { // relative to the mouse or in the case of bar like graphs to the bar
-				if(!s.bars.show){
-					     if(p.charAt(0) == 'n') pos += 'bottom:' + (m - plotOffset.top - this.tVert(n.y, n.yaxis) + this.canvasHeight) + 'px;';
-					else if(p.charAt(0) == 's') pos += 'top:' + (m + plotOffset.top + this.tVert(n.y, n.yaxis)) + 'px;';
-					     if(p.charAt(1) == 'e') pos += 'left:' + (m + plotOffset.left + this.tHoz(n.x, n.xaxis)) + 'px;';
-					else if(p.charAt(1) == 'w') pos += 'right:' + (m - plotOffset.left - this.tHoz(n.x, n.xaxis) + this.canvasWidth) + 'px;';
-				}
-
-				else {
-					pos += 'bottom:' + (m - plotOffset.top - this.tVert(n.yaxis.min+((n.y-n.yaxis.min)/2), n.yaxis) + this.canvasHeight) + 'px;';
-					pos += 'left:' + (m + plotOffset.left + this.tHoz(n.x - options.bars.barWidth/2 , n.xaxis)) + 'px;';
-				}
+			else { // relative to the mouse
+			         if(p.charAt(0) == 'n') pos += 'bottom:' + (m - plotOffset.top - this.tVert(n.y, n.ya) + this.canvasHeight) + 'px;';
+				else if(p.charAt(0) == 's') pos += 'top:' + (m + plotOffset.top + this.tVert(n.y, n.ya)) + 'px;';
+				     if(p.charAt(1) == 'e') pos += 'left:' + (m + plotOffset.left + this.tHoz(n.x, n.xa)) + 'px;';
+				else if(p.charAt(1) == 'w') pos += 'right:' + (m - plotOffset.left - this.tHoz(n.x, n.xa) + this.canvasWidth) + 'px;';
 			}
 			
 			elStyle += pos;
@@ -2991,17 +2951,13 @@ Flotr.Graph = Class.create({
 				var decimals = n.mouse.trackDecimals;
 				if(decimals == null || decimals < 0) decimals = 0;
 				
-				mt.innerHTML = n.mouse.trackFormatter({x: n.x.toFixed(decimals), y: n.y.toFixed(decimals), series: n.series, index: n.index});
+				mt.innerHTML = n.mouse.trackFormatter({x: n.x.toFixed(decimals), y: n.y.toFixed(decimals)});
 				mt.fire('flotr:hit', [n, this]);
 			}
 			else if(prevHit){
 				mt.hide();
 				this.clearHit();
 			}
-		}
-		else if(this.prevHit) {
-			this.mouseTrack.hide();
-			this.clearHit();
 		}
 	},
 	saveImage: function (type, width, height, replaceCanvas) {

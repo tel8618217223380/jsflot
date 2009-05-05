@@ -52,6 +52,7 @@ public class FlotChartRendererData {
 	private Integer numberOfYAxisTicks = null;
 	private Double yaxisMinValue = null;
 	private Double yaxisMaxValue = null;
+	private Double barWidth = 0.5;
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -480,6 +481,14 @@ public class FlotChartRendererData {
 				
 			}
 		}
+	}
+	
+	public Double getBarWidth() {
+		return barWidth;
+	}
+	
+	public void setBarWidth(Double barWidth) {
+		this.barWidth = barWidth;
 	}
 
 	

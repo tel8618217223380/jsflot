@@ -121,21 +121,43 @@ public class FlotChartRenderer extends Renderer {
 	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, FlotChartRendererData chartData) {
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
+		
+		//Calculate the bar width to support clustered bar charts
+		double barWidth = 0.5d;
+		double offset = 0d;
+		if (xyCollection.getDataList().size() > 0) {
+			XYDataList list = xyCollection.getDataList().get(0);
+			barWidth = list.calculateAvgPointDistance() / (xyCollection.getDataList().size() + 1);
+			chartData.setBarWidth(barWidth);
+			//Calculate the start offset
+			offset = (xyCollection.getDataList().size() / 2) * barWidth * -1;
+		}
+		
 		for (XYDataList list : xyCollection.getDataList()) {
 			String label = id + index;
-
+			
 			sb.append("var ").append(label).append("JSONData").append(" = [");
 			if (list != null) {
 				for (int i = 0; i < list.size() - 1; i++) {
 					XYDataPoint p = list.get(i);
-					sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]").append(", ");
+					if (chartData.getChartType().equalsIgnoreCase("bar")) {
+						sb.append("[").append(p.getX().doubleValue() + offset).append(",").append(p.getY()).append("]").append(", ");
+					} else {
+						sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]").append(", ");
+					}
+					
 				}
 				// Last Row
 				XYDataPoint p = list.get(list.size() - 1);
-				sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]");
+				if (chartData.getChartType().equalsIgnoreCase("bar")) {
+					sb.append("[").append(p.getX().doubleValue() + offset).append(",").append(p.getY()).append("]");
+				} else {
+					sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]");
+				}
 			}
 			sb.append("];");
 			index++;
+			offset += barWidth;
 		}
 
 		String dataArrayString = generateDataOptions(xyCollection, id, chartData.getLegend(), chartData.getFillLines());
@@ -232,7 +254,7 @@ public class FlotChartRenderer extends Renderer {
 			JSONObject chartTypeOptions = new JSONObject();
 			if (chartData.getChartType().equals("bar")) {
 				chartTypeOptions.put("show", true);
-				chartTypeOptions.put("barWidth", 0.5d);
+				chartTypeOptions.put("barWidth", chartData.getBarWidth());
 				chartOptions.put("bars", chartTypeOptions);
 			} else if (chartData.getChartType().equals("candles")) {
 				chartTypeOptions.put("fill", true);
