@@ -205,6 +205,21 @@
 				<type>java.lang.String</type>
 			</deferred-value>
 		</attribute>
+		<attribute>
+			<description>Specifies if the series show markers or not</description>
+			<name>markers</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies where, relative to the data point, the marker are shown.</description>
+			<name>markerPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		
 	</tag>
 	<tag>
 		<description>

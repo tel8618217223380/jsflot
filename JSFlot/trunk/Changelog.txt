@@ -1,5 +1,10 @@
 Version 0.1.5 - Support for Clustered Bar Charts
 - Added support for Clustered Bar Charts (replacing the overlay-bar charts)
+- Upgraded Flotr to Revision 114
+- Added support for markers both globaly and per series.
+- Added support to set marker position
+- Support for vertical Y-Axis Label
+- Support for Crosshair in X, Y or XY directions
 
 Version 0.1.3 - PhaseListener bugfix
 - Fixed bug where the ResouceLoaderPhaseListener assumed that the Faces Servlet mapped to *.jsf. JSFlot now works with any URL-pattern where the Faces Servlet is called as a suffix (ie. *.jsf, *.faces), as well as /faces/*.  

@@ -31,6 +31,8 @@ public class XYDataList {
 	private boolean fillLines = false;
 	private boolean showLines = false;
 	private String label = "";
+	private boolean markers = false;
+	private String markerPosition = "ct";
 	
 	public XYDataList() {
 		dataPointList = new ArrayList<XYDataPoint>();
@@ -74,6 +76,22 @@ public class XYDataList {
 	
 	public boolean addDataPoint(Number x, Number y) {
 		return dataPointList.add(new XYDataPoint(x, y));
+	}
+	
+	public boolean isMarkers() {
+		return markers;
+	}
+	
+	public void setMarkers(boolean markers) {
+		this.markers = markers;
+	}
+	
+	public String getMarkerPosition() {
+		return markerPosition;
+	}
+	
+	public void setMarkerPosition(String markerPosition) {
+		this.markerPosition = markerPosition;
 	}
 	
 	public double calculateAvgPointDistance() {
