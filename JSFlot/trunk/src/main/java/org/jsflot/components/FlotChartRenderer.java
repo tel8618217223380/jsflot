@@ -89,6 +89,8 @@ public class FlotChartRenderer extends Renderer {
 			chartData.setNumberOfYAxisTicks(get(component, context, "numberOfYAxisTicks"));
 			chartData.setYaxisMinValue(get(component, context, "yaxisMinValue"));
 			chartData.setYaxisMaxValue(get(component, context, "yaxisMaxValue"));
+			chartData.setMarkers(get(component, context, "markers"));
+			chartData.setMarkerPosition((String)get(component, context, "markerPosition"));
 			
 			XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
 			String functionBody = generateFunctionBody(xyCollection, id, chartData);
@@ -269,9 +271,9 @@ public class FlotChartRenderer extends Renderer {
 			pointsOptions.put("show", chartData.getShowDataPoints().booleanValue());
 			chartOptions.put("points", pointsOptions);
 
-			if (chartData.getCrosshair().equals("x") || chartData.getCrosshair().equals("y") || chartData.getCrosshair().equals("xy")) {
+			if (chartData.getCrosshair() != null && (chartData.getCrosshair().equals("x") || chartData.getCrosshair().equals("y") || chartData.getCrosshair().equals("xy"))) {
 				JSONObject crosshairOptions = new JSONObject();
-				crosshairOptions.put("mode", chartData.getCrosshair());
+				crosshairOptions.put("mode", "'" + chartData.getCrosshair() + "'");
 				chartOptions.put("crosshair", crosshairOptions);
 			}
 
@@ -289,7 +291,15 @@ public class FlotChartRenderer extends Renderer {
 				chartOptions.put("subtitle", "'" + chartData.getSubtitle() + "'");
 			}
 			
-			
+			if (chartData.getMarkers() != null && chartData.getMarkers().booleanValue()) {
+				JSONObject markersOptions = new JSONObject();
+				markersOptions.put("show", true);
+				if (chartData.getMode().equalsIgnoreCase("Time")) {
+					markersOptions.put("labelFormatter", "function(obj){ return dateFormat(new Date(obj.x*1), 'HH:MM:ss'); }");
+				}
+				markersOptions.put("position", "'" + chartData.getMarkerPosition() + "'");
+				chartOptions.put("markers", markersOptions);
+			}
 
 			retVal = chartOptions.toString(3).replace("\"", "");
 		} catch (JSONException je) {
@@ -306,9 +316,9 @@ public class FlotChartRenderer extends Renderer {
 			int index = 0;
 			for (XYDataList list : xyCollection.getDataList()) {
 
-				JSONObject jSonData = new JSONObject();
+				JSONObject seriesOptions = new JSONObject();
 				String label = id + index;
-				jSonData.put("data", label + "JSONData");
+				seriesOptions.put("data", label + "JSONData");
 
 				if (list.isFillLines() || list.isShowLines()) {
 					JSONObject lineJson = new JSONObject();
@@ -318,20 +328,27 @@ public class FlotChartRenderer extends Renderer {
 					if (list.isShowLines()) {
 						lineJson.put("lines", list.isShowLines());
 					}
-					jSonData.put("lines", lineJson);
+					seriesOptions.put("lines", lineJson);
 				}
 
 				if (list.isShowDataPoints()) {
 					JSONObject pointsOptions = new JSONObject();
 					pointsOptions.put("show", list.isShowDataPoints());
-					jSonData.put("points", pointsOptions);
+					seriesOptions.put("points", pointsOptions);
+				}
+				
+				if (list.isMarkers()) {
+					JSONObject markersOptions = new JSONObject();
+					markersOptions.put("show", true);
+					markersOptions.put("position", "'" + list.getMarkerPosition() + "'");
+					seriesOptions.put("markers", markersOptions);
 				}
 
 				if (list.getLabel() != null) {
-					jSonData.put("label", "'" + list.getLabel() + "'");
+					seriesOptions.put("label", "'" + list.getLabel() + "'");
 				}
 
-				retVal += jSonData.toString(3).replace("\"", "");
+				retVal += seriesOptions.toString(3).replace("\"", "");
 				if (index != xyCollection.size() - 1) {
 					// No comma separator for the last row
 					retVal += ",";

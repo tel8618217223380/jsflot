@@ -53,6 +53,8 @@ public class FlotChartRendererData {
 	private Double yaxisMinValue = null;
 	private Double yaxisMaxValue = null;
 	private Double barWidth = 0.5;
+	private Boolean markers = false;
+	private String markerPosition = "ct";
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -491,5 +493,27 @@ public class FlotChartRendererData {
 		this.barWidth = barWidth;
 	}
 
+	public Boolean getMarkers() {
+		return markers;
+	}
 	
+	public void setMarkers(Boolean markers) {
+		this.markers = markers;
+	}
+	
+	public void setMarkers(Object markersObj) {
+		if (markersObj instanceof String) {
+			this.markers = new Boolean((String) markersObj);
+		} else if (markersObj instanceof Boolean) {
+			this.markers = (Boolean) markersObj;
+		}
+	}
+
+	public String getMarkerPosition() {
+		return markerPosition;
+	}
+	
+	public void setMarkerPosition(String markerPosition) {
+		this.markerPosition = markerPosition;
+	}
 }
