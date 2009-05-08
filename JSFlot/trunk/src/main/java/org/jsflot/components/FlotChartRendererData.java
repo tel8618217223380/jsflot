@@ -55,6 +55,10 @@ public class FlotChartRendererData {
 	private Double barWidth = 0.5;
 	private Boolean markers = false;
 	private String markerPosition = "ct";
+	private Integer xaxisLabelRotation = 45;
+	private Integer yaxisLabelRotation = 0;
+	private Integer xaxisTitleRotation = 0;
+	private Integer yaxisTitleRotation = 90;
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -516,4 +520,70 @@ public class FlotChartRendererData {
 	public void setMarkerPosition(String markerPosition) {
 		this.markerPosition = markerPosition;
 	}
+
+	public Integer getXaxisLabelRotation() {
+		return xaxisLabelRotation;
+	}
+
+	public void setXaxisLabelRotation(Integer xaxisLabelRotation) {
+		this.xaxisLabelRotation = xaxisLabelRotation;
+	}
+	
+	public void setXaxisLabelRotation(Object xaxisLabelRotationObj) {
+		if (xaxisLabelRotationObj instanceof String) {
+			this.xaxisLabelRotation = Integer.parseInt((String)xaxisLabelRotationObj);
+		} else if (xaxisLabelRotationObj instanceof Integer) {
+			this.xaxisLabelRotation = (Integer)xaxisLabelRotationObj;
+		}
+	}
+
+	public Integer getYaxisLabelRotation() {
+		return yaxisLabelRotation;
+	}
+
+	public void setYaxisLabelRotation(Integer yaxisLabelRotation) {
+		this.yaxisLabelRotation = yaxisLabelRotation;
+	}
+	
+	public void setYaxisLabelRotation(Object yaxisLabelRotationObj) {
+		if (yaxisLabelRotationObj instanceof String) {
+			this.yaxisLabelRotation = Integer.parseInt((String)yaxisLabelRotationObj);
+		} else if (yaxisLabelRotationObj instanceof Integer) {
+			this.yaxisLabelRotation = (Integer)yaxisLabelRotationObj;
+		}
+	}
+
+	public Integer getXaxisTitleRotation() {
+		return xaxisTitleRotation;
+	}
+
+	public void setXaxisTitleRotation(Integer xaxisTitleRotation) {
+		this.xaxisTitleRotation = xaxisTitleRotation;
+	}
+	
+	public void setXaxisTitleRotation(Object xaxisTitleRotationObj) {
+		if (xaxisTitleRotationObj instanceof String) {
+			this.xaxisTitleRotation = Integer.parseInt((String)xaxisTitleRotationObj);
+		} else if (xaxisTitleRotationObj instanceof Integer) {
+			this.xaxisTitleRotation = (Integer)xaxisTitleRotationObj;
+		}
+	}
+
+	public Integer getYaxisTitleRotation() {
+		return yaxisTitleRotation;
+	}
+
+	public void setYaxisTitleRotation(Integer yaxisTitleRotation) {
+		this.yaxisTitleRotation = yaxisTitleRotation;
+	}
+	
+	public void setYaxisTitleRotation(Object yaxisTitleRotationObj) {
+		if (yaxisTitleRotationObj instanceof String) {
+			this.yaxisTitleRotation = Integer.parseInt((String)yaxisTitleRotationObj);
+		} else if (yaxisTitleRotationObj instanceof Integer) {
+			this.yaxisTitleRotation = (Integer)yaxisTitleRotationObj;
+		}
+	}
+	
+	
 }

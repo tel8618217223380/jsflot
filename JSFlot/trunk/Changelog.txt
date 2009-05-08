@@ -1,3 +1,6 @@
+Version 0.1.6 
+- X and Y axis labels and titles can be rotated, specified in degrees. 
+
 Version 0.1.5 - Support for Clustered Bar Charts
 - Added support for Clustered Bar Charts (replacing the overlay-bar charts)
 - Upgraded Flotr to Revision 114

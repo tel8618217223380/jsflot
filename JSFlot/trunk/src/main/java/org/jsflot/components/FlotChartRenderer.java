@@ -91,6 +91,10 @@ public class FlotChartRenderer extends Renderer {
 			chartData.setYaxisMaxValue(get(component, context, "yaxisMaxValue"));
 			chartData.setMarkers(get(component, context, "markers"));
 			chartData.setMarkerPosition((String)get(component, context, "markerPosition"));
+			chartData.setXaxisLabelRotation(get(component, context, "xaxisLabelRotation"));
+			chartData.setXaxisTitleRotation(get(component, context, "xaxisTitleRotation"));
+			chartData.setYaxisLabelRotation(get(component, context, "yaxisLabelRotation"));
+			chartData.setYaxisTitleRotation(get(component, context, "yaxisTitleRotation"));
 			
 			XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
 			String functionBody = generateFunctionBody(xyCollection, id, chartData);
@@ -204,7 +208,6 @@ public class FlotChartRenderer extends Renderer {
 
 			JSONObject xaxisOptions = new JSONObject();
 			xaxisOptions.put("showLabels", chartData.getShowXaxisLabels().booleanValue());
-			xaxisOptions.put("labelsAngle", 45);
 			
 			if (chartData.getNumberOfXAxisTicks() != null) {
 				xaxisOptions.put("noTicks", chartData.getNumberOfXAxisTicks());
@@ -221,6 +224,12 @@ public class FlotChartRenderer extends Renderer {
 			}
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
 				xaxisOptions.put("tickFormatter", "function(n){ return dateFormat(new Date(n*1)); }");
+			}
+			if (chartData.getXaxisLabelRotation() != null && !chartData.getXaxisLabelRotation().equals(0)) {
+				xaxisOptions.put("labelsAngle", chartData.getXaxisLabelRotation());
+			}
+			if (chartData.getXaxisTitleRotation() != null && !chartData.getXaxisTitleRotation().equals(0)) {
+				xaxisOptions.put("titleAngle", chartData.getXaxisTitleRotation());
 			}
 
 			if (xaxisOptions.length() > 0) {
@@ -242,8 +251,15 @@ public class FlotChartRenderer extends Renderer {
 			}
 			if (chartData.getYaxisTitle() != null && chartData.getYaxisTitle().length() > 0) {
 				yaxisOptions.put("title", "'" + chartData.getYaxisTitle() + "'");
-				yaxisOptions.put("titleAngle", "90");
 			}
+			
+			if (chartData.getYaxisLabelRotation() != null && !chartData.getYaxisLabelRotation().equals(0)) {
+				yaxisOptions.put("labelsAngle", chartData.getYaxisLabelRotation());
+			}
+			if (chartData.getYaxisTitleRotation() != null && !chartData.getYaxisTitleRotation().equals(0)) {
+				yaxisOptions.put("titleAngle", chartData.getYaxisTitleRotation());
+			}
+			
 			chartOptions.put("yaxis", yaxisOptions);
 
 			//Lines makes only sense in a XY Plot
