@@ -185,10 +185,24 @@
 			</deferred-value>
 		</attribute>
 		<attribute>
+			<description>Specifies the rotation in which the X axis labels are displayed</description>
+			<name>sAxisLabelRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
 			<description>Specifies the title for the X Axis</description>
 			<name>xaxisTitle</name>
 			<deferred-value>
 				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the X axis title are displayed</description>
+			<name>xAxisTitleRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
 			</deferred-value>
 		</attribute>
 		<attribute>
@@ -199,10 +213,24 @@
 			</deferred-value>
 		</attribute>
 		<attribute>
+			<description>Specifies the rotation in which the Y axis labels are displayed</description>
+			<name>yAxisLabelRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
 			<description>Specifies the title for the X Axis</description>
 			<name>yaxisTitle</name>
 			<deferred-value>
 				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the Y axis title are displayed</description>
+			<name>yAxisTitleRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
 			</deferred-value>
 		</attribute>
 		<attribute>
