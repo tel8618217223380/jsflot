@@ -263,5 +263,12 @@
 				<type>java.lang.String</type>
 			</deferred-value>
 		</attribute>
+		<attribute>
+			<description>Determines JSFlot is running in Debug mode. Either "true" or "false". Default is "false"</description>
+			<name>debug</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
 	</tag>
 </taglib>

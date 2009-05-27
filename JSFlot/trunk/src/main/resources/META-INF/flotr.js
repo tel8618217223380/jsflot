@@ -2653,8 +2653,14 @@ Flotr.Graph = Class.create({
 		x2 = a.x.min + x2 / a.x.scale;
 		y1 = a.y.max - y1 / a.y.scale;
 		y2 = a.y.max - y2 / a.y.scale;
+		
+		var firstx = selection.first.x / a.x.scale,
+			secondx = selection.second.x / a.x.scale,
+			firsty = selection.first.y / a.y.scale,
+			secondy = selection.second.y / a.y.scale;
 
 		this.el.fire('flotr:select', [{x1:x1, y1:y1, x2:x2, y2:y2}, this]);
+		this.el.fire('flotr:selectionSequence', [{firstx:firstx, secondx:secondx, firsty:firsty, secondy:secondy}, this]);
 	},
 	/**
 	 * Observes the mouseup event for the document. 

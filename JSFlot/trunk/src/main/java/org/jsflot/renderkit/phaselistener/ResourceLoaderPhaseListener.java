@@ -18,35 +18,49 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-*/
+ */
 
 package org.jsflot.renderkit.phaselistener;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.faces.component.ContextCallback;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.naming.Context;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.jsflot.components.ComponentRendererUtil;
+import org.jsflot.components.JSFlotAjaxInterface;
 
 public class ResourceLoaderPhaseListener implements PhaseListener {
 
-	private static final String RESOURCE_LOADER_VIEW_ID = "/jsflot/";
+	public static final String RESOURCE_LOADER_VIEW_ID = "/jsflot/";
+	public static final String AJAX_SUFFIX = "Ajax-request";
 
 	private static final String RESOURCE_FOLDER = "/META-INF";
-	
+
 	private static final Logger log = Logger.getLogger(ResourceLoaderPhaseListener.class.getName());
 
 	public void beforePhase(PhaseEvent event) {
-		// No-op
+		if (event.getPhaseId() == PhaseId.RESTORE_VIEW) {
+			log.info("Processing new  Request!");
+		}
+
+		log.info("before - " + event.getPhaseId().toString());
 	}
 
 	public PhaseId getPhaseId() {
@@ -54,23 +68,44 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 	}
 
 	public void afterPhase(PhaseEvent event) {
+		log.info("after - " + event.getPhaseId().toString());
+
+		if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
+			log.info("Done with Request!\n");
+		}
+
 		FacesContext facesContext = event.getFacesContext();
+		UIViewRoot viewRoot = facesContext.getViewRoot();
 		String viewRootId = facesContext.getViewRoot().getViewId();
-		log.info("viewRootId: " + viewRootId);
+
+		if (facesContext.getExternalContext().getRequest() instanceof HttpServletRequest) {
+			HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		}
+
 		if (viewRootId.startsWith(RESOURCE_LOADER_VIEW_ID)) {
-			//If viewRootId starts with RESOURCE_LOADER_VIEW_ID, we are assuming that we are
-			//loading resources
-			String resourceName = viewRootId.substring(RESOURCE_LOADER_VIEW_ID.length()); //remove prefix
-			while (!resourceName.endsWith(".js")) { //Process JavaScript file
+			// If viewRootId starts with RESOURCE_LOADER_VIEW_ID, we are
+			// assuming that we are
+			// loading resources
+			String resourceName = viewRootId.substring(RESOURCE_LOADER_VIEW_ID.length()); // remove
+																							// prefix
+			while (!fileEndsWithLegalCharacters(resourceName)) { // Process
+																	// JavaScript
+																	// and CSS
+																	// files
 				int endPoint = resourceName.lastIndexOf('.');
 				if (endPoint == -1) {
 					return;
 				}
 				resourceName = resourceName.substring(0, endPoint);
 			}
-			//Serve JavaScript file
+			// Serve JavaScript file
 			serveResource(facesContext, resourceName);
-		}		
+		}
+	}
+
+	private boolean fileEndsWithLegalCharacters(String filename) {
+		boolean correctEnding = filename.endsWith(".js") || filename.endsWith(".css") || filename.endsWith(".png");
+		return correctEnding;
 	}
 
 	private void serveResource(FacesContext facesContext, String resourceName) {
@@ -144,6 +179,8 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			contentType = "image/jpeg";
 		else if (resourceType.equals("gif"))
 			contentType = "image/gif";
+		else if (resourceType.equals("png"))
+			contentType = "image/png";
 
 		return contentType;
 	}
