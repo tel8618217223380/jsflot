@@ -55,4 +55,8 @@ public class XYDataSetCollection {
 	public int size() {
 		return dataCollection.size();
 	}
+	
+	public int indexOf(XYDataList list) {
+		return dataCollection.indexOf(list);
+	}
 }
