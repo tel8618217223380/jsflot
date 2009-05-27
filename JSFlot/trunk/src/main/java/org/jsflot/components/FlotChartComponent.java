@@ -30,7 +30,7 @@ import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 
-public class FlotChartComponent extends UIInput implements JSFlotAjaxInterface {
+public class FlotChartComponent extends UIInput {
 
 	@Override
 	public String getFamily() {
@@ -58,17 +58,5 @@ public class FlotChartComponent extends UIInput implements JSFlotAjaxInterface {
 			context.renderResponse();
 			throw re;
 		}
-	}
-	
-	public void handleAjaxRequest(FacesContext context, JSFlotAjaxInterface component) {
-		// TODO Auto-generated method stub
-		JSFlotAjaxRendererInterface renderer = (JSFlotAjaxRendererInterface)this.getRenderer(context);
-		renderer.handleAjaxRequest(context, component);
-		
-	}
-	
-	public void handleAjaxDecode(FacesContext context, JSFlotAjaxInterface component) {
-		JSFlotAjaxRendererInterface renderer = (JSFlotAjaxRendererInterface)this.getRenderer(context);
-		renderer.handleAjaxDecode(context, component);
 	}
 }

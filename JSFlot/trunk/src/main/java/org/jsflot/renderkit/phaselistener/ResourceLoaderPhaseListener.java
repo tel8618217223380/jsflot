@@ -22,29 +22,20 @@ THE SOFTWARE.
 
 package org.jsflot.renderkit.phaselistener;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.faces.component.ContextCallback;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
-import javax.naming.Context;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.jsflot.components.ComponentRendererUtil;
-import org.jsflot.components.JSFlotAjaxInterface;
 
 public class ResourceLoaderPhaseListener implements PhaseListener {
 

@@ -46,7 +46,7 @@ import org.jsflot.xydata.XYDataSetCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FlotChartRenderer extends Renderer implements JSFlotAjaxRendererInterface {
+public class FlotChartRenderer extends Renderer {
 
 	private static final Logger log = Logger.getLogger(FlotChartRenderer.class.getName());
 	
