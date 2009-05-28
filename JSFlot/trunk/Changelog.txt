@@ -2,6 +2,7 @@ Version 0.2.0 Drag and Drop Support
 - Added support for dragging the X-axis and triggering a ValueChangeEvent with the number of X-axis values dragged. 
 - Added AJAX support for valueChangeListener, as well as re-drawing of the chart based on the result of the valueChangedEvent
 - Added JavaScript library blackbird Javascript library for Javascript Debugging of JSFlot.  
+- Updated to Flotr revision 123.
 
 Version 0.1.6 
 - X and Y axis labels and titles can be rotated, specified in degrees.

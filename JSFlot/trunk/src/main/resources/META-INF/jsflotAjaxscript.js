@@ -62,7 +62,7 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 			parameters: params,
 			onSuccess: function(transport) {
 				log.debug("XHR successful.");
-				JSFlot.AJAX.processXHRResponse(transport);
+				JSFlot.AJAX.processXHRResponse(transport, options._rerenderID);
 			},
 
 
@@ -72,18 +72,18 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 	}
 }
 
-JSFlot.AJAX.processXHRResponse = function(transport) {
+JSFlot.AJAX.processXHRResponse = function(transport, rerenderId) {
 	var ajaxResponse = Try.these(
 		function() { return new DOMParser().parseFromString(transport.responseText, 'text/xml'); },
 		function() { var xmldom = new ActiveXObject('Microsoft.XMLDOM'); xmldom.loadXML(transport.responseText); return xmldom; }
 	);
 
 	log.debug('looking for the enclosingDiv');
-	var flotchartdiv = ajaxResponse.getElementById('valueTimeChart_enclosingDiv');
+	var flotchartdiv = ajaxResponse.getElementById(rerenderId);
 	log.debug("Found: " + flotchartdiv);
 	
 	log.debug('looked for the enclosingDiv');
-	$('valueTimeChart_enclosingDiv').update(flotchartdiv.innerHTML);
+	$(rerenderId).update(flotchartdiv.innerHTML);
 	
 	//log.debug("enclosingDiv: " + flotchartdivcontents);
 	
@@ -117,10 +117,11 @@ JSFlot.AJAXQuery.prototype = {
     _pageBase: window.location.protocol + "//" + window.location.host
 }
 
-JSFlot.Options = function(clientId, componentValue, flotContainerId) {
+JSFlot.Options = function(clientId, componentValue, flotContainerId, rerenderId) {
 	this._clientId = clientId;
 	this._componentValue = componentValue;
 	this._flotContainerID = flotContainerId;
+	this._rerenderID = rerenderId;
 };
 
 JSFlot.Options.prototype = {

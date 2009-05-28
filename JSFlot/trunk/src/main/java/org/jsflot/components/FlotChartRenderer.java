@@ -77,36 +77,11 @@ public class FlotChartRenderer extends Renderer {
 
 	@Override
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
 		String clientId = component.getClientId(context);
 		String id = (String) get(component, context, "id");
 		if (id == null) {
 			id = "testID";
 		}
-		component.setId(id);
-
-		String viewState = request.getParameter("javax.faces.ViewState");
-		String formId = request.getParameter("managerForm");
-		
-		
-		String ajaxValue = null;
-		String componentId = (String) request.getParameter("component-id");
-		if (componentId != null && componentId.equals("FlotChartComponent")) {
-			log.info("Request is for this component");
-			String itemId = (String) request.getParameter("item-id");
-			if (itemId != null && itemId.equals(id)) {
-				log.info("itemId matches this components' ID");
-				ajaxValue = (String) request.getParameter("item-value");
-			}
-		}
-
-		if (ajaxValue != null) {
-			log.info("AjaxValue is: " + ajaxValue + " triggering ValueChangeEvent");
-			//component.queueEvent(new ValueChangeEvent(component, 0, ajaxValue));
-			//setMethodBinding(component, "chartDraggedListener", ajaxValue, new Class[] {ActionEvent.class});
-			
-		}	
 
 		Boolean rendered = (Boolean) get(component, context, "rendered");
 		if (rendered == null) {
@@ -117,7 +92,6 @@ public class FlotChartRenderer extends Renderer {
 			ResponseWriter writer = context.getResponseWriter();
 			// renderScriptOnce(context, component, writer);
 			writeComponentContents(context, writer, component);
-
 		}
 	}
 	
@@ -150,33 +124,7 @@ public class FlotChartRenderer extends Renderer {
 		writer.write(functionBody);
 		writer.endElement("script");
 		writer.write("\n");
-
-		StringBuilder observeFunctionBodyBuilder = new StringBuilder();
-		observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:selectionSequence', function(evt){\n");
-		observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
-		observeFunctionBodyBuilder.append("\tvar areaMin = parseInt(area.firstx);\n");
-		observeFunctionBodyBuilder.append("\tvar areaMax = parseInt(area.secondx);\n");
-		observeFunctionBodyBuilder.append("\tvar areaRange = areaMax - areaMin;\n");
-
-		String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
-		if (facesPrefix == null) {
-			facesPrefix = "";
-		}
-		String facesSuffix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesSuffix");
-		if (facesSuffix == null) {
-			facesSuffix = "";
-		}
-
-		String url = context.getExternalContext().getRequestContextPath() + facesPrefix + "/index.jsf" + facesSuffix;
-
-		observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
-		 
-		observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "');");
-		observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url + "', options);\n");
-		// observeFunctionBodyBuilder.append("\talert('first: ' + areaMin + ' second: ' + areaMax + ' range: ' + document.getElementById('"
-		// + id + "_hiddenValue').value, '" + url + "');\n");
-		observeFunctionBodyBuilder.append("});");
-
+		
 		writer.startElement("input", component);
 		writer.writeAttribute("type", "hidden", null);
 		writer.writeAttribute("id", id + "_hiddenValue", null);
@@ -184,14 +132,9 @@ public class FlotChartRenderer extends Renderer {
 		// + id + "_hiddenValue', this.value);", null);
 		writer.writeAttribute("value", "", null);
 		writer.endElement("input");
-
-		writer.startElement("script", component);
-		writer.writeAttribute("id", id + "_selection", null);
-		writer.writeAttribute("language", "javascript", null);
-		writer.writeAttribute("type", "text/javascript", null);
-		writer.write(observeFunctionBodyBuilder.toString());
-		writer.endElement("script");
 		writer.write("\n");
+
+		writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, component);
 
 		writer.endElement("div");
 		writer.write("\n");
@@ -204,11 +147,48 @@ public class FlotChartRenderer extends Renderer {
 		else
 			return component.getAttributes().get(name);
 	}
+	
+	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, UIComponent component)  throws IOException {
+		if (chartDraggable != null && chartDraggable) {
+			//If the chart is draggable, include JavaScript to listen to the drag event and to fire off AJAX request to update the chart. 
+			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
+			observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:select', function(evt){\n");
+			observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
+			observeFunctionBodyBuilder.append("\tvar areaMin = parseInt(area.xfirst);\n");
+			observeFunctionBodyBuilder.append("\tvar areaMax = parseInt(area.xsecond);\n");
+			observeFunctionBodyBuilder.append("\tvar areaRange = areaMax - areaMin;\n");
+	
+			String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
+			if (facesPrefix == null) {
+				facesPrefix = "";
+			}
+			String facesSuffix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesSuffix");
+			if (facesSuffix == null) {
+				facesSuffix = "";
+			}
+	
+			String pathinfo = context.getExternalContext().getRequestPathInfo();
+			String url = context.getExternalContext().getRequestContextPath() + facesPrefix + pathinfo + facesSuffix;
+	
+			//Fire off AJAX request
+			observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
+			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "', '" + id + "_enclosingDiv');");
+			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url + "', options);\n");
+			observeFunctionBodyBuilder.append("});");
+	
+			writer.startElement("script", component);
+			writer.writeAttribute("id", id + "_selection", null);
+			writer.writeAttribute("language", "javascript", null);
+			writer.writeAttribute("type", "text/javascript", null);
+			writer.write(observeFunctionBodyBuilder.toString());
+			writer.endElement("script");
+			writer.write("\n");
+		}
+	}
 
 	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, FlotChartRendererData chartData) {
 		StringBuilder sb = new StringBuilder();
-		int index = 0;
-
+		
 		// Calculate the bar width to support clustered bar charts
 		double barWidth = 0.5d;
 		double offset = 0d;
@@ -265,6 +245,7 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setXaxisTitleRotation(get(component, context, "xaxisTitleRotation"));
 		chartData.setYaxisLabelRotation(get(component, context, "yaxisLabelRotation"));
 		chartData.setYaxisTitleRotation(get(component, context, "yaxisTitleRotation"));
+		chartData.setChartDraggable(get(component, context, "chartDraggable"));
 		//Set ChartDraggedListener
 		String chartDraggedListener = (String)get(component, context, "chartDraggedListener");
 		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] {ActionEvent.class});
@@ -286,9 +267,11 @@ public class FlotChartRenderer extends Renderer {
 
 			chartOptions.put("HtmlText", false);
 
-			JSONObject selectionOptions = new JSONObject();
-			selectionOptions.put("mode", "'x'");
-			chartOptions.put("selection", selectionOptions);
+			if (chartData.getChartDraggable() != null && chartData.getChartDraggable().booleanValue()) {
+				JSONObject selectionOptions = new JSONObject();
+				selectionOptions.put("mode", "'x'");
+				chartOptions.put("selection", selectionOptions);
+			}
 
 			if (chartData.getShowTooltip().booleanValue()) {
 				JSONObject mouseOptions = new JSONObject();

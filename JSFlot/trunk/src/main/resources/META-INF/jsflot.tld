@@ -247,7 +247,13 @@
 				<type>java.lang.String</type>
 			</deferred-value>
 		</attribute>
-		
+		<attribute>
+			<description>Specifies if the chart is draggable</description>
+			<name>chartDraggable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
 	</tag>
 	<tag>
 		<description>

@@ -1,4 +1,4 @@
-/* $Id: flotr.js 114 2009-05-07 15:19:04Z fabien.menager $ */
+/* $Id: flotr.js 123 2009-05-24 20:35:26Z fabien.menager $ */
 
 /** 
  * @projectDescription Flotr is a javascript plotting library based on the Prototype Javascript Framework.
@@ -15,12 +15,13 @@ var Flotr = {
 	 * to add your own type.
 	 */
 	_registeredTypes:{
-		'lines': 'drawSeriesLines',
-		'points': 'drawSeriesPoints',
-		'bars': 'drawSeriesBars',
-		'candles': 'drawSeriesCandles',
-		'pie': 'drawSeriesPie',
-		'markers': 'drawSeriesMarkers'
+		lines:   'drawSeriesLines',
+		points:  'drawSeriesPoints',
+		bars:    'drawSeriesBars',
+		candles: 'drawSeriesCandles',
+		pie:     'drawSeriesPie',
+		markers: 'drawSeriesMarkers',
+		radar:   'drawSeriesRadar'
 	},
 	/**
 	 * Can be used to register your own chart type. Default types are 'lines', 'points' and 'bars'.
@@ -54,7 +55,7 @@ var Flotr = {
 	getSeries: function(data){
 		return data.collect(function(serie){
 			var i;
-			serie = (serie.data) ? Object.clone(serie) : {'data': serie};
+			serie = (serie.data) ? Object.clone(serie) : {data: serie};
 			for (i = serie.data.length-1; i > -1; --i) {
 				serie.data[i][1] = (serie.data[i][1] === null ? null : parseFloat(serie.data[i][1])); 
 			}
@@ -133,27 +134,28 @@ var Flotr = {
 	 * Utility function to convert file size values in bytes to kB, MB, ...
 	 * @param value {Number} - The value to convert
 	 * @param precision {Number} - The number of digits after the comma (default: 2)
-	 * @param base {Number} - The base (default: 1024)
+	 * @param base {Number} - The base (default: 1000)
 	 */
-	convertToBytes: function(value, precision, base){
+	engineeringNotation: function(value, precision, base){
 		var sizes =         ['Y','Z','E','P','T','G','M','k',''],
-		    fractionSizes = ['y','z','a','f','p','n','µ','m',''], 
-				total = sizes.length;
-		    
-		base = base || 1024;
-		precision = precision || 2;
+		    fractionSizes = ['y','z','a','f','p','n','µ','m',''],
+		    total = sizes.length;
 
-    if (value == 0) return 0;
-		
-    if (value > 1) {
-			while (total-- && (value > 1)) value /= base;
+		base = base || 1000;
+		precision = Math.pow(10, precision || 2);
+
+		if (value == 0) return 0;
+
+		if (value > 1) {
+			while (total-- && (value >= base)) value /= base;
 		}
 		else {
 			sizes = fractionSizes;
 			total = sizes.length;
 			while (total-- && (value < 1)) value *= base;
 		}
-    return (Math.round(value * precision) / precision) + sizes[total];
+
+		return (Math.round(value * precision) / precision) + sizes[total];
 	},
 	/**
 	 * Returns the magnitude of the input value.
@@ -169,63 +171,8 @@ var Flotr = {
 	toRad: function(angle){
 		return -angle * (Math.PI/180);
 	},
-	/**
-	 * Parses a color string and returns a corresponding Color.
-	 * @param {String, Color} str - string thats representing a color
-	 * @return {Color} returns a Color object or false
-	 */
-	parseColor: function(str){
-		if (str instanceof Flotr.Color) return str;
-		
-		var result, Color = Flotr.Color;
-
-		// rgb(num,num,num)
-		if((result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(str)))
-			return new Color(parseInt(result[1]), parseInt(result[2]), parseInt(result[3]));
-	
-		// rgba(num,num,num,num)
-		if((result = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(str)))
-			return new Color(parseInt(result[1]), parseInt(result[2]), parseInt(result[3]), parseFloat(result[4]));
-			
-		// rgb(num%,num%,num%)
-		if((result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(str)))
-			return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55);
-	
-		// rgba(num%,num%,num%,num)
-		if((result = /rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(str)))
-			return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55, parseFloat(result[4]));
-			
-		// #a0b1c2
-		if((result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(str)))
-			return new Color(parseInt(result[1],16), parseInt(result[2],16), parseInt(result[3],16));
-	
-		// #fff
-		if((result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(str)))
-			return new Color(parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16));
-
-		// Otherwise, we're most likely dealing with a named color.
-		var name = str.strip().toLowerCase();
-		if(name == 'transparent'){
-			return new Color(255, 255, 255, 0);
-		}
-		return ((result = Color.lookupColors[name])) ? new Color(result[0], result[1], result[2]) : false;
-	},
-	/**
-	 * Extracts the background-color of the passed element.
-	 * @param {Element} element - The element from what the background color is extracted
-	 * @return {String} color string
-	 */
-	extractColor: function(element){
-		var color;
-		// Loop until we find an element with a background color and stop when we hit the body element. 
-		do {
-			color = element.getStyle('background-color').toLowerCase();
-			if(!(color == '' || color == 'transparent')) break;
-			element = element.up(0);
-		} while(!element.nodeName.match(/^body$/i));
-
-		// Catch Safari's way of signaling transparent.
-		return (color == 'rgba(0, 0, 0, 0)') ? 'transparent' : color;
+	floorInBase: function(n, base) {
+		return base * Math.floor(n / base);
 	}
 };
 /**
@@ -310,7 +257,9 @@ Flotr.Graph = Class.create({
 				min: null,             // => min. value to show, null means set automatically
 				max: null,             // => max. value to show, null means set automatically
 				autoscaleMargin: 0,    // => margin in % to add if auto-setting min/max
-				color: null
+				color: null,           // => color of the ticks
+				mode: 'normal',        // => can be 'time' or 'normal'
+				timeFormat: null
 			},
 			x2axis: {},
 			yaxis: {
@@ -336,7 +285,7 @@ Flotr.Graph = Class.create({
 				lineWidth: 2,          // => line width in pixels
 				fill: true,            // => true to fill the points with a color, false for (transparent) no fill
 				fillColor: '#FFFFFF',  // => fill color
-				fillOpacity: 0.4
+				fillOpacity: 0.4       // => opacity of color inside the points
 			},
 			lines: {
 				show: false,           // => setting to true will show lines, false will hide
@@ -352,8 +301,8 @@ Flotr.Graph = Class.create({
 				fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
 				fillColor: null,       // => fill color
 				fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
-				horizontal: false,
-				stacked: false,
+				horizontal: false,     // => horizontal bars (x and y inverted) @todo: needs fix
+				stacked: false,        // => stacked bar charts
 				centered: true         // => center the bars to their x axis value
 			},
 			candles: {
@@ -382,14 +331,21 @@ Flotr.Graph = Class.create({
 				pie3DspliceThickness: 20
 			},
 			markers: {
-				show: false,
-				lineWidth: 1, 
-				fill: false,
+				show: false,           // => setting to true will show markers, false will hide
+				lineWidth: 1,          // => line width of the rectangle around the marker
+				fill: false,           // => fill or not the marekers' rectangles
 				fillColor: "#FFFFFF",  // => fill color
-				fillOpacity: 0.4,
-				stroke: false,
+				fillOpacity: 0.4,      // => fill opacity
+				stroke: false,         // => draw the rectangle around the markers
 				position: 'ct',        // => the markers position (vertical align: b, m, t, horizontal align: l, c, r)
 				labelFormatter: Flotr.defaultMarkerFormatter
+			},
+			radar: {
+				show: false,           // => setting to true will show radar chart, false will hide
+				lineWidth: 2,          // => line width in pixels
+				fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+				fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+				radiusRatio: 0.90      // => ratio of the radar, against the plot size
 			},
 			grid: {
 				color: '#545454',      // => primary color used for outline and labels
@@ -398,7 +354,8 @@ Flotr.Graph = Class.create({
 				labelMargin: 3,        // => margin in pixels
 				verticalLines: true,   // => whether to show gridlines in vertical direction
 				horizontalLines: true, // => whether to show gridlines in horizontal direction
-				outlineWidth: 2        // => width of the grid outline/border in pixels
+				outlineWidth: 2,       // => width of the grid outline/border in pixels
+				circular: false        // => if set to true, the grid will be circular, must be used when radars are drawn
 			},
 			selection: {
 				mode: null,            // => one of null, 'x', 'y' or 'xy'
@@ -420,18 +377,18 @@ Flotr.Graph = Class.create({
 				trackDecimals: 1,      // => decimals for the track values
 				sensibility: 2,        // => the lower this number, the more precise you have to aim to show a value
 				radius: 3,             // => radius of the track point
- 				fillColor: null,       // => color to fill our select bar with only applies to bar and similar graphs (only bars for now)
+				fillColor: null,       // => color to fill our select bar with only applies to bar and similar graphs (only bars for now)
 				fillOpacity: 0.4       // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill 
 			},
-			shadowSize: 4,             // => size of the 'fake' shadow
-			defaultType: 'lines',      // => default series type
-			HtmlText: true,            // => wether to draw the text using HTML or on the canvas
-			fontSize: 7.5,             // => canvas' text font size
+			shadowSize: 4,           // => size of the 'fake' shadow
+			defaultType: 'lines',    // => default series type
+			HtmlText: true,          // => wether to draw the text using HTML or on the canvas
+			fontSize: 7.5,           // => canvas' text font size
 			spreadsheet: {
 				show: false,           // => show the data grid using two tabs
 				tabGraphLabel: 'Graph',
 				tabDataLabel: 'Data',
-				toolbarDownload: 'Download CSV', // @todo: add language support
+				toolbarDownload: 'Download CSV', // @todo: add better language support
 				toolbarSelectAll: 'Select all',
 				csvFileSeparator: ','
 			}
@@ -465,7 +422,7 @@ Flotr.Graph = Class.create({
 			if(c != null){
 				--neededColors;
 				if(Object.isNumber(c)) assignedColors.push(c);
-				else usedColors.push(Flotr.parseColor(c));
+				else usedColors.push(Flotr.Color.parse(c));
 			}
 		}
 		
@@ -475,7 +432,7 @@ Flotr.Graph = Class.create({
 
 		// Generate needed number of colors.
 		for(i = 0; colors.length < neededColors;){
-			c = (oc.length == i) ? new Flotr.Color(100, 100, 100) : Flotr.parseColor(oc[i]);
+			c = (oc.length == i) ? new Flotr.Color(100, 100, 100) : Flotr.Color.parse(oc[i]);
 			
 			// Make sure each serie gets a different color.
 			var sign = variation % 2 == 1 ? -1 : 1;
@@ -514,15 +471,11 @@ Flotr.Graph = Class.create({
 			else if (s.yaxis == 2) s.yaxis = this.axes.y2;
 			
 			// Apply missing options to the series.
-			s.lines   = Object.extend(Object.clone(this.options.lines), s.lines);
-			s.points  = Object.extend(Object.clone(this.options.points), s.points);
-			s.bars    = Object.extend(Object.clone(this.options.bars), s.bars);
-			s.candles = Object.extend(Object.clone(this.options.candles), s.candles);
-			s.pie     = Object.extend(Object.clone(this.options.pie), s.pie);
-			s.markers = Object.extend(Object.clone(this.options.markers), s.markers);
+			$H(Flotr._registeredTypes).each(function(t){
+				s[t.key] = Object.extend(Object.clone(this.options[t.key]), s[t.key]);
+			}, this);
 			s.mouse   = Object.extend(Object.clone(this.options.mouse), s.mouse);
 			
-			if(s.markers.show) s.mouse.track = false;
 			if(s.shadowSize == null) s.shadowSize = this.options.shadowSize;
 		}
 	},
@@ -547,7 +500,7 @@ Flotr.Graph = Class.create({
 
 		this.canvasWidth = el.getWidth();
 		this.canvasHeight = el.getHeight();
-		size = {'width': this.canvasWidth, 'height': this.canvasHeight};
+		size = {width: this.canvasWidth, height: this.canvasHeight};
 
 		if(this.canvasWidth <= 0 || this.canvasHeight <= 0){
 			throw 'Invalid dimensions for plot, width = ' + this.canvasWidth + ', height = ' + this.canvasHeight;
@@ -1020,6 +973,7 @@ Flotr.Graph = Class.create({
 	 * Find every values of the x axes
 	 */
 	findXAxesValues: function(){
+		var i, j, s;
 		for(i = this.series.length-1; i > -1 ; --i){
 			s = this.series[i];
 			s.xaxis.values = s.xaxis.values || {};
@@ -1057,21 +1011,46 @@ Flotr.Graph = Class.create({
 			}
 		}
 		else {
-			// Round to nearest multiple of tick size.
-			var start = axis.tickSize * Math.ceil(axis.min / axis.tickSize),
-			    decimals;
-			
-			// Then store all possible ticks.
-			for(i = 0; start + i * axis.tickSize <= axis.max; ++i){
-				v = start + i * axis.tickSize;
+			if (o.mode == 'time') {
+				var tu = Flotr.Date.timeUnits,
+				    spec = Flotr.Date.spec,
+						delta = (axis.max - axis.min) / axis.options.noTicks,
+						size, unit;
+
+				for (i = 0; i < spec.length - 1; ++i) {
+					var d = spec[i][0] * tu[spec[i][1]];
+					if (delta < (d + spec[i+1][0] * tu[spec[i+1][1]]) / 2 && d >= axis.tickSize)
+						break;
+				}
+				size = spec[i][0];
+				unit = spec[i][1];
 				
-				// Round (this is always needed to fix numerical instability).
-				decimals = o.tickDecimals;
-				if(decimals == null) decimals = 1 - Math.floor(Math.log(axis.tickSize) / Math.LN10);
-				if(decimals < 0) decimals = 0;
+				// special-case the possibility of several years
+				if (unit == "year") {
+					size = Flotr.getTickSize(axis.options.noTicks*tu.year, axis.min, axis.max, 0);
+				}
 				
-				v = v.toFixed(decimals);
-				axis.ticks.push({ v: v, label: o.tickFormatter(v) });
+				axis.tickSize = size;
+				axis.tickUnit = unit;
+				axis.ticks = Flotr.Date.generator(axis);
+			}
+			else {
+				// Round to nearest multiple of tick size.
+				var start = axis.tickSize * Math.ceil(axis.min / axis.tickSize),
+				    decimals;
+				
+				// Then store all possible ticks.
+				for(i = 0; start + i * axis.tickSize <= axis.max; ++i){
+					v = start + i * axis.tickSize;
+					
+					// Round (this is always needed to fix numerical instability).
+					decimals = o.tickDecimals;
+					if(decimals == null) decimals = 1 - Math.floor(Math.log(axis.tickSize) / Math.LN10);
+					if(decimals < 0) decimals = 0;
+					
+					v = v.toFixed(decimals);
+					axis.ticks.push({ v: v, label: o.tickFormatter(v) });
+				}
 			}
 		}
 	},
@@ -1125,17 +1104,17 @@ Flotr.Graph = Class.create({
 		}
 		
 		var p = this.plotOffset;
-		p.bottom += (x.options.showLabels ?  (x.maxLabel.height  + margin) : 0) + 
-		            (x.options.title ?       (x.titleSize.height + margin) : 0) + maxOutset;
+		p.bottom += (options.grid.circular ? 0 : (x.options.showLabels ?  (x.maxLabel.height + margin) : 0)) + 
+		            (x.options.title ? (x.titleSize.height + margin) : 0) + maxOutset;
 		
-		p.top    += (x2.options.showLabels ? (x2.maxLabel.height  + margin) : 0) + 
-		            (x2.options.title ?      (x2.titleSize.height + margin) : 0) + this.subtitleHeight + this.titleHeight + maxOutset;
+		p.top    += (options.grid.circular ? 0 : (x2.options.showLabels ? (x2.maxLabel.height + margin) : 0)) + 
+		            (x2.options.title ? (x2.titleSize.height + margin) : 0) + this.subtitleHeight + this.titleHeight + maxOutset;
     
-		p.left   += (y.options.showLabels ?  (y.maxLabel.width  + margin) : 0) + 
-		            (y.options.title ?       (y.titleSize.width + margin) : 0) + maxOutset;
+		p.left   += (options.grid.circular ? 0 : (y.options.showLabels ?  (y.maxLabel.width + margin) : 0)) + 
+		            (y.options.title ? (y.titleSize.width + margin) : 0) + maxOutset;
 		
-		p.right  += (y2.options.showLabels ? (y2.maxLabel.width  + margin) : 0) + 
-		            (y2.options.title ?      (y2.titleSize.width + margin) : 0) + maxOutset;
+		p.right  += (options.grid.circular ? 0 : (y2.options.showLabels ? (y2.maxLabel.width + margin) : 0)) + 
+		            (y2.options.title ? (y2.titleSize.width + margin) : 0) + maxOutset;
     
 		p.top = Math.floor(p.top); // In order the outline not to be blured
     
@@ -1175,7 +1154,7 @@ Flotr.Graph = Class.create({
 		return (x - axis.min) * axis.scale;
 	},
 	/**
-	 * Translates absolute vertical x coordinates to relative coordinates.
+	 * Translates absolute vertical y coordinates to relative coordinates.
 	 * @param {Integer} y - absolute integer y coordinate
 	 * @param {Object} axis - the reference axis
 	 * @return {Integer} translated relative y coordinate
@@ -1194,51 +1173,101 @@ Flotr.Graph = Class.create({
 			this.el.fire('flotr:beforegrid', [this.axes.x, this.axes.y, o, this]);
 		}
 		ctx.save();
-		ctx.translate(this.plotOffset.left, this.plotOffset.top);
-
-		// Draw grid background, if present in options.
-		if(o.grid.backgroundColor != null){
-			ctx.fillStyle = o.grid.backgroundColor;
-			ctx.fillRect(0, 0, this.plotWidth, this.plotHeight);
-		}
-		
-		// Draw grid lines in vertical direction.
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = o.grid.tickColor;
-		ctx.beginPath();
-		if(o.grid.verticalLines){
-			for(var i = 0; i < this.axes.x.ticks.length; ++i){
-				v = this.axes.x.ticks[i].v;
-				// Don't show lines on upper and lower bounds.
-				if ((v == this.axes.x.min || v == this.axes.x.max) && o.grid.outlineWidth != 0)
-					continue;
+		
+		if (o.grid.circular) {
+			ctx.translate(this.plotOffset.left+this.plotWidth/2, this.plotOffset.top+this.plotHeight/2);
+			var radius = Math.min(this.plotHeight, this.plotWidth)*o.radar.radiusRatio/2,
+			    sides = this.axes.x.ticks.length,
+					coeff = 2*(Math.PI/sides),
+					angle = -Math.PI/2;
+			
+			// Draw grid lines in vertical direction.
+			ctx.beginPath();
+			
+			if(o.grid.horizontalLines){
+				for(var i = 0; i < this.axes.y.ticks.length; ++i){
+					v = this.axes.y.ticks[i].v;
+					var ratio = v / this.axes.y.max;
+					
+					for(var j = 0; j <= sides; ++j){
+						ctx[j == 0 ? 'moveTo' : 'lineTo'](Math.cos(j*coeff+angle)*radius*ratio, Math.sin(j*coeff+angle)*radius*ratio);
+					}
+					//ctx.moveTo(radius*ratio, 0);
+					//ctx.arc(0, 0, radius*ratio, 0, Math.PI*2, true);
+				}
+			}
+			
+			if(o.grid.verticalLines){
+				for(var i = 0; i < sides; ++i){
+					ctx.moveTo(0, 0);
+					ctx.lineTo(Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+				}
+			}
+			ctx.stroke();
+			
+			// Draw axis/grid border.
+			if(o.grid.outlineWidth != 0) {
+				ctx.beginPath();
+				ctx.lineWidth = o.grid.outlineWidth;
+				ctx.strokeStyle = o.grid.color;
+				ctx.lineJoin = 'round';
+				
+				for(var i = 0; i <= sides; ++i){
+					ctx[i == 0 ? 'moveTo' : 'lineTo'](Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+				}
+				//ctx.arc(0, 0, radius, 0, Math.PI*2, true);
+
+				ctx.stroke();
+			}
+		}
+		else {
+			ctx.translate(this.plotOffset.left, this.plotOffset.top);
 	
-				ctx.moveTo(Math.floor(this.tHoz(v)) + ctx.lineWidth/2, 0);
-				ctx.lineTo(Math.floor(this.tHoz(v)) + ctx.lineWidth/2, this.plotHeight);
+			// Draw grid background, if present in options.
+			if(o.grid.backgroundColor != null){
+				ctx.fillStyle = o.grid.backgroundColor;
+				ctx.fillRect(0, 0, this.plotWidth, this.plotHeight);
+			}
+			
+			// Draw grid lines in vertical direction.
+			ctx.beginPath();
+			if(o.grid.verticalLines){
+				for(var i = 0; i < this.axes.x.ticks.length; ++i){
+					v = this.axes.x.ticks[i].v;
+					// Don't show lines on upper and lower bounds.
+					if ((v == this.axes.x.min || v == this.axes.x.max) && o.grid.outlineWidth != 0)
+						continue;
+		
+					ctx.moveTo(Math.floor(this.tHoz(v)) + ctx.lineWidth/2, 0);
+					ctx.lineTo(Math.floor(this.tHoz(v)) + ctx.lineWidth/2, this.plotHeight);
+				}
+			}
+			
+			// Draw grid lines in horizontal direction.
+			if(o.grid.horizontalLines){
+				for(var j = 0; j < this.axes.y.ticks.length; ++j){
+					v = this.axes.y.ticks[j].v;
+					// Don't show lines on upper and lower bounds.
+					if ((v == this.axes.y.min || v == this.axes.y.max) && o.grid.outlineWidth != 0)
+						continue;
+		
+					ctx.moveTo(0, Math.floor(this.tVert(v)) + ctx.lineWidth/2);
+					ctx.lineTo(this.plotWidth, Math.floor(this.tVert(v)) + ctx.lineWidth/2);
+				}
+			}
+			ctx.stroke();
+			
+			// Draw axis/grid border.
+			if(o.grid.outlineWidth != 0) {
+				ctx.lineWidth = o.grid.outlineWidth;
+				ctx.strokeStyle = o.grid.color;
+				ctx.lineJoin = 'round';
+				ctx.strokeRect(0, 0, this.plotWidth, this.plotHeight);
 			}
 		}
 		
-		// Draw grid lines in horizontal direction.
-		if(o.grid.horizontalLines){
-			for(var j = 0; j < this.axes.y.ticks.length; ++j){
-				v = this.axes.y.ticks[j].v;
-				// Don't show lines on upper and lower bounds.
-				if ((v == this.axes.y.min || v == this.axes.y.max) && o.grid.outlineWidth != 0)
-					continue;
-	
-				ctx.moveTo(0, Math.floor(this.tVert(v)) + ctx.lineWidth/2);
-				ctx.lineTo(this.plotWidth, Math.floor(this.tVert(v)) + ctx.lineWidth/2);
-			}
-		}
-		ctx.stroke();
-		
-		// Draw axis/grid border.
-		if(o.grid.outlineWidth != 0) {
-			ctx.lineWidth = o.grid.outlineWidth;
-			ctx.strokeStyle = o.grid.color;
-			ctx.lineJoin = 'round';
-			ctx.strokeRect(0, 0, this.plotWidth, this.plotHeight);
-		}
 		ctx.restore();
 		if(o.grid.verticalLines || o.grid.horizontalLines){
 			this.el.fire('flotr:aftergrid', [this.axes.x, this.axes.y, o, this]);
@@ -1250,8 +1279,8 @@ Flotr.Graph = Class.create({
 	drawLabels: function(){		
 		// Construct fixed width label boxes, which can be styled easily. 
 		var noLabels = 0, axis,
-			xBoxWidth, i, html, tick,
-			options = this.options,
+		    xBoxWidth, i, html, tick,
+		    options = this.options,
 		    ctx = this.ctx,
 		    a = this.axes;
 		
@@ -1261,6 +1290,54 @@ Flotr.Graph = Class.create({
 			}
 		}
 		xBoxWidth = this.plotWidth / noLabels;
+		
+		if (options.grid.circular) {
+			ctx.save();
+			ctx.translate(this.plotOffset.left+this.plotWidth/2, this.plotOffset.top+this.plotHeight/2);
+			var radius = this.plotHeight*options.radar.radiusRatio/2 + options.fontSize,
+			    sides = this.axes.x.ticks.length,
+					coeff = 2*(Math.PI/sides),
+					angle = -Math.PI/2;
+			
+			var style = {
+				size: options.fontSize
+			};
+
+			// Add x labels.
+			axis = a.x;
+			style.color = axis.options.color || options.grid.color;
+			for(i = 0; i < axis.ticks.length && axis.options.showLabels; ++i){
+				tick = axis.ticks[i];
+				tick.label += '';
+				if(!tick.label || tick.label.length == 0) continue;
+				
+				var x = Math.cos(i*coeff+angle) * radius, 
+				    y = Math.sin(i*coeff+angle) * radius;
+						
+				style.angle = Flotr.toRad(axis.options.labelsAngle);
+				style.valign = 'm';
+				style.halign = (Math.abs(x) < 0.1 ? 'c' : (x < 0 ? 'r' : 'l'));
+
+				ctx.drawText(tick.label, x, y, style);
+			}
+			
+			// Add y labels.
+			axis = a.y;
+			style.color = axis.options.color || options.grid.color;
+			for(i = 0; i < axis.ticks.length && axis.options.showLabels; ++i){
+				tick = axis.ticks[i];
+				tick.label += '';
+				if(!tick.label || tick.label.length == 0) continue;
+				
+				style.angle = Flotr.toRad(axis.options.labelsAngle);
+				style.valign = 'm';
+				style.halign = 'l';
+				
+				ctx.drawText(tick.label, 3, -(axis.ticks[i].v / axis.max) * (radius - options.fontSize), style);
+			}
+			ctx.restore();
+			return;
+		}
     
 		if (!options.HtmlText && this.textEnabled) {
 			var style = {
@@ -1352,10 +1429,7 @@ Flotr.Graph = Class.create({
 				ctx.restore();
 			}
 		} 
-		else if (a.x.options.showLabels || 
-		         a.x2.options.showLabels || 
-		         a.y.options.showLabels || 
-		         a.y2.options.showLabels) {
+		else if (a.x.options.showLabels || a.x2.options.showLabels || a.y.options.showLabels || a.y2.options.showLabels) {
 			html = ['<div style="font-size:smaller;color:' + options.grid.color + ';" class="flotr-labels">'];
 			
 			// Add x labels.
@@ -1789,7 +1863,7 @@ Flotr.Graph = Class.create({
 			lastX = Math.max(x2, x2old);
 		}
 		
-		ctx.lineTo(tHoz(lastX, xa), tVert(bottom, ya) + offset);
+		ctx.lineTo(tHoz(xa.max, xa), tVert(bottom, ya) + offset);
 		ctx.closePath();
 		ctx.fill();
 	},
@@ -1827,7 +1901,7 @@ Flotr.Graph = Class.create({
 		ctx.lineWidth = lw;
 		ctx.strokeStyle = series.color;
 		if(series.lines.fill){
-			ctx.fillStyle = series.lines.fillColor != null ? series.lines.fillColor : Flotr.parseColor(series.color).scale(null, null, null, series.lines.fillOpacity).toString();
+			ctx.fillStyle = series.lines.fillColor != null ? series.lines.fillColor : Flotr.Color.parse(series.color).scale(null, null, null, series.lines.fillOpacity).toString();
 			this.plotLineArea(series, 0);
 		}
 
@@ -1919,7 +1993,7 @@ Flotr.Graph = Class.create({
 
 		if(series.bars.fill){
 			var color = series.bars.fillColor || series.color;
-			ctx.fillStyle = Flotr.parseColor(color).scale(null, null, null, series.bars.fillOpacity).toString();
+			ctx.fillStyle = Flotr.Color.parse(color).scale(null, null, null, series.bars.fillOpacity).toString();
 		}
     
 		this.plotBars(series, bw, 0, series.bars.fill);
@@ -2113,7 +2187,7 @@ Flotr.Graph = Class.create({
 			 * Fill the candle.
 			 */
 			if(series.candles.fill && !series.candles.barcharts){
-				ctx.fillStyle = Flotr.parseColor(color).scale(null, null, null, series.candles.fillOpacity).toString();
+				ctx.fillStyle = Flotr.Color.parse(color).scale(null, null, null, series.candles.fillOpacity).toString();
 				ctx.fillRect(tHoz(left, xa), tVert(top2, ya) + offset, tHoz(right, xa) - tHoz(left, xa), tVert(bottom2, ya) - tVert(top2, ya));
 			}
 
@@ -2247,6 +2321,7 @@ Flotr.Graph = Class.create({
 				fraction: fraction,
 				x:        slice.value[0],
 				y:        value,
+				value:    value,
 				options:  slice.options,
 				series:   slice.series,
 				startAngle: 2 * angle * Math.PI,
@@ -2282,13 +2357,13 @@ Flotr.Graph = Class.create({
 			var bisection = (slice.startAngle + slice.endAngle) / 2,
 			    color = slice.series.color,
 			    fillColor = slice.options.fillColor || color,
-				xOffset = center.x + Math.cos(bisection) * slice.options.explode,
-				yOffset = center.y + Math.sin(bisection) * slice.options.explode;
+			    xOffset = center.x + Math.cos(bisection) * slice.options.explode,
+			    yOffset = center.y + Math.sin(bisection) * slice.options.explode;
 			
 			this.plotSlice(xOffset, yOffset, radius, slice.startAngle, slice.endAngle, false, vScale);
 			
 			if(series.pie.fill){
-				ctx.fillStyle = Flotr.parseColor(fillColor).scale(null, null, null, series.pie.fillOpacity).toString();
+				ctx.fillStyle = Flotr.Color.parse(fillColor).scale(null, null, null, series.pie.fillOpacity).toString();
 				ctx.fill();
 			}
 			ctx.lineWidth = lw;
@@ -2298,7 +2373,7 @@ Flotr.Graph = Class.create({
 			var label = options.pie.labelFormatter(slice),
 			    textAlignRight = (Math.cos(bisection) < 0),
 			    distX = xOffset + Math.cos(bisection) * (series.pie.explode + radius),
-				distY = yOffset + Math.sin(bisection) * (series.pie.explode + radius);
+			    distY = yOffset + Math.sin(bisection) * (series.pie.explode + radius);
 			
 			if (slice.fraction && label) {
 				if (options.HtmlText || !this.textEnabled) {
@@ -2307,7 +2382,7 @@ Flotr.Graph = Class.create({
 						divStyle += 'right:'+(this.canvasWidth - distX)+'px;text-align:right;';
 					else 
 						divStyle += 'left:'+distX+'px;text-align:left;';
-					html.push('<div style="' + divStyle + '" class="flotr-grid-label">' + label + '</div>');
+					html.push('<div style="', divStyle, '" class="flotr-grid-label">', label, '</div>');
 				}
 				else {
 					style.halign = textAlignRight ? 'r' : 'l';
@@ -2359,7 +2434,7 @@ Flotr.Graph = Class.create({
 		ctx.lineJoin = 'round';
 		ctx.lineWidth = options.lineWidth;
 		ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-		ctx.fillStyle = Flotr.parseColor(options.fillColor).scale(null, null, null, options.fillOpacity).toString();
+		ctx.fillStyle = Flotr.Color.parse(options.fillColor).scale(null, null, null, options.fillOpacity).toString();
 
 		for(var i = 0; i < data.length; ++i){
 			var x = data[i][0], xPos = tHoz(x, xa),
@@ -2398,6 +2473,49 @@ Flotr.Graph = Class.create({
     
 		ctx.drawText(label, left+margin, top+margin, {valign: 't', halign: 'l'});
 	},
+	drawSeriesRadar: function(series){
+		var ctx = this.ctx,
+		    options = this.options;;
+		
+		ctx.save();
+		ctx.translate(this.plotOffset.left+this.plotWidth/2, this.plotOffset.top+this.plotHeight/2);
+		ctx.lineWidth = series.radar.lineWidth;
+		
+		ctx.fillStyle = 'rgba(0,0,0,0.05)';
+		ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+		this.plotRadar(series, series.shadowSize / 2);
+		
+		ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+		this.plotRadar(series, series.shadowSize / 4);
+		
+		ctx.strokeStyle = series.color;
+		ctx.fillStyle = Flotr.Color.parse(series.color).scale(null, null, null, series.radar.fillOpacity).toString();
+		this.plotRadar(series);
+		
+		ctx.restore();
+	},
+	plotRadar: function(series, offset){
+		var ctx = this.ctx,
+		    options = this.options,
+				data = series.data,
+				radius = Math.min(this.plotHeight, this.plotWidth)*options.radar.radiusRatio/2,
+			  coeff = 2*(Math.PI/data.length),
+				angle = -Math.PI/2;
+				
+		offset = offset || 0;
+		
+		ctx.beginPath();
+		for(var i = 0; i < data.length; ++i){
+			var x = data[i][0],
+			    y = data[i][1],
+					ratio = y / this.axes.y.max;
+
+			ctx[i == 0 ? 'moveTo' : 'lineTo'](Math.cos(i*coeff+angle)*radius*ratio + offset, Math.sin(i*coeff+angle)*radius*ratio + offset);
+		}
+		ctx.closePath();
+		if (series.radar.fill) ctx.fill();
+		ctx.stroke();
+	},
 	/**
 	 * Adds a legend div to the canvas container or draws it on the canvas.
 	 */
@@ -2408,15 +2526,16 @@ Flotr.Graph = Class.create({
 		var series = this.series,
 			plotOffset = this.plotOffset,
 			options = this.options,
+			legend = options.legend,
 			fragments = [],
 			rowStarted = false, 
 			ctx = this.ctx,
 			i;
 			
-		var noLegendItems = series.findAll(function(s) {return (s.label && !s.hide)}).size();
+		var noLegendItems = series.findAll(function(s) {return (s.label && !s.hide)}).length;
 
 		if (noLegendItems) {
-		    if (!options.HtmlText && this.textEnabled && !$(options.legend.container)) {
+		    if (!options.HtmlText && this.textEnabled && !$(legend.container)) {
 				var style = {
 					size: options.fontSize*1.1,
 					color: options.grid.color
@@ -2425,11 +2544,11 @@ Flotr.Graph = Class.create({
 				// @todo: take css into account
 				//var dummyDiv = this.el.insert('<div class="flotr-legend" style="position:absolute;top:-10000px;"></div>');
 				
-				var p = options.legend.position, 
-				    m = options.legend.margin,
-				    lbw = options.legend.labelBoxWidth,
-				    lbh = options.legend.labelBoxHeight,
-				    lbm = options.legend.labelBoxMargin,
+				var p = legend.position, 
+				    m = legend.margin,
+				    lbw = legend.labelBoxWidth,
+				    lbh = legend.labelBoxHeight,
+				    lbm = legend.labelBoxMargin,
 				    offsetX = plotOffset.left + m,
 				    offsetY = plotOffset.top + m;
 				
@@ -2437,7 +2556,7 @@ Flotr.Graph = Class.create({
 				var labelMaxWidth = 0;
 				for(i = series.length - 1; i > -1; --i){
 					if(!series[i].label || series[i].hide) continue;
-					var label = options.legend.labelFormatter(series[i].label);	
+					var label = legend.labelFormatter(series[i].label);	
 					labelMaxWidth = Math.max(labelMaxWidth, ctx.measureText(label, style));
 				}
 				
@@ -2448,7 +2567,7 @@ Flotr.Graph = Class.create({
 				if(p.charAt(1) == 'e') offsetX = plotOffset.left + this.plotWidth - (m + legendWidth);
 				
 				// Legend box
-				var color = Flotr.parseColor(options.legend.backgroundColor || 'rgb(240,240,240)').scale(null, null, null, options.legend.backgroundOpacity || 0.1).toString();
+				var color = Flotr.Color.parse(options.legend.backgroundColor || 'rgb(240,240,240)').scale(null, null, null, options.legend.backgroundOpacity || 0.1).toString();
 				
 				ctx.fillStyle = color;
 				ctx.fillRect(offsetX, offsetY, legendWidth, legendHeight);
@@ -2460,12 +2579,12 @@ Flotr.Graph = Class.create({
 				var y = offsetY + lbm;
 				for(i = 0; i < series.length; i++){
 					if(!series[i].label || series[i].hide) continue;
-					var label = options.legend.labelFormatter(series[i].label);
+					var label = legend.labelFormatter(series[i].label);
 					
 					ctx.fillStyle = series[i].color;
 					ctx.fillRect(x, y, lbw-1, lbh-1);
 					
-					ctx.strokeStyle = options.legend.labelBoxBorderColor;
+					ctx.strokeStyle = legend.labelBoxBorderColor;
 					ctx.lineWidth = 1;
 					ctx.strokeRect(Math.ceil(x)-1.5, Math.ceil(y)-1.5, lbw+2, lbh+2);
 					
@@ -2489,8 +2608,7 @@ Flotr.Graph = Class.create({
 		  				rowStarted = true;
 		  			}
 		  
-		  			var legend = options.legend,
-		  			    s = series[i],
+		  			var s = series[i],
 		  			    label = legend.labelFormatter(s.label),
 		  			    boxWidth = legend.labelBoxWidth,
 		  			    boxHeight = legend.labelBoxHeight,
@@ -2532,8 +2650,8 @@ Flotr.Graph = Class.create({
 		  					 */
 		  					var c = options.legend.backgroundColor;
 		  					if(c == null){
-		  						var tmp = (options.grid.backgroundColor != null) ? options.grid.backgroundColor : Flotr.extractColor(div);
-		  						c = Flotr.parseColor(tmp).adjust(null, null, null, 1).toString();
+		  						var tmp = (options.grid.backgroundColor != null) ? options.grid.backgroundColor : Flotr.Color.extract(div);
+		  						c = Flotr.Color.parse(tmp).adjust(null, null, null, 1).toString();
 		  					}
 		  					this.el.insert('<div class="flotr-legend-bg" style="position:absolute;width:' + div.getWidth() + 'px;height:' + div.getHeight() + 'px;' + pos +'background-color:' + c + ';"> </div>').select('div.flotr-legend-bg').first().setStyle({
 		  						'opacity': options.legend.backgroundOpacity
@@ -2629,7 +2747,7 @@ Flotr.Graph = Class.create({
     
 		if(!this.options.selection.mode || !event.isLeftClick()) return;
 		
-		this.setSelectionPos(this.selection.first, event);				
+		this.setSelectionPos(this.selection.first, event);
 		if(this.selectionInterval != null){
 			clearInterval(this.selectionInterval);
 		}
@@ -2644,23 +2762,21 @@ Flotr.Graph = Class.create({
 	 */
 	fireSelectEvent: function(){
 		var a = this.axes, selection = this.selection,
-			x1 = (selection.first.x <= selection.second.x) ? selection.first.x : selection.second.x,
-			x2 = (selection.first.x <= selection.second.x) ? selection.second.x : selection.first.x,
-			y1 = (selection.first.y >= selection.second.y) ? selection.first.y : selection.second.y,
-			y2 = (selection.first.y >= selection.second.y) ? selection.second.y : selection.first.y;
+		    x1, x2, y1, y2;
 		
-		x1 = a.x.min + x1 / a.x.scale;
-		x2 = a.x.min + x2 / a.x.scale;
-		y1 = a.y.max - y1 / a.y.scale;
-		y2 = a.y.max - y2 / a.y.scale;
-		
-		var firstx = selection.first.x / a.x.scale,
-			secondx = selection.second.x / a.x.scale,
-			firsty = selection.first.y / a.y.scale,
-			secondy = selection.second.y / a.y.scale;
+		x1 = a.x.min + selection.first.x / a.x.scale;
+		x2 = a.x.min + selection.second.x / a.x.scale;
+		y1 = a.y.max - selection.first.y / a.y.scale;
+		y2 = a.y.max - selection.second.y / a.y.scale;
 
-		this.el.fire('flotr:select', [{x1:x1, y1:y1, x2:x2, y2:y2}, this]);
-		this.el.fire('flotr:selectionSequence', [{firstx:firstx, secondx:secondx, firsty:firsty, secondy:secondy}, this]);
+		this.el.fire('flotr:select', [{
+			x1:Math.min(x1, x2), 
+			y1:Math.min(y1, y2), 
+			x2:Math.max(x1, x2), 
+			y2:Math.max(y1, y2),
+			xfirst:x1, xsecond:x2, yfirst:y1, ysecond:y2
+		}, this]);
+		this.el.fire('flotr:selection', [{firstx:selection.first.x, secondx:selection.second.x, firsty:selection.first.y, secondy:selection.second.y}, this]);
 	},
 	/**
 	 * Observes the mouseup event for the document. 
@@ -2767,33 +2883,33 @@ Flotr.Graph = Class.create({
 	 */
 	drawSelection: function() {
 		var prevSelection = this.prevSelection,
-			selection = this.selection,
+			s = this.selection,
 			octx = this.octx,
 			options = this.options,
 			plotOffset = this.plotOffset;
 		
 		if(prevSelection != null &&
-			selection.first.x == prevSelection.first.x &&
-			selection.first.y == prevSelection.first.y && 
-			selection.second.x == prevSelection.second.x &&
-			selection.second.y == prevSelection.second.y)
+			s.first.x == prevSelection.first.x &&
+			s.first.y == prevSelection.first.y && 
+			s.second.x == prevSelection.second.x &&
+			s.second.y == prevSelection.second.y)
 			return;
 		
 		octx.save();
-		octx.strokeStyle = Flotr.parseColor(options.selection.color).scale(null, null, null, 0.8).toString();
+		octx.strokeStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.8).toString();
 		octx.lineWidth = 1;
 		octx.lineJoin = 'miter';
-		octx.fillStyle = Flotr.parseColor(options.selection.color).scale(null, null, null, 0.4).toString();
+		octx.fillStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.4).toString();
 
 		this.prevSelection = {
-			first: { x: selection.first.x, y: selection.first.y },
-			second: { x: selection.second.x, y: selection.second.y }
+			first: { x: s.first.x, y: s.first.y },
+			second: { x: s.second.x, y: s.second.y }
 		};
 
-		var x = Math.min(selection.first.x, selection.second.x),
-		    y = Math.min(selection.first.y, selection.second.y),
-		    w = Math.abs(selection.second.x - selection.first.x),
-		    h = Math.abs(selection.second.y - selection.first.y);
+		var x = Math.min(s.first.x, s.second.x),
+		    y = Math.min(s.first.y, s.second.y),
+		    w = Math.abs(s.second.x - s.first.x),
+		    h = Math.abs(s.second.y - s.first.y);
 		
 		octx.fillRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
 		octx.strokeRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
@@ -2807,9 +2923,7 @@ Flotr.Graph = Class.create({
 			options = this.options,
 			plotOffset = this.plotOffset,
 			x = plotOffset.left+pos.relX+0.5,
-			y = plotOffset.top+pos.relY+0.5,
-			modeX = options.crosshair.mode.indexOf('x') != -1,
-			modeY = options.crosshair.mode.indexOf('y') != -1;
+			y = plotOffset.top+pos.relY+0.5;
 		
 		if (pos.relX < 0 || pos.relY < 0 || pos.relX > this.plotWidth || pos.relY > this.plotHeight) {
 			this.el.style.cursor = null;
@@ -2821,7 +2935,7 @@ Flotr.Graph = Class.create({
 		this.lastMousePos.relY = null;
 		
 		if (options.crosshair.hideCursor) {
-			this.el.style.cursor = 'url(blank.cur), crosshair';
+			this.el.style.cursor = 'url(blank.cur),crosshair';
 			this.el.addClassName('flotr-crosshair');
 		}
 		
@@ -2830,13 +2944,13 @@ Flotr.Graph = Class.create({
 		octx.lineWidth = 1;
 		octx.beginPath();
 		
-		if (modeX) {
+		if (options.crosshair.mode.indexOf('x') != -1) {
 			octx.moveTo(x, plotOffset.top);
 			octx.lineTo(x, plotOffset.top + this.plotHeight);
 			this.lastMousePos.relX = x;
 		}
 		
-		if (modeY) {
+		if (options.crosshair.mode.indexOf('y') != -1) {
 			octx.moveTo(plotOffset.left, y);
 			octx.lineTo(plotOffset.left + this.plotWidth, y);
 			this.lastMousePos.relY = y;
@@ -2850,16 +2964,10 @@ Flotr.Graph = Class.create({
 	 */
 	clearCrosshair: function() {
 		if (this.lastMousePos.relX != null)
-		this.octx.clearRect(this.lastMousePos.relX-0.5,
-		                    this.plotOffset.top,
-		                    1,
-		                    this.plotHeight+1);
-							
+			this.octx.clearRect(this.lastMousePos.relX-0.5, this.plotOffset.top, 1,this.plotHeight+1);
+		
 		if (this.lastMousePos.relY != null)
-		this.octx.clearRect(this.plotOffset.left,
-		                    this.lastMousePos.relY-0.5,
-		                    this.plotWidth+1,
-		                    1);		
+			this.octx.clearRect(this.plotOffset.left, this.lastMousePos.relY-0.5, this.plotWidth+1, 1);		
 	},
 	/**
 	 * Determines whether or not the selection is sane and should be drawn.
@@ -2894,9 +3002,9 @@ Flotr.Graph = Class.create({
 			var bw = s.bars.barWidth;
 			this.octx.clearRect(
 				this.tHoz(prevHit.x - bw/2, prevHit.xaxis) + plotOffset.left - lw, 
-				this.tVert(prevHit.y, prevHit.yaxis) + plotOffset.top - lw, 
+				this.tVert(prevHit.y >= 0 ? prevHit.y : 0, prevHit.yaxis) + plotOffset.top - lw, 
 				this.tHoz(bw, prevHit.xaxis) + lw * 2, 
-				this.tVert(0, prevHit.yaxis) + lw * 2
+				this.tVert(prevHit.y < 0 ? prevHit.y : 0, prevHit.yaxis) + lw * 2
 			);
 		}
 	},
@@ -2913,7 +3021,7 @@ Flotr.Graph = Class.create({
 			octx.save();
 			octx.lineWidth = s.points.lineWidth;
 			octx.strokeStyle = s.mouse.lineColor;
-      octx.fillStyle = Flotr.parseColor(s.mouse.fillColor || '#ffffff').scale(null,null,null, s.mouse.fillOpacity).toString();
+      octx.fillStyle = Flotr.Color.parse(s.mouse.fillColor || '#ffffff').scale(null,null,null, s.mouse.fillOpacity).toString();
       
 			if(!s.bars.show){
 				octx.translate(this.plotOffset.left, this.plotOffset.top);
@@ -2929,22 +3037,16 @@ Flotr.Graph = Class.create({
 				octx.save();
 				octx.translate(this.plotOffset.left, this.plotOffset.top);
 				octx.beginPath();
-				octx.moveTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
+				octx.moveTo(tHoz(n.x-(bw/2), n.xaxis), tVert(0, n.yaxis));
 				octx.lineTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.y, n.yaxis));
 				octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-				octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
+				octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(0, n.yaxis));
+
+				if(s.mouse.fillColor){ 
+					octx.fill();
+				}
 				octx.stroke();
 				octx.closePath();
-				
-				if(s.mouse.fillColor){ 
-					octx.beginPath();
-					octx.moveTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-					octx.lineTo(tHoz(n.x-(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-					octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.y, n.yaxis));
-					octx.lineTo(tHoz(n.x+(bw/2), n.xaxis), tVert(n.yaxis.min, n.yaxis));
-					octx.fill();
-					octx.closePath();
-				}
         
 				octx.restore();
 			}
@@ -3008,7 +3110,7 @@ Flotr.Graph = Class.create({
 				// we use a different set of criteria to determin if there has been a hit
 				// depending on what type of graph we have
 				if(((!s.bars.show) && xdiff < xsens && ydiff < ysens) || 
-				    (s.bars.show && xdiff < s.bars.barWidth/2 && my > ya.min && my < y)){
+				    (s.bars.show && xdiff < s.bars.barWidth/2 && ((y > 0 && my > 0 && my < y) || (y < 0 && my < 0 && my > y)))){
 					var distance = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
 					if(distance < n.dist){
 						n.dist = distance;
@@ -3047,7 +3149,7 @@ Flotr.Graph = Class.create({
 				}
 
 				else {
-					pos += 'bottom:' + (m - plotOffset.top - this.tVert(n.yaxis.min+((n.y-n.yaxis.min)/2), n.yaxis) + this.canvasHeight) + 'px;top:auto;';
+					pos += 'bottom:' + (m - plotOffset.top - this.tVert(n.y/2, n.yaxis) + this.canvasHeight) + 'px;top:auto;';
 					pos += 'left:' + (m + plotOffset.left + this.tHoz(n.x - options.bars.barWidth/2 , n.xaxis)) + 'px;right:auto;';
 				}
 			}
@@ -3085,6 +3187,11 @@ Flotr.Graph = Class.create({
 	},
 	saveImage: function (type, width, height, replaceCanvas) {
 		var image = null;
+		if (Prototype.Browser.IE) {
+			image = '<html><body>'+this.canvas.select('div').first().innerHTML+'</body></html>';
+			return window.open().document.write(image);
+		}
+			
 		switch (type) {
 			case 'jpeg':
 			case 'jpg': image = Canvas2Image.saveAsJPEG(this.canvas, replaceCanvas, width, height); break;
@@ -3153,7 +3260,7 @@ Flotr.Color = Class.create({
 	
 	distance: function(color){
 		if (!color) return;
-		color = new Flotr.parseColor(color);
+		color = new Flotr.Color.parse(color);
 		var dist = 0, x = 3;
 		while(-1<--x){
 			dist += Math.abs(this[this.rgba[x]] - color[this.rgba[x]]);
@@ -3166,61 +3273,138 @@ Flotr.Color = Class.create({
 	}
 });
 
-Flotr.Color.lookupColors = {
-	aqua:[0,255,255],
-	azure:[240,255,255],
-	beige:[245,245,220],
-	black:[0,0,0],
-	blue:[0,0,255],
-	brown:[165,42,42],
-	cyan:[0,255,255],
-	darkblue:[0,0,139],
-	darkcyan:[0,139,139],
-	darkgrey:[169,169,169],
-	darkgreen:[0,100,0],
-	darkkhaki:[189,183,107],
-	darkmagenta:[139,0,139],
-	darkolivegreen:[85,107,47],
-	darkorange:[255,140,0],
-	darkorchid:[153,50,204],
-	darkred:[139,0,0],
-	darksalmon:[233,150,122],
-	darkviolet:[148,0,211],
-	fuchsia:[255,0,255],
-	gold:[255,215,0],
-	green:[0,128,0],
-	indigo:[75,0,130],
-	khaki:[240,230,140],
-	lightblue:[173,216,230],
-	lightcyan:[224,255,255],
-	lightgreen:[144,238,144],
-	lightgrey:[211,211,211],
-	lightpink:[255,182,193],
-	lightyellow:[255,255,224],
-	lime:[0,255,0],
-	magenta:[255,0,255],
-	maroon:[128,0,0],
-	navy:[0,0,128],
-	olive:[128,128,0],
-	orange:[255,165,0],
-	pink:[255,192,203],
-	purple:[128,0,128],
-	violet:[128,0,128],
-	red:[255,0,0],
-	silver:[192,192,192],
-	white:[255,255,255],
-	yellow:[255,255,0]
-};
+Object.extend(Flotr.Color, {
+	/**
+	 * Parses a color string and returns a corresponding Color.
+	 * The different tests are in order of probability to improve speed.
+	 * @param {String, Color} str - string thats representing a color
+	 * @return {Color} returns a Color object or false
+	 */
+	parse: function(str){
+		if (str instanceof Flotr.Color) return str;
+		
+		var result, Color = Flotr.Color;
 
-// not used yet
+		// #a0b1c2
+		if((result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(str)))
+			return new Color(parseInt(result[1],16), parseInt(result[2],16), parseInt(result[3],16));
+
+		// rgb(num,num,num)
+		if((result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(str)))
+			return new Color(parseInt(result[1]), parseInt(result[2]), parseInt(result[3]));
+	
+		// #fff
+		if((result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(str)))
+			return new Color(parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16));
+	
+		// rgba(num,num,num,num)
+		if((result = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(str)))
+			return new Color(parseInt(result[1]), parseInt(result[2]), parseInt(result[3]), parseFloat(result[4]));
+			
+		// rgb(num%,num%,num%)
+		if((result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(str)))
+			return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55);
+	
+		// rgba(num%,num%,num%,num)
+		if((result = /rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(str)))
+			return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55, parseFloat(result[4]));
+
+		// Otherwise, we're most likely dealing with a named color.
+		var name = str.strip().toLowerCase();
+		if(name == 'transparent'){
+			return new Color(255, 255, 255, 0);
+		}
+		return (result = Color.names[name]) ? new Color(result[0], result[1], result[2]) : false;
+	},
+	
+	/**
+	 * Extracts the background-color of the passed element.
+	 * @param {Element} element - The element from what the background color is extracted
+	 * @return {String} color string
+	 */
+	extract: function(element){
+		var color;
+		// Loop until we find an element with a background color and stop when we hit the body element. 
+		do {
+			color = element.getStyle('background-color').toLowerCase();
+			if(!(color == '' || color == 'transparent')) break;
+			element = element.up(0);
+		} while(!element.nodeName.match(/^body$/i));
+
+		// Catch Safari's way of signaling transparent.
+		return new Flotr.Color(color == 'rgba(0, 0, 0, 0)' ? 'transparent' : color);
+	},
+	
+	names: {
+		aqua:[0,255,255],
+		azure:[240,255,255],
+		beige:[245,245,220],
+		black:[0,0,0],
+		blue:[0,0,255],
+		brown:[165,42,42],
+		cyan:[0,255,255],
+		darkblue:[0,0,139],
+		darkcyan:[0,139,139],
+		darkgrey:[169,169,169],
+		darkgreen:[0,100,0],
+		darkkhaki:[189,183,107],
+		darkmagenta:[139,0,139],
+		darkolivegreen:[85,107,47],
+		darkorange:[255,140,0],
+		darkorchid:[153,50,204],
+		darkred:[139,0,0],
+		darksalmon:[233,150,122],
+		darkviolet:[148,0,211],
+		fuchsia:[255,0,255],
+		gold:[255,215,0],
+		green:[0,128,0],
+		indigo:[75,0,130],
+		khaki:[240,230,140],
+		lightblue:[173,216,230],
+		lightcyan:[224,255,255],
+		lightgreen:[144,238,144],
+		lightgrey:[211,211,211],
+		lightpink:[255,182,193],
+		lightyellow:[255,255,224],
+		lime:[0,255,0],
+		magenta:[255,0,255],
+		maroon:[128,0,0],
+		navy:[0,0,128],
+		olive:[128,128,0],
+		orange:[255,165,0],
+		pink:[255,192,203],
+		purple:[128,0,128],
+		violet:[128,0,128],
+		red:[255,0,0],
+		silver:[192,192,192],
+		white:[255,255,255],
+		yellow:[255,255,0]
+	}
+});
+
 Flotr.Date = {
 	format: function(d, format) {
 		if (!d) return;
-
-		var leftPad = function(n) {
-			n = n.toString();
-			return n.length == 1 ? "0" + n : n;
+		
+		// We should maybe use an "official" date format spec, like PHP date() or ColdFusion 
+		// http://fr.php.net/manual/en/function.date.php
+		// http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=functions_c-d_29.html
+		var tokens = {
+			h: d.getUTCHours().toString(),
+			H: leftPad(d.getUTCHours()),
+			M: leftPad(d.getUTCMinutes()),
+			S: leftPad(d.getUTCSeconds()),
+			s: d.getUTCMilliseconds(),
+			d: d.getUTCDate().toString(),
+			m: (d.getUTCMonth() + 1).toString(),
+			y: d.getUTCFullYear().toString(),
+			b: Flotr.Date.monthNames[d.getUTCMonth()]
 		};
+
+		function leftPad(n){
+			n += '';
+			return n.length == 1 ? "0" + n : n;
+		}
 		
 		var r = [], c,
 		    escape = false;
@@ -3229,112 +3413,102 @@ Flotr.Date = {
 			c = format.charAt(i);
 			
 			if (escape) {
-				switch (c) {
-					case 'h': c = d.getUTCHours().toString(); break;
-					case 'H': c = leftPad(d.getUTCHours()); break;
-					case 'M': c = leftPad(d.getUTCMinutes()); break;
-					case 'S': c = leftPad(d.getUTCSeconds()); break;
-					case 'd': c = d.getUTCDate().toString(); break;
-					case 'm': c = (d.getUTCMonth() + 1).toString(); break;
-					case 'y': c = d.getUTCFullYear().toString(); break;
-					case 'b': c = Flotr.Date.monthNames[d.getUTCMonth()]; break;
-				}
-				r.push(c);
+				r.push(tokens[c] || c);
 				escape = false;
 			}
-			else {
-				if (c == "%")
-					escape = true;
-				else
-					r.push(c);
-			}
+			else if (c == "%")
+				escape = true;
+			else
+				r.push(c);
 		}
-		return r.join("");
+		return r.join('');
 	},
 	formatter: function (v, axis) {
 		var d = new Date(v);
 
 		// first check global format
-		if (axis.options.timeformat != null)
-			return Flotr.Date.format(d, axis.options.timeformat);
+		if (axis.options.timeFormat != null)
+			return Flotr.Date.format(d, axis.options.timeFormat);
 		
-		var t = axis.tickSize[0] * Flotr.Date.timeUnits[axis.tickSize[1]],
-		    span = axis.max - axis.min;
+		var tu = Flotr.Date.timeUnits,
+		    span = axis.max - axis.min,
+		    t = axis.tickSize * tu[axis.tickUnit];
 		
-		if (t < Flotr.Date.timeUnits.minute)
-			fmt = "%h:%M:%S";
-		else if (t < Flotr.Date.timeUnits.day)
-			fmt = (span < 2 * Flotr.Date.timeUnits.day) ? "%h:%M" : "%b %d %h:%M";
-		else if (t < Flotr.Date.timeUnits.month)
-			fmt = "%b %d";
-		else if (t < Flotr.Date.timeUnits.year) 
-			fmt = (span < Flotr.Date.timeUnits.year) ? "%b" : "%b %y";
-		else 
-			fmt = "%y";
-		
+		     if (t < tu.second) fmt = "%h:%M:%S.%s";
+		else if (t < tu.minute) fmt = "%h:%M:%S";
+		else if (t < tu.day)    fmt = (span < 2 * tu.day) ? "%h:%M" : "%b %d %h:%M";
+		else if (t < tu.month)  fmt = "%b %d";
+		else if (t < tu.year)   fmt = (span < tu.year) ? "%b" : "%b %y";
+		else                    fmt = "%y";
+			
 		return Flotr.Date.format(d, fmt);
 	},
 	generator: function(axis) {
 		var ticks = [],
-			tickSize = axis.tickSize[0], unit = axis.tickSize[1],
 			d = new Date(axis.min),
-			step = tickSize * timeUnitSize[unit];
+			tu = Flotr.Date.timeUnits;
+		
+		var step = axis.tickSize * tu[axis.tickUnit];
 
-		switch (unit) {
-			case "second": d.setUTCSeconds(floorInBase(d.getUTCSeconds(), tickSize)); break;
-			case "minute": d.setUTCMinutes(floorInBase(d.getUTCMinutes(), tickSize)); break;
-			case "hour":   d.setUTCHours(floorInBase(d.getUTCHours(), tickSize)); break;
-			case "month":  d.setUTCMonth(floorInBase(d.getUTCMonth(), tickSize)); break;
-			case "year":   d.setUTCFullYear(floorInBase(d.getUTCFullYear(), tickSize));break;
+		switch (axis.tickUnit) {
+			case "millisecond": d.setUTCMilliseconds(Flotr.floorInBase(d.getUTCMilliseconds(), axis.tickSize)); break;
+			case "second": d.setUTCSeconds(Flotr.floorInBase(d.getUTCSeconds(), axis.tickSize)); break;
+			case "minute": d.setUTCMinutes(Flotr.floorInBase(d.getUTCMinutes(), axis.tickSize)); break;
+			case "hour":   d.setUTCHours(Flotr.floorInBase(d.getUTCHours(), axis.tickSize)); break;
+			case "month":  d.setUTCMonth(Flotr.floorInBase(d.getUTCMonth(), axis.tickSize)); break;
+			case "year":   d.setUTCFullYear(Flotr.floorInBase(d.getUTCFullYear(), axis.tickSize));break;
 		}
 		
 		// reset smaller components
-		d.setUTCMilliseconds(0);
-		if (step >= timeUnitSize.minute)  d.setUTCSeconds(0);
-		if (step >= timeUnitSize.hour)    d.setUTCMinutes(0);
-		if (step >= timeUnitSize.day)     d.setUTCHours(0);
-		if (step >= timeUnitSize.day * 4) d.setUTCDate(1);
-		if (step >= timeUnitSize.year)    d.setUTCMonth(0);
+		if (step >= tu.second)  d.setUTCMilliseconds(0);
+		if (step >= tu.minute)  d.setUTCSeconds(0);
+		if (step >= tu.hour)    d.setUTCMinutes(0);
+		if (step >= tu.day)     d.setUTCHours(0);
+		if (step >= tu.day * 4) d.setUTCDate(1);
+		if (step >= tu.year)    d.setUTCMonth(0);
 
 		var carry = 0, v = Number.NaN, prev;
 		do {
 			prev = v;
 			v = d.getTime();
-			ticks.push({ v: v, label: axis.tickFormatter(v, axis) });
-			if (unit == "month") {
-				if (tickSize < 1) {
+			ticks.push({ v:v, label:Flotr.Date.formatter(v, axis) });
+			if (axis.tickUnit == "month") {
+				if (axis.tickSize < 1) {
 					/* a bit complicated - we'll divide the month up but we need to take care of fractions
 					 so we don't end up in the middle of a day */
 					d.setUTCDate(1);
 					var start = d.getTime();
 					d.setUTCMonth(d.getUTCMonth() + 1);
 					var end = d.getTime();
-					d.setTime(v + carry * timeUnitSize.hour + (end - start) * tickSize);
+					d.setTime(v + carry * tu.hour + (end - start) * axis.tickSize);
 					carry = d.getUTCHours();
 					d.setUTCHours(0);
 				}
 				else
-					d.setUTCMonth(d.getUTCMonth() + tickSize);
+					d.setUTCMonth(d.getUTCMonth() + axis.tickSize);
 			}
-			else if (unit == "year") {
-				d.setUTCFullYear(d.getUTCFullYear() + tickSize);
+			else if (axis.tickUnit == "year") {
+				d.setUTCFullYear(d.getUTCFullYear() + axis.tickSize);
 			}
 			else
 				d.setTime(v + step);
-		} while (v < axis.max && v != prev);
 
+		} while (v < axis.max && v != prev);
+		
 		return ticks;
 	},
 	timeUnits: {
+		millisecond: 1,
 		second: 1000,
 		minute: 1000 * 60,
 		hour:   1000 * 60 * 60,
 		day:    1000 * 60 * 60 * 24,
 		month:  1000 * 60 * 60 * 24 * 30,
-		year:   1000 * 60 * 60 * 24 * 30 * 365.2425
+		year:   1000 * 60 * 60 * 24 * 365.2425
 	},
 	// the allowed tick sizes, after 1 year we use an integer algorithm
 	spec: [
+		[1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"], 
 		[1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"], 
 		[1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"], 
 		[1, "hour"],     [2, "hour"],    [4, "hour"],   [8, "hour"],    [12, "hour"],
