@@ -263,6 +263,7 @@ public class FlotChartRenderer extends Renderer {
 			legendOptions.put("backgroundColor", "'" + chartData.getLegendColor() + "'");
 			legendOptions.put("noColumns", chartData.getLegendColumns());
 			legendOptions.put("backgroundOpacity", chartData.getLegendOpacity());
+			legendOptions.put("show", true);
 			chartOptions.put("legend", legendOptions);
 
 			chartOptions.put("HtmlText", false);
