@@ -59,6 +59,7 @@ public class FlotChartRendererData {
 	private Integer yaxisLabelRotation = 0;
 	private Integer xaxisTitleRotation = 0;
 	private Integer yaxisTitleRotation = 90;
+	private Boolean chartDraggable = false;
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -585,5 +586,19 @@ public class FlotChartRendererData {
 		}
 	}
 	
+	public Boolean getChartDraggable() {
+		return chartDraggable;
+	}
 	
+	public void setChartDraggable(Boolean chartDraggable) {
+		this.chartDraggable = chartDraggable;
+	}
+	
+	public void setChartDraggable(Object chartDraggableObj) {
+		if (chartDraggableObj instanceof String) {
+			this.chartDraggable = new Boolean((String) chartDraggableObj);
+		} else if (chartDraggableObj instanceof Boolean) {
+			this.chartDraggable = (Boolean) chartDraggableObj;
+		}
+	}
 }
