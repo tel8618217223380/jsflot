@@ -8,7 +8,7 @@
 	The MIT License - Copyright (c) 2008 Blackbird Project
 */
 ( function() {
-	var NAMESPACE = 'log';
+	var NAMESPACE = 'jsflotlog';
 	var IE6_POSITION_FIXED = true; // enable IE6 {position:fixed}
 	
 	var bbird;

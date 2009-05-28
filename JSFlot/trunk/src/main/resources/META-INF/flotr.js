@@ -2761,13 +2761,13 @@ Flotr.Graph = Class.create({
 	 * Fires the 'flotr:select' event when the user made a selection.
 	 */
 	fireSelectEvent: function(){
-		var a = this.axes, selection = this.selection,
+		var a = this.axes, s = this.selection,
 		    x1, x2, y1, y2;
 		
-		x1 = a.x.min + selection.first.x / a.x.scale;
-		x2 = a.x.min + selection.second.x / a.x.scale;
-		y1 = a.y.max - selection.first.y / a.y.scale;
-		y2 = a.y.max - selection.second.y / a.y.scale;
+		x1 = a.x.min + s.first.x / a.x.scale;
+		x2 = a.x.min + s.second.x / a.x.scale;
+		y1 = a.y.max - s.first.y / a.y.scale;
+		y2 = a.y.max - s.second.y / a.y.scale;
 
 		this.el.fire('flotr:select', [{
 			x1:Math.min(x1, x2), 
@@ -2776,7 +2776,6 @@ Flotr.Graph = Class.create({
 			y2:Math.max(y1, y2),
 			xfirst:x1, xsecond:x2, yfirst:y1, ysecond:y2
 		}, this]);
-		this.el.fire('flotr:selection', [{firstx:selection.first.x, secondx:selection.second.x, firsty:selection.first.y, secondy:selection.second.y}, this]);
 	},
 	/**
 	 * Observes the mouseup event for the document. 

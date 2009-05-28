@@ -53,7 +53,7 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 	encodedViewState = encodedViewState.replace(rexp, "%2B");
 	
 	if (query) {
-		log.debug("NEW AJAX REQUEST !!! with form: " + (query._form.id || query._form.name || query._form) + " URL: " + url);
+		jsflotlog.debug("NEW AJAX REQUEST !!! with form: " + (query._form.id || query._form.name || query._form) + " URL: " + url);
 		var params = JSFlot.AJAX.getFormData(document.getElementById(formId), options);
 		
 		new Ajax.Request(url, {
@@ -61,7 +61,7 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 			contentType: "application/x-www-form-urlencoded",
 			parameters: params,
 			onSuccess: function(transport) {
-				log.debug("XHR successful.");
+				jsflotlog.debug("XHR successful.");
 				JSFlot.AJAX.processXHRResponse(transport, options._rerenderID);
 			},
 
@@ -78,14 +78,14 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId) {
 		function() { var xmldom = new ActiveXObject('Microsoft.XMLDOM'); xmldom.loadXML(transport.responseText); return xmldom; }
 	);
 
-	log.debug('looking for the enclosingDiv');
+	jsflotlog.debug('looking for the enclosingDiv');
 	var flotchartdiv = ajaxResponse.getElementById(rerenderId);
-	log.debug("Found: " + flotchartdiv);
+	jsflotlog.debug("Found: " + flotchartdiv);
 	
-	log.debug('looked for the enclosingDiv');
+	jsflotlog.debug('looked for the enclosingDiv');
 	$(rerenderId).update(flotchartdiv.innerHTML);
 	
-	//log.debug("enclosingDiv: " + flotchartdivcontents);
+	//jsflotlog.debug("enclosingDiv: " + flotchartdivcontents);
 	
 	//var json = transport.responseText.evalJSON();
 	//if(json.series && json.options && json.componentId) {
@@ -94,7 +94,7 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId) {
 }
 
 JSFlot.AJAX.PrepareQuery = function(formId) {
-    //log.debug("Query preparation for form '" + formId + "' requested");
+    //jsflotlog.debug("Query preparation for form '" + formId + "' requested");
     var form = window.document.getElementById(formId);
     
     var tosend = new JSFlot.AJAXQuery(form);

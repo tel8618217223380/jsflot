@@ -162,6 +162,12 @@ public class ResourcesRenderer extends Renderer {
 			writer.writeAttribute("src", contextRoot + facesPrefix +"/jsflot/blackbird.js" + facesSuffix, null);
 			writer.endElement("script");
 			writer.write("\n");
+		} else {
+			writer.startElement("script", component);
+			writer.writeAttribute("type", "text/javascript", null);
+			writer.writeAttribute("src", contextRoot + facesPrefix +"/jsflot/logskeleton.js" + facesSuffix, null);
+			writer.endElement("script");
+			writer.write("\n");
 		}
 		
 		if (renderBlackbirdCss) {
