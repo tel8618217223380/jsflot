@@ -44,6 +44,8 @@ public class FlotChartComponent extends UIInput {
 		return true;
 	}
 	
+	
+	
 	@Override
 	public void processDecodes(FacesContext context) {
 		// TODO Auto-generated method stub

@@ -36,6 +36,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.Renderer;
 import javax.faces.webapp.UIComponentTag;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -168,7 +169,7 @@ public class FlotChartRenderer extends Renderer {
 			}
 	
 			String pathinfo = context.getExternalContext().getRequestPathInfo();
-			String url = context.getExternalContext().getRequestContextPath() + facesPrefix + pathinfo + facesSuffix;
+			String url = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURI();
 	
 			//Fire off AJAX request
 			observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
