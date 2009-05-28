@@ -14,15 +14,15 @@
 			Renderers a Chart based on the Flot JavaScript Charting Library
 		</description>
 		<name>flotChart</name>
-		<tag-class>org.jsflot.components.FlotChartComponent</tag-class>
+		<tag-class>org.jsflot.components.FlotChartTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<description>The ID of the chart</description>
 			<name>id</name>
-			<deferred-value>
-				<type>java.lang.String</type>
-			</deferred-value>
-		</attribute>
+			<required>true</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute> 
 		<attribute>
 			<description>An initial value or a value binding</description>
 			<name>value</name>
@@ -260,7 +260,7 @@
 			Renders Resources needed for JSFlot. Needed for inside the head tag of the XHTML page
 		</description>
 		<name>resources</name>
-		<tag-class>org.jsflot.components.ResourcesComponent</tag-class>
+		<tag-class>org.jsflot.components.ResourcesTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<description>Determines if any of the JS libraries shall be excluded</description>
