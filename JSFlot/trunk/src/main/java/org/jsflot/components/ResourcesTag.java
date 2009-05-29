@@ -19,6 +19,22 @@ public class ResourcesTag extends UIComponentELTag {
 		return "org.jsflot.components.ResourcesRenderer";
 	}
 	
+	public ValueExpression getExcludes() {
+		return excludes;
+	}
+
+	public void setExcludes(ValueExpression excludes) {
+		this.excludes = excludes;
+	}
+
+	public ValueExpression getDebug() {
+		return debug;
+	}
+
+	public void setDebug(ValueExpression debug) {
+		this.debug = debug;
+	}
+
 	protected void setProperties(UIComponent component) {
 		super.setProperties(component);
 	
