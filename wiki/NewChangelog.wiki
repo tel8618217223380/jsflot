@@ -1,6 +1,7 @@
 #summary New Changelog
 #labels Featured
 
+{{{
 Version 0.2.1 Support for non-facelets
 - Added Tag classes to be able to support non-facelets JSF 1.2 applications
 
@@ -60,3 +61,4 @@ Chart Dimensions
 - By default the chart occupies 600 by 300 pixels. Both the width and the height can be configured to any number
 Pie Chart Support
 Bar Chart Support
+}}}
