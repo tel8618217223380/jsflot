@@ -20,8 +20,8 @@
 			<description>The ID of the chart</description>
 			<name>id</name>
 			<required>true</required>
-			<type>java.lang.String</type>
 			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute> 
 		<attribute>
 			<description>An initial value or a value binding</description>
