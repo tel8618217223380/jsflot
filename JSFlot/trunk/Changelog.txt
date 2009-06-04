@@ -1,3 +1,6 @@
+Version 0.2.2 Stacked Bars
+- Added support for Stacked Bars
+
 Version 0.2.1 Support for non-facelets
 - Added Tag classes to be able to support non-facelets JSF 1.2 applications
 
