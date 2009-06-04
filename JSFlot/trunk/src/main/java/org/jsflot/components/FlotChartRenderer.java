@@ -129,8 +129,6 @@ public class FlotChartRenderer extends Renderer {
 		writer.startElement("input", component);
 		writer.writeAttribute("type", "hidden", null);
 		writer.writeAttribute("id", id + "_hiddenValue", null);
-		// writer.writeAttribute("onchange", "javascript: updateOnServer('"
-		// + id + "_hiddenValue', this.value);", null);
 		writer.writeAttribute("value", "", null);
 		writer.endElement("input");
 		writer.write("\n");
@@ -189,17 +187,6 @@ public class FlotChartRenderer extends Renderer {
 
 	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, FlotChartRendererData chartData) {
 		StringBuilder sb = new StringBuilder();
-		
-		// Calculate the bar width to support clustered bar charts
-		double barWidth = 0.5d;
-		double offset = 0d;
-		if (xyCollection.getDataList().size() > 0) {
-			XYDataList list = xyCollection.getDataList().get(0);
-			barWidth = list.calculateAvgPointDistance() / (xyCollection.getDataList().size() + 1);
-			chartData.setBarWidth(barWidth);
-			// Calculate the start offset
-			offset = (xyCollection.getDataList().size() / 2) * barWidth * -1;
-		}
 
 		String dataArrayString = generateDataOptions(xyCollection, chartData);
 		String chartOptions = generateChartOptions(chartData);
@@ -357,6 +344,11 @@ public class FlotChartRenderer extends Renderer {
 				chartTypeOptions.put("show", true);
 				chartTypeOptions.put("barWidth", chartData.getBarWidth());
 				chartOptions.put("bars", chartTypeOptions);
+			} else if (chartData.getChartType().equals("stackedBar")) {
+				chartTypeOptions.put("show", true);
+				chartTypeOptions.put("stacked", true);
+				chartTypeOptions.put("barWidth", chartData.getBarWidth());
+				chartOptions.put("bars", chartTypeOptions);
 			} else if (chartData.getChartType().equals("candles")) {
 				chartTypeOptions.put("fill", true);
 				chartTypeOptions.put("show", true);
@@ -417,7 +409,11 @@ public class FlotChartRenderer extends Renderer {
 		double offset = 0d;
 		if (xyCollection.getDataList().size() > 0) {
 			XYDataList tempList = xyCollection.getDataList().get(0);
-			barWidth = tempList.calculateAvgPointDistance() / (xyCollection.getDataList().size() + 1);
+			if (chartData.getChartType().equals("bar")) {
+				barWidth = list.calculateAvgPointDistance() / (xyCollection.getDataList().size() + 1);
+			} else if (chartData.getChartType().equals("stackedBar")) {
+				barWidth = list.calculateAvgPointDistance() * 0.7;
+			}
 			chartData.setBarWidth(barWidth);
 			// Calculate the start offset
 			offset = (xyCollection.getDataList().size() / 2) * barWidth * -1;
