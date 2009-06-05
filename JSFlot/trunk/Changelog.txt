@@ -1,5 +1,6 @@
 Version 0.2.2 Stacked Bars
 - Added support for Stacked Bars
+- Added a JS function to refresh the chart via an AJAX call. JSFlot.AJAX.RefreshChart('chartID');
 
 Version 0.2.1 Support for non-facelets
 - Added Tag classes to be able to support non-facelets JSF 1.2 applications
