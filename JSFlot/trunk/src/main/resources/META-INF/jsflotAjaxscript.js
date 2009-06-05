@@ -39,10 +39,40 @@ JSFlot.AJAX.getFormData = function getFormData(form, options) {
     }
     
     addParam("org.jsflot.AJAX_REQUEST", "true");
-    addParam("clientId", options._clientId);
-    addParam("componentValue", options._componentValue);
+    if (options) {
+    	addParam("clientId", options._clientId);
+    	addParam("componentValue", options._componentValue);
+    }
     
     return dataString;
+}
+
+JSFlot.AJAX.getEnclosingFormId = function(field){;
+var node = field.parentNode;
+      while (node != null){
+       node = node.parentNode;
+       jsflotlog.debug("traversing DOM: " + node.tagName + " :: " + node.id);
+      }
+     if (node.tagName == 'HTML') {
+      return '';
+     } 
+    return node.id;
+}
+
+JSFlot.AJAX.RefreshChart = function(chartId) {
+	jsflotlog.debug("RefreshChart called");
+	var chart = document.getElementById(chartId);
+	jsflotlog.debug("chart: " + chart + " :: " + chartId);
+
+	new Ajax.Request(document.location, {
+		method: 'get',
+		onSuccess: function(transport) {
+			jsflotlog.debug("Get XHR successful.");
+			JSFlot.AJAX.processXHRResponse(transport, chartId + "_enclosingDiv");
+		},
+		onFailure: function() { alert('AJAX request to refresh chart failed.'); } 
+	});
+	jsflotlog.debug("Finished refreshing Chart");
 }
 
 JSFlot.AJAX.Submit = function(formId, event, url, options) {
@@ -64,9 +94,6 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 				jsflotlog.debug("XHR successful.");
 				JSFlot.AJAX.processXHRResponse(transport, options._rerenderID);
 			},
-
-
-
 			onFailure: function() { alert('AJAX Request failed'); } 
 		});
 	}
@@ -78,12 +105,11 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId) {
 		function() { var xmldom = new ActiveXObject('Microsoft.XMLDOM'); xmldom.loadXML(transport.responseText); return xmldom; }
 	);
 
-	jsflotlog.debug('looking for the enclosingDiv');
+	jsflotlog.debug('looking for the enclosingDiv: ' + rerenderId);
 	var flotchartdiv = ajaxResponse.getElementById(rerenderId);
 	jsflotlog.debug("Found: " + flotchartdiv);
-	
-	jsflotlog.debug('looked for the enclosingDiv');
-	$(rerenderId).update(flotchartdiv.innerHTML);
+	var contents = flotchartdiv.innerHTML;
+	$(rerenderId).update(contents);
 	
 	//jsflotlog.debug("enclosingDiv: " + flotchartdivcontents);
 	

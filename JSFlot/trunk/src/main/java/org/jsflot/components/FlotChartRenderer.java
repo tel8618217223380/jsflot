@@ -170,7 +170,7 @@ public class FlotChartRenderer extends Renderer {
 			String url = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURI();
 	
 			//Fire off AJAX request
-			observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
+			//observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
 			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "', '" + id + "_enclosingDiv');");
 			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url + "', options);\n");
 			observeFunctionBodyBuilder.append("});");
@@ -191,7 +191,7 @@ public class FlotChartRenderer extends Renderer {
 		String dataArrayString = generateDataOptions(xyCollection, chartData);
 		String chartOptions = generateChartOptions(chartData);
 
-		sb.append("\n").append("var f = Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],").append(chartOptions).append(");");
+		sb.append("\n").append("var " + id + "_jsflot = Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],").append(chartOptions).append(");");
 
 		return sb.toString();
 	}
