@@ -31,6 +31,7 @@ public class FlotChartRendererData {
 	private Boolean fillLines = false;
 	private String legendColor;
 	private String mode = "Series";
+	private String timeFormat = null;
 	private String legendPosition = "ne";
 	private String crosshair;
 	private Boolean spreadsheet;
@@ -171,6 +172,14 @@ public class FlotChartRendererData {
 		if (this.mode == null || this.mode.equals("")) {
 			this.mode = "Series";
 		}
+	}
+	
+	public String getTimeFormat() {
+		return timeFormat;
+	}
+	
+	public void setTimeFormat(String timeFormat) {
+		this.timeFormat = timeFormat;
 	}
 
 	public String getLegendPosition() {
