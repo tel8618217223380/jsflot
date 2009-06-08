@@ -22,6 +22,7 @@ public class FlotChartTag extends UIComponentELTag {
 	private ValueExpression tooltipPosition;
 	private ValueExpression tooltipFollowMouse;
 	private ValueExpression mode;
+	private ValueExpression timeFormat;
 	private ValueExpression title;
 	private ValueExpression subtitle;
 	private ValueExpression chartType;
@@ -180,6 +181,14 @@ public class FlotChartTag extends UIComponentELTag {
 
 	public void setMode(ValueExpression mode) {
 		this.mode = mode;
+	}
+	
+	public ValueExpression getTimeFormat() {
+		return timeFormat;
+	}
+	
+	public void setTimeFormat(ValueExpression timeFormat) {
+		this.timeFormat = timeFormat;
 	}
 
 	public ValueExpression getTitle() {
@@ -361,6 +370,7 @@ public class FlotChartTag extends UIComponentELTag {
 		component.setValueExpression("tooltipPosition", this.tooltipPosition);
 		component.setValueExpression("tooltipFollowMouse", this.tooltipFollowMouse);
 		component.setValueExpression("mode", this.mode);
+		component.setValueExpression("timeFormat", this.timeFormat);
 		component.setValueExpression("title", this.title);
 		component.setValueExpression("subtitle", this.subtitle);
 		component.setValueExpression("chartType", this.chartType);
@@ -402,6 +412,7 @@ public class FlotChartTag extends UIComponentELTag {
 		this.tooltipPosition= null;
 		this.tooltipFollowMouse= null;
 		this.mode= null;
+		this.timeFormat = null;
 		this.title= null;
 		this.subtitle= null;
 		this.chartType= null;

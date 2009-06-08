@@ -24,6 +24,7 @@ package org.jsflot.components;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.logging.Logger;
 
 import javax.faces.application.Application;
@@ -206,6 +207,7 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setFillLines(get(component, context, "fillLines"));
 		chartData.setLegendColor((String) get(component, context, "legendColor"));
 		chartData.setMode((String) get(component, context, "mode"));
+		chartData.setTimeFormat((String) get(component, context, "timeFormat"));
 		chartData.setLegendPosition((String) get(component, context, "legendPosition"));
 		chartData.setCrosshair((String) get(component, context, "crosshair"));
 		chartData.setSpreadsheet(get(component, context, "spreadsheet"));
@@ -270,7 +272,11 @@ public class FlotChartRenderer extends Renderer {
 					mouseOptions.put("position", "'" + chartData.getTooltipPosition() + "'");
 				}
 				if (chartData.getMode().equalsIgnoreCase("Time")) {
-					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + dateFormat(new Date(obj.x*1)) +'<br/>y = ' + yaxisConverter(obj.y); }");
+					String timeFormat = chartData.getTimeFormat();
+					if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
+						mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '%d/%m/%y %h:%M:%S') +'<br/>y = ' + yaxisConverter(obj.y); }");
+					}
+					
 				} else {
 					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y); }");
 				}
@@ -293,19 +299,28 @@ public class FlotChartRenderer extends Renderer {
 			if (chartData.getXaxisTitle() != null && chartData.getXaxisTitle().length() > 0) {
 				xaxisOptions.put("title", "'" + chartData.getXaxisTitle() + "'");
 			}
-			if (chartData.getMode().equalsIgnoreCase("Time")) {
+			/*if (chartData.getMode().equalsIgnoreCase("Time")) {
 				xaxisOptions.put("tickFormatter", "function(n){ return dateFormat(new Date(n*1)); }");
-			}
+			}*/
 			if (chartData.getXaxisLabelRotation() != null && !chartData.getXaxisLabelRotation().equals(0)) {
 				xaxisOptions.put("labelsAngle", chartData.getXaxisLabelRotation());
 			}
 			if (chartData.getXaxisTitleRotation() != null && !chartData.getXaxisTitleRotation().equals(0)) {
 				xaxisOptions.put("titleAngle", chartData.getXaxisTitleRotation());
 			}
+			
+			if (chartData.getMode().equalsIgnoreCase("Time")) {
+				xaxisOptions.put("mode", "'time'");
+				if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
+					xaxisOptions.put("timeFormat", "'" + chartData.getTimeFormat() + "'");
+				}
+			}
 
 			if (xaxisOptions.length() > 0) {
 				chartOptions.put("xaxis", xaxisOptions);
 			}
+			
+
 
 			JSONObject yaxisOptions = new JSONObject();
 			yaxisOptions.put("tickFormatter", "function(n){ return yaxisConverter(n); }");
@@ -386,9 +401,9 @@ public class FlotChartRenderer extends Renderer {
 			if (chartData.getMarkers() != null && chartData.getMarkers().booleanValue()) {
 				JSONObject markersOptions = new JSONObject();
 				markersOptions.put("show", true);
-				if (chartData.getMode().equalsIgnoreCase("Time")) {
-					markersOptions.put("labelFormatter", "function(obj){ return dateFormat(new Date(obj.x*1), 'HH:MM:ss'); }");
-				}
+				//if (chartData.getMode().equalsIgnoreCase("Time")) {
+				//	markersOptions.put("labelFormatter", "function(obj){ return dateFormat(new Date(obj.x*1), 'HH:MM:ss'); }");
+				//}
 				markersOptions.put("position", "'" + chartData.getMarkerPosition() + "'");
 				chartOptions.put("markers", markersOptions);
 			}
@@ -425,13 +440,16 @@ public class FlotChartRenderer extends Renderer {
 		}
 
 		sb.append(" [");
+		NumberFormat nf = NumberFormat.getNumberInstance();
+		nf.setMaximumFractionDigits(3);
+		nf.setGroupingUsed(false);
 		if (list != null) {
 			for (int i = 0; i < list.size() - 1; i++) {
 				XYDataPoint p = list.get(i);
 				if (chartData.getChartType().equalsIgnoreCase("bar")) {
-					sb.append("[").append(p.getX().doubleValue() + offset).append(",").append(p.getY()).append("]").append(", ");
+					sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append("]").append(", ");
 				} else {
-					sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]").append(", ");
+					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append("]").append(", ");
 				}
 
 			}

@@ -87,8 +87,15 @@
 			</deferred-value>
 		</attribute>
 		<attribute>
-			<description>The mode of the graph. Either Series, Time or Bar. Default is Series</description>
+			<description>The mode of the graph. Either Series or Time. Default is Series</description>
 			<name>mode</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The format of the graph. i.e. '%d/%m/%y %h:%M:%S'</description>
+			<name>timeFormat</name>
 			<deferred-value>
 				<type>java.lang.String</type>
 			</deferred-value>
