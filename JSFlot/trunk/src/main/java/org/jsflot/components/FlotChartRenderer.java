@@ -456,9 +456,9 @@ public class FlotChartRenderer extends Renderer {
 			// Last Row
 			XYDataPoint p = list.get(list.size() - 1);
 			if (chartData.getChartType().equalsIgnoreCase("bar")) {
-				sb.append("[").append(p.getX().doubleValue() + offset).append(",").append(p.getY()).append("]");
+				sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append("]");
 			} else {
-				sb.append("[").append(p.getX()).append(",").append(p.getY()).append("]");
+				sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append("]");
 			}
 		}
 		sb.append("]");
