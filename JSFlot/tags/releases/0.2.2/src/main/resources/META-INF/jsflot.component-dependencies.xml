@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+	<namespace>http://www.jsflot.org/taglib/jsflot
+	</namespace>
+	<component>
+		<name>flotChart</name>
+
+		<scripts>
+			<script>org/jsflot/excanvas.js</script>
+			<script>org/jsflot/jquery.flot.js</script>
+			<script>org/jsflot/jquery.js</script>
+		</scripts>
+
+	</component>
+</components>
