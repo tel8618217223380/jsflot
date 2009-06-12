@@ -23,7 +23,6 @@ THE SOFTWARE.
 package org.jsflot.components;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
 
@@ -37,9 +36,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.Renderer;
 import javax.faces.webapp.UIComponentTag;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.jsflot.xydata.XYDataList;
@@ -154,9 +151,7 @@ public class FlotChartRenderer extends Renderer {
 			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
 			observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:select', function(evt){\n");
 			observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
-			observeFunctionBodyBuilder.append("\tvar areaMin = area.xsecond;\n");
-			observeFunctionBodyBuilder.append("\tvar areaMax = area.xfirst;\n");
-			observeFunctionBodyBuilder.append("\tvar areaRange = areaMax - areaMin;\n");
+			observeFunctionBodyBuilder.append("\tvar areaRange = area.xfirst - area.xsecond;\n");
 			//observeFunctionBodyBuilder.append("\tvar areaRange = (Math.round(areaRange * 100)) / 100; \n");
 	
 			String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
