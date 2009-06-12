@@ -1737,6 +1737,7 @@ Flotr.Graph = Class.create({
 			prevy = tVert(y2, ya) + offset;
 			ctx.lineTo(prevx, prevy);
 		}
+		
 		ctx.stroke();
 	},
 	/**
@@ -2810,7 +2811,12 @@ Flotr.Graph = Class.create({
 		
 		if(options.selection.mode.indexOf('x') == -1){
 			pos.x = (pos == this.selection.first) ? 0 : this.plotWidth;			   
-		}else{
+		}else {
+			pos.x = event.pageX - offset.left - this.plotOffset.left;
+			pos.x = Math.min(Math.max(0, pos.x), this.plotWidth);
+		}
+		
+		if (options.selection.mode == 'drag') {
 			pos.x = event.pageX - offset.left - this.plotOffset.left;
 			pos.x = Math.min(Math.max(0, pos.x), this.plotWidth);
 		}
@@ -2893,26 +2899,39 @@ Flotr.Graph = Class.create({
 			s.second.x == prevSelection.second.x &&
 			s.second.y == prevSelection.second.y)
 			return;
-		
-		octx.save();
-		octx.strokeStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.8).toString();
-		octx.lineWidth = 1;
-		octx.lineJoin = 'miter';
-		octx.fillStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.4).toString();
 
-		this.prevSelection = {
-			first: { x: s.first.x, y: s.first.y },
-			second: { x: s.second.x, y: s.second.y }
-		};
+		if (options.selection.mode == 'drag') {
+			//dragmode
+			var moveX = s.second.x - s.first.x;
+			
+			this.ctx.save();
+			this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			this.ctx.translate(moveX, 0);
+			this.draw(this.el, this.data, this.options);
+			this.ctx.restore();
+			
+		} else {
+			//selectionmode
+			octx.save();
+			octx.strokeStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.8).toString();
+			octx.lineWidth = 1;
+			octx.lineJoin = 'miter';
+			octx.fillStyle = Flotr.Color.parse(options.selection.color).scale(null, null, null, 0.4).toString();
 
-		var x = Math.min(s.first.x, s.second.x),
-		    y = Math.min(s.first.y, s.second.y),
-		    w = Math.abs(s.second.x - s.first.x),
-		    h = Math.abs(s.second.y - s.first.y);
-		
-		octx.fillRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
-		octx.strokeRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
-		octx.restore();
+			this.prevSelection = {
+				first: { x: s.first.x, y: s.first.y },
+				second: { x: s.second.x, y: s.second.y }
+			};
+
+			var x = Math.min(s.first.x, s.second.x),
+			    y = Math.min(s.first.y, s.second.y),
+			    w = Math.abs(s.second.x - s.first.x),
+			    h = Math.abs(s.second.y - s.first.y);
+			
+			octx.fillRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
+			octx.strokeRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
+			octx.restore();
+		}
 	},
 	/**	 
 	 * Draws the selection box.
