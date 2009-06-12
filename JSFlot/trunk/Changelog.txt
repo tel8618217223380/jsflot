@@ -1,3 +1,6 @@
+Version 0.2.3 JSMin
+- Added JSMin to ResourceLoaderPhaseListener to automatically pack all Javascript files served from JSFlot. This effectively halves the size of all Javascript files transferred to the client. (http://inconspicuous.org/projects/jsmin/jsmin.java)
+
 Version 0.2.2 Stacked Bars
 - Added support for Stacked Bars
 - Added a JS function to refresh the chart via an AJAX call. JSFlot.AJAX.RefreshChart('chartID');
