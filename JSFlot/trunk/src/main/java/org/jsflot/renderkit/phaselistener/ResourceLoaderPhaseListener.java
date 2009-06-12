@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 package org.jsflot.renderkit.phaselistener;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -36,6 +37,8 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.inconspicuous.jsmin.JSMin;
 
 public class ResourceLoaderPhaseListener implements PhaseListener {
 
@@ -124,23 +127,29 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			}
 
 			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-
 			response.setContentType(contentType);
 			response.setStatus(200);
 			ServletOutputStream outputStream = response.getOutputStream();
+			
+			
+			if (resourcePath.endsWith(".js")) {
+				//Javascript file
+				JSMin jsmin = new JSMin(inputStream, outputStream);
+				jsmin.jsmin();
+			} else {
+				for (indice = 0; (indice = inputStream.read(byteArr)) > 0;) {
+					tempIndice = mainArr.length + indice;
+					tempArr = new byte[tempIndice];
+					System.arraycopy(mainArr, 0, tempArr, 0, mainArr.length);
+					System.arraycopy(byteArr, 0, tempArr, mainArr.length, indice);
+					mainArr = tempArr;
+				}
 
-			for (indice = 0; (indice = inputStream.read(byteArr)) > 0;) {
-				tempIndice = mainArr.length + indice;
-				tempArr = new byte[tempIndice];
-				System.arraycopy(mainArr, 0, tempArr, 0, mainArr.length);
-				System.arraycopy(byteArr, 0, tempArr, mainArr.length, indice);
-				mainArr = tempArr;
+				outputStream.write(mainArr);
+				outputStream.flush();
+				outputStream.close();
 			}
-
-			outputStream.write(mainArr);
-			outputStream.flush();
-			outputStream.close();
-
+			//Set response complete after this phase
 			facesContext.responseComplete();
 		} catch (Exception exception) {
 			exception.printStackTrace();
