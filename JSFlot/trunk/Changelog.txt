@@ -1,6 +1,8 @@
 Version 0.2.2 Stacked Bars
 - Added support for Stacked Bars
 - Added a JS function to refresh the chart via an AJAX call. JSFlot.AJAX.RefreshChart('chartID');
+- Changed the visualization for drag and drop support
+- Changed Time mode to reuse Flotrs Time mode, and added a time format option. 
 
 Version 0.2.1 Support for non-facelets
 - Added Tag classes to be able to support non-facelets JSF 1.2 applications

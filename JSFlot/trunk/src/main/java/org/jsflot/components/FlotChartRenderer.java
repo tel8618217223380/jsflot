@@ -154,9 +154,10 @@ public class FlotChartRenderer extends Renderer {
 			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
 			observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:select', function(evt){\n");
 			observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
-			observeFunctionBodyBuilder.append("\tvar areaMin = parseInt(area.xfirst);\n");
-			observeFunctionBodyBuilder.append("\tvar areaMax = parseInt(area.xsecond);\n");
+			observeFunctionBodyBuilder.append("\tvar areaMin = area.xsecond;\n");
+			observeFunctionBodyBuilder.append("\tvar areaMax = area.xfirst;\n");
 			observeFunctionBodyBuilder.append("\tvar areaRange = areaMax - areaMin;\n");
+			//observeFunctionBodyBuilder.append("\tvar areaRange = (Math.round(areaRange * 100)) / 100; \n");
 	
 			String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
 			if (facesPrefix == null) {
@@ -260,7 +261,7 @@ public class FlotChartRenderer extends Renderer {
 
 			if (chartData.getChartDraggable() != null && chartData.getChartDraggable().booleanValue()) {
 				JSONObject selectionOptions = new JSONObject();
-				selectionOptions.put("mode", "'x'");
+				selectionOptions.put("mode", "'drag'");
 				chartOptions.put("selection", selectionOptions);
 			}
 
