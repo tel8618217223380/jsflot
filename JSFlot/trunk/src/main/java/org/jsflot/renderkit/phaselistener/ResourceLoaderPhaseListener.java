@@ -131,8 +131,9 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			response.setStatus(200);
 			ServletOutputStream outputStream = response.getOutputStream();
 			
-			
-			if (resourcePath.endsWith(".js")) {
+			log.info("JSFlotDebug: " + System.getProperties().get("JSFlotDebug"));
+			if (resourcePath.endsWith(".js") && 
+					!(System.getProperties().get("JSFlotDebug") != null && System.getProperties().get("JSFlotDebug").equals("true"))) {
 				//Javascript file
 				JSMin jsmin = new JSMin(inputStream, outputStream);
 				jsmin.jsmin();

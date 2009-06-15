@@ -13,29 +13,35 @@ JSFlot.AJAX.getFormData = function getFormData(form, options) {
             + escape(value ? value : "").replace(/\+/g, "%2B");
     }
 
-    var elemArray = form.elements;
-    for (var i = 0; i < elemArray.length; i++) {
-        var element = elemArray[i];
-        var elemType = element.type.toUpperCase();
-        var elemName = element.name;
-        if (elemName) {
-            if (elemType == "TEXT"
-                    || elemType == "TEXTAREA"
-                    || elemType == "PASSWORD"
-                    || elemType == "HIDDEN")
-                addParam(elemName, element.value);
-            else if (elemType == "CHECKBOX" && element.checked)
-                addParam(elemName, element.value ? element.value : "On");
-            else if (elemType == "RADIO" && element.checked)
-                addParam(elemName, element.value);
-            else if (elemType.indexOf("SELECT") != -1)
-                for (var j = 0; j < element.options.length; j++) {
-                    var option = element.options[j];
-                    if (option.selected)
-                        addParam(elemName,
-                            option.value ? option.value : option.text);
-                }
-        }
+    if (options._ajaxSingle) {
+    	var viewState = document.getElementById("javax.faces.ViewState");
+    	addParam("javax.faces.ViewState", viewState.value);
+    	addParam(form.id, form.id);
+    } else {
+	    var elemArray = form.elements;
+	    for (var i = 0; i < elemArray.length; i++) {
+	        var element = elemArray[i];
+	        var elemType = element.type.toUpperCase();
+	        var elemName = element.name;
+	        if (elemName) {
+	            if (elemType == "TEXT"
+	                    || elemType == "TEXTAREA"
+	                    || elemType == "PASSWORD"
+	                    || elemType == "HIDDEN")
+	                addParam(elemName, element.value);
+	            else if (elemType == "CHECKBOX" && element.checked)
+	                addParam(elemName, element.value ? element.value : "On");
+	            else if (elemType == "RADIO" && element.checked)
+	                addParam(elemName, element.value);
+	            else if (elemType.indexOf("SELECT") != -1)
+	                for (var j = 0; j < element.options.length; j++) {
+	                    var option = element.options[j];
+	                    if (option.selected)
+	                        addParam(elemName,
+	                            option.value ? option.value : option.text);
+	                }
+	        }
+	    }
     }
     
     addParam("org.jsflot.AJAX_REQUEST", "true");
@@ -92,31 +98,47 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 			parameters: params,
 			onSuccess: function(transport) {
 				jsflotlog.debug("XHR successful.");
-				JSFlot.AJAX.processXHRResponse(transport, options._rerenderID);
+				JSFlot.AJAX.processXHRResponse(transport, options._rerenderID, options._otherRerenderIDs);
 			},
 			onFailure: function() { alert('AJAX Request failed'); } 
 		});
 	}
 }
 
-JSFlot.AJAX.processXHRResponse = function(transport, rerenderId) {
+JSFlot.AJAX.processXHRResponse = function(transport, rerenderId, otherRerenderIDs) {
 	var ajaxResponse = Try.these(
 		function() { return new DOMParser().parseFromString(transport.responseText, 'text/xml'); },
 		function() { var xmldom = new ActiveXObject('Microsoft.XMLDOM'); xmldom.loadXML(transport.responseText); return xmldom; }
 	);
 
 	jsflotlog.debug('looking for the enclosingDiv: ' + rerenderId);
-	var flotchartdiv = ajaxResponse.getElementById(rerenderId);
-	jsflotlog.debug("Found: " + flotchartdiv);
-	var contents = flotchartdiv.innerHTML;
-	$(rerenderId).update(contents);
-	
-	//jsflotlog.debug("enclosingDiv: " + flotchartdivcontents);
-	
-	//var json = transport.responseText.evalJSON();
-	//if(json.series && json.options && json.componentId) {
-	//	var f = Flotr.draw($(json.componentId), json.series, json.options);
-	//}
+	JSFlot.AJAX.updateElement(ajaxResponse, rerenderId);
+		
+	//Process other RerenderIDs
+	jsflotlog.debug('looking for the other ReRenderIDs: ' + otherRerenderIDs);
+	if (otherRerenderIDs) {
+		if (otherRerenderIDs.indexOf(",") != -1)  {
+			//Multiple reRender IDs
+			var rerenderIDs = otherRerenderIDs.split(",");
+			for (var i = 0; i < rerenderIDs.length; i++ ) {
+				JSFlot.AJAX.updateElement(ajaxResponse, reRenderIDs[i].trim());
+			}
+		} else {
+			//Single reRender ID
+			JSFlot.AJAX.updateElement(ajaxResponse, otherRerenderIDs);
+		}
+		
+	}
+}
+
+JSFlot.AJAX.updateElement = function(ajaxResponse, reRenderID) {
+	jsflotlog.debug("looking for: " + reRenderID);
+	var elementDiv = ajaxResponse.getElementById(reRenderID);
+	jsflotlog.debug("Found: " + elementDiv);
+	if (elementDiv) {
+		var elemContents = elementDiv.innerHTML;
+		$(reRenderID).update(elemContents);
+	}
 }
 
 JSFlot.AJAX.PrepareQuery = function(formId) {
@@ -154,5 +176,7 @@ JSFlot.Options.prototype = {
 	_clientId: null,
 	_componentValue: null,
 	_rerenderID: null,
-	_flotContainerID: null
+	_flotContainerID: null,
+	_ajaxSingle: false,
+	_otherRerenderIDs: null
 }

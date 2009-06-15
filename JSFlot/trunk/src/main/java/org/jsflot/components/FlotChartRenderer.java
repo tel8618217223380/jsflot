@@ -131,7 +131,7 @@ public class FlotChartRenderer extends Renderer {
 		writer.endElement("input");
 		writer.write("\n");
 
-		writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, component);
+		writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, chartData.getAjaxSingle(), chartData.getReRender(), component);
 
 		writer.endElement("div");
 		writer.write("\n");
@@ -145,7 +145,7 @@ public class FlotChartRenderer extends Renderer {
 			return component.getAttributes().get(name);
 	}
 	
-	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, UIComponent component)  throws IOException {
+	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, Boolean ajaxSingle, String reRender, UIComponent component)  throws IOException {
 		if (chartDraggable != null && chartDraggable) {
 			//If the chart is draggable, include JavaScript to listen to the drag event and to fire off AJAX request to update the chart. 
 			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
@@ -169,6 +169,10 @@ public class FlotChartRenderer extends Renderer {
 			//Fire off AJAX request
 			//observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
 			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "', '" + id + "_enclosingDiv');");
+			observeFunctionBodyBuilder.append("options._ajaxSingle = " + ajaxSingle.booleanValue() + ";");
+			if (reRender != null && !reRender.equals("")) {
+				observeFunctionBodyBuilder.append("options._otherRerenderIDs = '" + reRender + "';");
+			}
 			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url + "', options);\n");
 			observeFunctionBodyBuilder.append("});");
 	
@@ -232,6 +236,8 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setYaxisLabelRotation(get(component, context, "yaxisLabelRotation"));
 		chartData.setYaxisTitleRotation(get(component, context, "yaxisTitleRotation"));
 		chartData.setChartDraggable(get(component, context, "chartDraggable"));
+		chartData.setAjaxSingle(get(component, context, "ajaxSingle"));
+		chartData.setReRender((String) get(component, context, "reRender"));
 		//Set ChartDraggedListener
 		String chartDraggedListener = (String)get(component, context, "chartDraggedListener");
 		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] {ActionEvent.class});

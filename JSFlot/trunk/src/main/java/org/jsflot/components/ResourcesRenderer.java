@@ -62,6 +62,7 @@ public class ResourcesRenderer extends Renderer {
 		if (debug != null && debug.equalsIgnoreCase("true")) {
 			renderBlackbird = true;
 			renderBlackbirdCss = true;
+			System.getProperties().put("JSFlotDebug", "true");
 		}
 
 		renderScriptOnce(context, component, writer, renderPrototype, renderBase64, renderExcanvas, renderCanvas2Image, renderCanvastext, renderFlotr, renderBlackbird, renderBlackbirdCss);

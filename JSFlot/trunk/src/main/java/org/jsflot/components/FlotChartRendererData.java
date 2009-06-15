@@ -61,6 +61,8 @@ public class FlotChartRendererData {
 	private Integer xaxisTitleRotation = 0;
 	private Integer yaxisTitleRotation = 90;
 	private Boolean chartDraggable = false;
+	private Boolean ajaxSingle = false;
+	private String reRender = null;
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -609,5 +611,29 @@ public class FlotChartRendererData {
 		} else if (chartDraggableObj instanceof Boolean) {
 			this.chartDraggable = (Boolean) chartDraggableObj;
 		}
+	}
+	
+	public Boolean getAjaxSingle() {
+		return ajaxSingle;
+	}
+	
+	public void setAjaxSingle(Boolean ajaxSingle) {
+		this.ajaxSingle = ajaxSingle;
+	}
+	
+	public void setAjaxSingle(Object ajaxSingleObj) {
+		if (ajaxSingleObj instanceof String) {
+			this.ajaxSingle = new Boolean((String) ajaxSingleObj);
+		} else if (ajaxSingleObj instanceof Boolean) {
+			this.ajaxSingle = (Boolean) ajaxSingleObj;
+		}
+	}
+	
+	public String getReRender() {
+		return reRender;
+	}
+	
+	public void setReRender(String reRender) {
+		this.reRender = reRender;
 	}
 }

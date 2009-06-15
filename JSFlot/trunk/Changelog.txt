@@ -1,5 +1,7 @@
-Version 0.2.3 JSMin
+Version 0.2.5 JSMin
 - Added JSMin to ResourceLoaderPhaseListener to automatically pack all Javascript files served from JSFlot. This effectively halves the size of all Javascript files transferred to the client. (http://inconspicuous.org/projects/jsmin/jsmin.java)
+- Added ajaxSingle for single-chart ajax submit (complete form is not submittet)
+- Added reRender attribute. In this first installation DOM element IDs need to be included, but future versions will use the JSF ID.
 
 Version 0.2.2 Stacked Bars
 - Added support for Stacked Bars
