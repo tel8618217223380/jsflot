@@ -24,9 +24,11 @@ package org.jsflot.components;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.faces.application.Application;
+import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -48,7 +50,7 @@ import org.json.JSONObject;
 public class FlotChartRenderer extends Renderer {
 
 	private static final Logger log = Logger.getLogger(FlotChartRenderer.class.getName());
-	
+
 	@Override
 	public void decode(FacesContext context, UIComponent component) {
 		// TODO Auto-generated method stub
@@ -59,18 +61,18 @@ public class FlotChartRenderer extends Renderer {
 			id = "testID";
 		}
 
-		HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		String ajaxRequest = request.getParameter(ComponentRendererUtil.AJAX_REQUEST);
 		if (ajaxRequest != null && ajaxRequest.equalsIgnoreCase("true")) {
 			String ajaxClientId = request.getParameter("clientId");
 			if (ajaxClientId == null || !ajaxClientId.equals(clientId)) {
-				//This is not the correct component. Return
+				// This is not the correct component. Return
 				return;
 			}
 			String componentValue = request.getParameter("componentValue");
-		
-			ValueChangeEvent changeEvent = new ValueChangeEvent(((UIComponent)component), "0", componentValue);
-			((UIComponent)component).queueEvent(changeEvent);
+
+			ValueChangeEvent changeEvent = new ValueChangeEvent(((UIComponent) component), "0", componentValue);
+			((UIComponent) component).queueEvent(changeEvent);
 		}
 	}
 
@@ -93,20 +95,43 @@ public class FlotChartRenderer extends Renderer {
 			writeComponentContents(context, writer, component);
 		}
 	}
-	
+
 	private void writeComponentContents(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
 		String clientId = component.getClientId(context);
 		String id = (String) get(component, context, "id");
 		if (id == null) {
 			id = "testID";
 		}
-		
-		
-		FlotChartRendererData chartData = getChartData(component, context); 
+
+		FlotChartRendererData chartData = getChartData(component, context);
+		String reRenderIDs = chartData.getReRender();
+		String newReRenderIDs = "";
+		int indexOfComma = reRenderIDs.indexOf(",");
+		if (indexOfComma != -1) {
+			String[] idArray = reRenderIDs.split(",");
+			for (String compId : idArray) {
+				UIComponent foundComponent = ComponentRendererUtil.findComponent(context.getViewRoot(), compId.trim());
+				if (foundComponent != null) {
+					if (!newReRenderIDs.equals("")) {
+						//Prepend a comma
+						newReRenderIDs = newReRenderIDs + ",";
+					} 
+					newReRenderIDs += foundComponent.getClientId(context);
+				}
+			}
+			chartData.setReRender(newReRenderIDs);
+		} else {
+			// Single reRender
+			UIComponent comp = ComponentRendererUtil.findComponent(context.getViewRoot(), reRenderIDs);
+			if (comp != null) {
+				String compClientId = comp.getClientId(context);
+				chartData.setReRender(compClientId);
+			}
+		}
 
 		XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
 		String functionBody = generateFunctionBody(xyCollection, id, chartData);
-		
+
 		writer.startElement("div", component);
 		writer.writeAttribute("id", id + "_enclosingDiv", null);
 
@@ -123,7 +148,7 @@ public class FlotChartRenderer extends Renderer {
 		writer.write(functionBody);
 		writer.endElement("script");
 		writer.write("\n");
-		
+
 		writer.startElement("input", component);
 		writer.writeAttribute("type", "hidden", null);
 		writer.writeAttribute("id", id + "_hiddenValue", null);
@@ -144,16 +169,18 @@ public class FlotChartRenderer extends Renderer {
 		else
 			return component.getAttributes().get(name);
 	}
-	
-	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, Boolean ajaxSingle, String reRender, UIComponent component)  throws IOException {
+
+	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, Boolean ajaxSingle,
+			String reRender, UIComponent component) throws IOException {
 		if (chartDraggable != null && chartDraggable) {
-			//If the chart is draggable, include JavaScript to listen to the drag event and to fire off AJAX request to update the chart. 
+			// If the chart is draggable, include JavaScript to listen to the
+			// drag event and to fire off AJAX request to update the chart.
 			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
 			observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:select', function(evt){\n");
 			observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
 			observeFunctionBodyBuilder.append("\tvar areaRange = area.xfirst - area.xsecond;\n");
-			//observeFunctionBodyBuilder.append("\tvar areaRange = (Math.round(areaRange * 100)) / 100; \n");
-	
+			// observeFunctionBodyBuilder.append("\tvar areaRange = (Math.round(areaRange * 100)) / 100; \n");
+
 			String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
 			if (facesPrefix == null) {
 				facesPrefix = "";
@@ -162,20 +189,22 @@ public class FlotChartRenderer extends Renderer {
 			if (facesSuffix == null) {
 				facesSuffix = "";
 			}
-	
+
 			String pathinfo = context.getExternalContext().getRequestPathInfo();
-			String url = ((HttpServletRequest)context.getExternalContext().getRequest()).getRequestURI();
-	
-			//Fire off AJAX request
-			//observeFunctionBodyBuilder.append("\tdocument.getElementById('" + id + "_hiddenValue').value = areaRange; \n");
+			String url = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURI();
+
+			// Fire off AJAX request
+			// observeFunctionBodyBuilder.append("\tdocument.getElementById('" +
+			// id + "_hiddenValue').value = areaRange; \n");
 			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "', '" + id + "_enclosingDiv');");
 			observeFunctionBodyBuilder.append("options._ajaxSingle = " + ajaxSingle.booleanValue() + ";");
 			if (reRender != null && !reRender.equals("")) {
 				observeFunctionBodyBuilder.append("options._otherRerenderIDs = '" + reRender + "';");
 			}
-			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url + "', options);\n");
+			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url
+					+ "', options);\n");
 			observeFunctionBodyBuilder.append("});");
-	
+
 			writer.startElement("script", component);
 			writer.writeAttribute("id", id + "_selection", null);
 			writer.writeAttribute("language", "javascript", null);
@@ -196,7 +225,7 @@ public class FlotChartRenderer extends Renderer {
 
 		return sb.toString();
 	}
-	
+
 	private FlotChartRendererData getChartData(UIComponent component, FacesContext context) {
 		FlotChartRendererData chartData = new FlotChartRendererData();
 		chartData.setShowDataPoints(get(component, context, "showDataPoints"));
@@ -238,10 +267,10 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setChartDraggable(get(component, context, "chartDraggable"));
 		chartData.setAjaxSingle(get(component, context, "ajaxSingle"));
 		chartData.setReRender((String) get(component, context, "reRender"));
-		//Set ChartDraggedListener
-		String chartDraggedListener = (String)get(component, context, "chartDraggedListener");
-		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] {ActionEvent.class});
-		
+		// Set ChartDraggedListener
+		String chartDraggedListener = (String) get(component, context, "chartDraggedListener");
+		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] { ActionEvent.class });
+
 		return chartData;
 	}
 
@@ -276,9 +305,11 @@ public class FlotChartRenderer extends Renderer {
 				if (chartData.getMode().equalsIgnoreCase("Time")) {
 					String timeFormat = chartData.getTimeFormat();
 					if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
-						mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '%d/%m/%y %h:%M:%S') +'<br/>y = ' + yaxisConverter(obj.y); }");
+						mouseOptions
+								.put("trackFormatter",
+										"function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '%d/%m/%y %h:%M:%S') +'<br/>y = ' + yaxisConverter(obj.y); }");
 					}
-					
+
 				} else {
 					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y); }");
 				}
@@ -301,16 +332,18 @@ public class FlotChartRenderer extends Renderer {
 			if (chartData.getXaxisTitle() != null && chartData.getXaxisTitle().length() > 0) {
 				xaxisOptions.put("title", "'" + chartData.getXaxisTitle() + "'");
 			}
-			/*if (chartData.getMode().equalsIgnoreCase("Time")) {
-				xaxisOptions.put("tickFormatter", "function(n){ return dateFormat(new Date(n*1)); }");
-			}*/
+			/*
+			 * if (chartData.getMode().equalsIgnoreCase("Time")) {
+			 * xaxisOptions.put("tickFormatter",
+			 * "function(n){ return dateFormat(new Date(n*1)); }"); }
+			 */
 			if (chartData.getXaxisLabelRotation() != null && !chartData.getXaxisLabelRotation().equals(0)) {
 				xaxisOptions.put("labelsAngle", chartData.getXaxisLabelRotation());
 			}
 			if (chartData.getXaxisTitleRotation() != null && !chartData.getXaxisTitleRotation().equals(0)) {
 				xaxisOptions.put("titleAngle", chartData.getXaxisTitleRotation());
 			}
-			
+
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
 				xaxisOptions.put("mode", "'time'");
 				if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
@@ -321,8 +354,6 @@ public class FlotChartRenderer extends Renderer {
 			if (xaxisOptions.length() > 0) {
 				chartOptions.put("xaxis", xaxisOptions);
 			}
-			
-
 
 			JSONObject yaxisOptions = new JSONObject();
 			yaxisOptions.put("tickFormatter", "function(n){ return yaxisConverter(n); }");
@@ -403,9 +434,10 @@ public class FlotChartRenderer extends Renderer {
 			if (chartData.getMarkers() != null && chartData.getMarkers().booleanValue()) {
 				JSONObject markersOptions = new JSONObject();
 				markersOptions.put("show", true);
-				//if (chartData.getMode().equalsIgnoreCase("Time")) {
-				//	markersOptions.put("labelFormatter", "function(obj){ return dateFormat(new Date(obj.x*1), 'HH:MM:ss'); }");
-				//}
+				// if (chartData.getMode().equalsIgnoreCase("Time")) {
+				// markersOptions.put("labelFormatter",
+				// "function(obj){ return dateFormat(new Date(obj.x*1), 'HH:MM:ss'); }");
+				// }
 				markersOptions.put("position", "'" + chartData.getMarkerPosition() + "'");
 				chartOptions.put("markers", markersOptions);
 			}
@@ -436,7 +468,7 @@ public class FlotChartRenderer extends Renderer {
 			offset = (xyCollection.getDataList().size() / 2) * barWidth * -1;
 			int indexOf = xyCollection.indexOf(list);
 			if (indexOf > -1) {
-				//Calculate this bars offset
+				// Calculate this bars offset
 				offset += (indexOf * barWidth);
 			}
 		}
@@ -464,13 +496,14 @@ public class FlotChartRenderer extends Renderer {
 			}
 		}
 		sb.append("]");
-		
+
 		return sb.toString();
-		
+
 	}
+
 	private String generateDataOptions(XYDataSetCollection xyCollection, FlotChartRendererData chartData) {
 		String retVal = "";
-		
+
 		try {
 			int index = 0;
 			for (XYDataList list : xyCollection.getDataList()) {

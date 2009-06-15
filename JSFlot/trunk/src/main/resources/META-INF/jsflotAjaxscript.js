@@ -116,18 +116,16 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId, otherRerenderID
 		
 	//Process other RerenderIDs
 	jsflotlog.debug('looking for the other ReRenderIDs: ' + otherRerenderIDs);
-	if (otherRerenderIDs) {
-		if (otherRerenderIDs.indexOf(",") != -1)  {
-			//Multiple reRender IDs
-			var rerenderIDs = otherRerenderIDs.split(",");
-			for (var i = 0; i < rerenderIDs.length; i++ ) {
-				JSFlot.AJAX.updateElement(ajaxResponse, reRenderIDs[i].trim());
-			}
-		} else {
-			//Single reRender ID
-			JSFlot.AJAX.updateElement(ajaxResponse, otherRerenderIDs);
+	if (otherRerenderIDs.indexOf(",") != -1)  {
+		//Multiple reRender IDs
+		var rerenderIDs = otherRerenderIDs.split(",");
+		jsflotlog.debug("multiple rerenderIDs: " + rerenderIDs);
+		for (i = 0; i < rerenderIDs.length; i++) {
+			JSFlot.AJAX.updateElement(ajaxResponse, rerenderIDs[i]);
 		}
-		
+	} else {
+		//Single reRender ID
+		JSFlot.AJAX.updateElement(ajaxResponse, otherRerenderIDs);
 	}
 }
 
