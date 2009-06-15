@@ -65,6 +65,8 @@ public class FlotChartTag extends UIComponentELTag {
 	private ValueExpression markerPosition;
 	private ValueExpression yaxisMaxValue;
 	private ValueExpression crosshair;
+	private ValueExpression ajaxSingle;
+	private ValueExpression reRender;
 	
 	@Override
 	public String getComponentType() {
@@ -372,6 +374,22 @@ public class FlotChartTag extends UIComponentELTag {
 	public void setCrosshair(ValueExpression crosshair) {
 		this.crosshair = crosshair;
 	}
+	
+	public ValueExpression getAjaxSingle() {
+		return ajaxSingle;
+	}
+	
+	public void setAjaxSingle(ValueExpression ajaxSingle) {
+		this.ajaxSingle = ajaxSingle;
+	}
+	
+	public ValueExpression getReRender() {
+		return reRender;
+	}
+	
+	public void setReRender(ValueExpression reRender) {
+		this.reRender = reRender;
+	}
 
 	protected void setProperties(UIComponent component) {
 		super.setProperties(component);
@@ -413,6 +431,8 @@ public class FlotChartTag extends UIComponentELTag {
 		component.setValueExpression("markerPosition", this.markerPosition);
 		component.setValueExpression("yaxisMaxValue", this.yaxisMaxValue);
 		component.setValueExpression("crosshair", this.crosshair);
+		component.setValueExpression("ajaxSingle", this.ajaxSingle);
+		component.setValueExpression("reRender", this.reRender);
 	};
 	
 	public void release() {
@@ -455,5 +475,7 @@ public class FlotChartTag extends UIComponentELTag {
 		this.markerPosition= null;
 		this.yaxisMaxValue= null;
 		this.crosshair= null;
+		this.ajaxSingle = null;
+		this.reRender = null;
 	};
 }
