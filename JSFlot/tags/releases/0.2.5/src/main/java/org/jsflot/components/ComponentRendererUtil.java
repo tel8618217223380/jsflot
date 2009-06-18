@@ -76,6 +76,11 @@ public class ComponentRendererUtil {
 			THE SOFTWARE.
 	 */
 	public static UIComponent findComponent(UIComponent component, String id) {
+         //If either component of id is null, the component cannot be found
+		if (component == null || id == null) {
+        	return null;
+        }
+        
         if (id.equals(component.getId())) {
             return component;
         }
