@@ -2,6 +2,11 @@
 #labels Featured
 
 {{{
+Version 0.2.5 JSMin, ajaxSingle, reRender
+- Added JSMin to ResourceLoaderPhaseListener to automatically pack all Javascript files served from JSFlot. This effectively halves the size of all Javascript files transferred to the client. (http://inconspicuous.org/projects/jsmin/jsmin.java)
+- Added ajaxSingle for single-chart ajax submit (complete form is not submittet)
+- Added reRender attribute to update parts of the DOM tree, identified by the JSF ID attribute (Not the complete ClientID)
+
 Version 0.2.2 Stacked Bars
 - Added support for Stacked Bars
 - Added a JS function to refresh the chart via an AJAX call. JSFlot.AJAX.RefreshChart('chartID');
