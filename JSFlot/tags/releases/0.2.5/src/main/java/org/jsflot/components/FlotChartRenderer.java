@@ -106,26 +106,28 @@ public class FlotChartRenderer extends Renderer {
 		FlotChartRendererData chartData = getChartData(component, context);
 		String reRenderIDs = chartData.getReRender();
 		String newReRenderIDs = "";
-		int indexOfComma = reRenderIDs.indexOf(",");
-		if (indexOfComma != -1) {
-			String[] idArray = reRenderIDs.split(",");
-			for (String compId : idArray) {
-				UIComponent foundComponent = ComponentRendererUtil.findComponent(context.getViewRoot(), compId.trim());
-				if (foundComponent != null) {
-					if (!newReRenderIDs.equals("")) {
-						//Prepend a comma
-						newReRenderIDs = newReRenderIDs + ",";
-					} 
-					newReRenderIDs += foundComponent.getClientId(context);
+		if (reRenderIDs != null) {
+			//Only try to find the real reRenderId if an id to reRender is supplied
+			if (reRenderIDs.indexOf(",") != -1) {
+				String[] idArray = reRenderIDs.split(",");
+				for (String compId : idArray) {
+					UIComponent foundComponent = ComponentRendererUtil.findComponent(context.getViewRoot(), compId.trim());
+					if (foundComponent != null) {
+						if (!newReRenderIDs.equals("")) {
+							//Prepend a comma
+							newReRenderIDs = newReRenderIDs + ",";
+						} 
+						newReRenderIDs += foundComponent.getClientId(context);
+					}
 				}
-			}
-			chartData.setReRender(newReRenderIDs);
-		} else {
-			// Single reRender
-			UIComponent comp = ComponentRendererUtil.findComponent(context.getViewRoot(), reRenderIDs);
-			if (comp != null) {
-				String compClientId = comp.getClientId(context);
-				chartData.setReRender(compClientId);
+				chartData.setReRender(newReRenderIDs);
+			} else {
+				// Single reRender
+				UIComponent comp = ComponentRendererUtil.findComponent(context.getViewRoot(), reRenderIDs);
+				if (comp != null) {
+					String compClientId = comp.getClientId(context);
+					chartData.setReRender(compClientId);
+				}
 			}
 		}
 
