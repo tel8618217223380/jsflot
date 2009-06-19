@@ -25,6 +25,7 @@ package org.jsflot.components;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.faces.application.Application;
@@ -56,10 +57,6 @@ public class FlotChartRenderer extends Renderer {
 		// TODO Auto-generated method stub
 
 		String clientId = component.getClientId(context);
-		String id = (String) get(component, context, "id");
-		if (id == null) {
-			id = "testID";
-		}
 
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		String ajaxRequest = request.getParameter(ComponentRendererUtil.AJAX_REQUEST);
@@ -78,12 +75,6 @@ public class FlotChartRenderer extends Renderer {
 
 	@Override
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-		String clientId = component.getClientId(context);
-		String id = (String) get(component, context, "id");
-		if (id == null) {
-			id = "testID";
-		}
-
 		Boolean rendered = (Boolean) get(component, context, "rendered");
 		if (rendered == null) {
 			rendered = new Boolean("true");
@@ -135,30 +126,32 @@ public class FlotChartRenderer extends Renderer {
 		String functionBody = generateFunctionBody(xyCollection, id, chartData);
 
 		writer.startElement("div", component);
-		writer.writeAttribute("id", id + "_enclosingDiv", null);
-
-		writer.startElement("div", component);
-		writer.writeAttribute("id", id, null);
-		writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + chartData.getHeight() + "px;", null);
-		writer.endElement("div");
-		writer.write("\n");
-
-		writer.startElement("script", component);
-		writer.writeAttribute("id", id + "_source", null);
-		writer.writeAttribute("language", "javascript", null);
-		writer.writeAttribute("type", "text/javascript", null);
-		writer.write(functionBody);
-		writer.endElement("script");
-		writer.write("\n");
-
-		writer.startElement("input", component);
-		writer.writeAttribute("type", "hidden", null);
-		writer.writeAttribute("id", id + "_hiddenValue", null);
-		writer.writeAttribute("value", "", null);
-		writer.endElement("input");
-		writer.write("\n");
-
-		writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, chartData.getAjaxSingle(), chartData.getReRender(), component);
+		writer.writeAttribute("id", clientId, null);
+		
+			writer.startElement("div", component);
+			writer.writeAttribute("id", id, null);
+			writer.writeAttribute("height", chartData.getWidth(), null);
+			writer.writeAttribute("width", chartData.getHeight(), null);
+			writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + chartData.getHeight() + "px;", null);
+			writer.endElement("div");
+			writer.write("\n");
+	
+			writer.startElement("script", component);
+			writer.writeAttribute("id", clientId + "_source", null);
+			writer.writeAttribute("language", "javascript", null);
+			writer.writeAttribute("type", "text/javascript", null);
+			writer.write(functionBody);
+			writer.endElement("script");
+			writer.write("\n");
+	
+			writer.startElement("input", component);
+			writer.writeAttribute("type", "hidden", null);
+			writer.writeAttribute("id", clientId + "_hiddenValue", null);
+			writer.writeAttribute("value", "", null);
+			writer.endElement("input");
+			writer.write("\n");
+	
+			writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, chartData.getAjaxSingle(), chartData.getReRender(), component);
 
 		writer.endElement("div");
 		writer.write("\n");
@@ -198,7 +191,7 @@ public class FlotChartRenderer extends Renderer {
 			// Fire off AJAX request
 			// observeFunctionBodyBuilder.append("\tdocument.getElementById('" +
 			// id + "_hiddenValue').value = areaRange; \n");
-			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + id + "', '" + id + "_enclosingDiv');");
+			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + clientId + "', '" + clientId + "');");
 			observeFunctionBodyBuilder.append("options._ajaxSingle = " + ajaxSingle.booleanValue() + ";");
 			if (reRender != null && !reRender.equals("")) {
 				observeFunctionBodyBuilder.append("options._otherRerenderIDs = '" + reRender + "';");
@@ -208,7 +201,7 @@ public class FlotChartRenderer extends Renderer {
 			observeFunctionBodyBuilder.append("});");
 
 			writer.startElement("script", component);
-			writer.writeAttribute("id", id + "_selection", null);
+			writer.writeAttribute("id", clientId + "_selection", null);
 			writer.writeAttribute("language", "javascript", null);
 			writer.writeAttribute("type", "text/javascript", null);
 			writer.write(observeFunctionBodyBuilder.toString());
@@ -476,7 +469,7 @@ public class FlotChartRenderer extends Renderer {
 		}
 
 		sb.append(" [");
-		NumberFormat nf = NumberFormat.getNumberInstance();
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
 		nf.setMaximumFractionDigits(3);
 		nf.setGroupingUsed(false);
 		if (list != null) {

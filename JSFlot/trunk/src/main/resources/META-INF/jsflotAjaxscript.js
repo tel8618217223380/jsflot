@@ -74,7 +74,7 @@ JSFlot.AJAX.RefreshChart = function(chartId) {
 		method: 'get',
 		onSuccess: function(transport) {
 			jsflotlog.debug("Get XHR successful.");
-			JSFlot.AJAX.processXHRResponse(transport, chartId + "_enclosingDiv");
+			JSFlot.AJAX.processXHRResponse(transport, chartId);
 		},
 		onFailure: function() { alert('AJAX request to refresh chart failed.'); } 
 	});

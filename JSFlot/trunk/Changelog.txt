@@ -1,3 +1,6 @@
+Version 0.2.6
+- Changed the ID naming of some of the rendered DOM elements to match the JSF ID naming Scheme
+
 Version 0.2.5 JSMin, ajaxSingle, reRender
 - Added JSMin to ResourceLoaderPhaseListener to automatically pack all Javascript files served from JSFlot. This effectively halves the size of all Javascript files transferred to the client. (http://inconspicuous.org/projects/jsmin/jsmin.java)
 - Added ajaxSingle for single-chart ajax submit (complete form is not submittet)
