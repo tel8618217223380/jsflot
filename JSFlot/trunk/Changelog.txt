@@ -1,4 +1,4 @@
-Version 0.2.6
+Version 0.2.6 Improved Drag effect
 - Changed the ID naming of some of the rendered DOM elements to match the JSF ID naming Scheme
 - Improved the Drag effect, so that extending the standard Flotr library is not needed
 - Updated Flotr to Revision 125
