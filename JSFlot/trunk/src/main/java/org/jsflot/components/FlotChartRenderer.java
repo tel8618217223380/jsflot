@@ -123,7 +123,7 @@ public class FlotChartRenderer extends Renderer {
 		}
 
 		XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
-		String functionBody = generateFunctionBody(xyCollection, id, chartData);
+		String functionBody = generateFunctionBody(xyCollection, id, clientId, chartData, context, component);
 
 		writer.startElement("div", component);
 		writer.writeAttribute("id", clientId, null);
@@ -150,8 +150,6 @@ public class FlotChartRenderer extends Renderer {
 			writer.writeAttribute("value", "", null);
 			writer.endElement("input");
 			writer.write("\n");
-	
-			writeDraggableContents(chartData.getChartDraggable(), writer, context, id, clientId, chartData.getAjaxSingle(), chartData.getReRender(), component);
 
 		writer.endElement("div");
 		writer.write("\n");
@@ -165,59 +163,79 @@ public class FlotChartRenderer extends Renderer {
 			return component.getAttributes().get(name);
 	}
 
-	public void writeDraggableContents(Boolean chartDraggable, ResponseWriter writer, FacesContext context, String id, String clientId, Boolean ajaxSingle,
-			String reRender, UIComponent component) throws IOException {
-		if (chartDraggable != null && chartDraggable) {
-			// If the chart is draggable, include JavaScript to listen to the
-			// drag event and to fire off AJAX request to update the chart.
-			StringBuilder observeFunctionBodyBuilder = new StringBuilder();
-			observeFunctionBodyBuilder.append("$('" + id + "').observe('flotr:select', function(evt){\n");
-			observeFunctionBodyBuilder.append("\tvar area = evt.memo[0];\n");
-			observeFunctionBodyBuilder.append("\tvar areaRange = area.xfirst - area.xsecond;\n");
-			// observeFunctionBodyBuilder.append("\tvar areaRange = (Math.round(areaRange * 100)) / 100; \n");
+	public String writeDraggableContents(FlotChartRendererData chartData, FacesContext context, String id, String clientId, UIComponent component) {
+		String jsflotId = id + "_jsflot";
+		StringBuffer sb = new StringBuffer();
+		if (chartData.getChartDraggable() != null && chartData.getChartDraggable().booleanValue()) {
+			/** Fired on mouse down */
+			sb.append("function " + jsflotId + "drag(e){\n");
+				sb.append("dragstart = " + jsflotId + ".getEventPosition(e);\n");
+				sb.append("document.observe('mousemove', " + jsflotId + "move);\n");
+				sb.append("document.observe('mouseup', " + jsflotId + "release);\n");
+			sb.append("}\n");
+			
+			
+			/** Fired on mouse move */
+			sb.append("function " + jsflotId + "move(e) {\n");
+				sb.append("dragend = " + jsflotId + ".getEventPosition(e),\n");
+				sb.append("xaxis = " + jsflotId + ".axes.x,\n");
+				sb.append("offset = dragstart.x - dragend.x;\n");
+				
+				sb.append("var moveOptions = Object.extend(Object.clone(options), { xaxis: {min: xaxis.min + offset, max: xaxis.max + offset }} || {});");
+				sb.append("moveOptions = Flotr.merge((moveOptions || {}), options);");
+				sb.append(jsflotId + " = " + jsflotId + "drawGraph(moveOptions);\n");
+				sb.append(jsflotId + ".overlay.observe('mousedown', " + jsflotId + "drag);\n");
+			sb.append("}\n");
+			
+			
+			/** Fired on mouse up */
+			sb.append("function " + jsflotId + "release(e){\n");
+				sb.append("document.stopObserving('mousemove', " + jsflotId + "move);\n");
+				sb.append("endingx = " + jsflotId + ".axes.x.min;\n");
+				sb.append("offset = endingx - startingx;\n");
+				sb.append("startingx = endingx;\n");
+				
+				String url = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURI();
 
-			String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
-			if (facesPrefix == null) {
-				facesPrefix = "";
-			}
-			String facesSuffix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesSuffix");
-			if (facesSuffix == null) {
-				facesSuffix = "";
-			}
-
-			String pathinfo = context.getExternalContext().getRequestPathInfo();
-			String url = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURI();
-
-			// Fire off AJAX request
-			// observeFunctionBodyBuilder.append("\tdocument.getElementById('" +
-			// id + "_hiddenValue').value = areaRange; \n");
-			observeFunctionBodyBuilder.append("var options = new JSFlot.Options('" + clientId + "', areaRange, '" + clientId + "', '" + clientId + "');");
-			observeFunctionBodyBuilder.append("options._ajaxSingle = " + ajaxSingle.booleanValue() + ";");
-			if (reRender != null && !reRender.equals("")) {
-				observeFunctionBodyBuilder.append("options._otherRerenderIDs = '" + reRender + "';");
-			}
-			observeFunctionBodyBuilder.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url
-					+ "', options);\n");
-			observeFunctionBodyBuilder.append("});");
-
-			writer.startElement("script", component);
-			writer.writeAttribute("id", clientId + "_selection", null);
-			writer.writeAttribute("language", "javascript", null);
-			writer.writeAttribute("type", "text/javascript", null);
-			writer.write(observeFunctionBodyBuilder.toString());
-			writer.endElement("script");
-			writer.write("\n");
+				// Fire off AJAX request
+				sb.append("if (offset != 0) {\n");
+				sb.append("var ajaxoptions = new JSFlot.Options('" + clientId + "', offset, '" + clientId + "', '" + clientId + "');\n");
+				sb.append("ajaxoptions._ajaxSingle = " + chartData.getAjaxSingle().booleanValue() + ";\n");
+					if (chartData.getReRender() != null && !chartData.getReRender().equals("")) {
+						sb.append("ajaxoptions._otherRerenderIDs = '" + chartData.getReRender() + "';\n");
+					}
+					sb.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'drag', '" + url
+						+ "', ajaxoptions);\n");
+					sb.append("}\n");
+			sb.append("}\n");
+			
+			sb.append(jsflotId + ".overlay.observe('mousedown', " + jsflotId + "drag);\n");
 		}
+		
+		return sb.toString();
 	}
 
-	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, FlotChartRendererData chartData) {
+	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, String clientId, FlotChartRendererData chartData, FacesContext context, UIComponent component) {
+		String jsflotId = id + "_jsflot";
 		StringBuilder sb = new StringBuilder();
 
 		String dataArrayString = generateDataOptions(xyCollection, chartData);
 		String chartOptions = generateChartOptions(chartData);
 
-		sb.append("\n").append("var " + id + "_jsflot = Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],").append(chartOptions).append(");");
-
+		//sb.append("document.observe('dom:loaded', function() {\n");
+			sb.append("var options = " + chartOptions + ";\n");
+			sb.append("function " + jsflotId + "drawGraph(opts){\n");
+				sb.append("var o = Object.extend(Object.clone(options), opts || {});\n");
+				sb.append("return Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],o);\n");
+			sb.append("}\n");
+			
+			sb.append("var " + jsflotId + " = " + jsflotId + "drawGraph();\n");
+			sb.append("var startingx = " + jsflotId + ".axes.x.min;\n");
+			sb.append("var endingx = startingx;\n");
+			sb.append("var dragstart;\n");
+			sb.append("var dragend;\n");
+			
+			sb.append(writeDraggableContents(chartData, context, id, clientId, component));
 		return sb.toString();
 	}
 
@@ -284,12 +302,6 @@ public class FlotChartRenderer extends Renderer {
 
 			chartOptions.put("HtmlText", false);
 
-			if (chartData.getChartDraggable() != null && chartData.getChartDraggable().booleanValue()) {
-				JSONObject selectionOptions = new JSONObject();
-				selectionOptions.put("mode", "'drag'");
-				chartOptions.put("selection", selectionOptions);
-			}
-
 			if (chartData.getShowTooltip().booleanValue()) {
 				JSONObject mouseOptions = new JSONObject();
 				mouseOptions.put("track", true);
@@ -300,9 +312,11 @@ public class FlotChartRenderer extends Renderer {
 				if (chartData.getMode().equalsIgnoreCase("Time")) {
 					String timeFormat = chartData.getTimeFormat();
 					if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
-						mouseOptions
-								.put("trackFormatter",
-										"function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '%d/%m/%y %h:%M:%S') +'<br/>y = ' + yaxisConverter(obj.y); }");
+						mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '" + chartData.getTimeFormat() + "') +'<br/>y = ' + yaxisConverter(obj.y); }");
+					//} else {
+					//	mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '') +'<br/>y = ' + yaxisConverter(obj.y); }");
+					//	
+					//	Flotr.Date.getFormat(time, span)
 					}
 
 				} else {

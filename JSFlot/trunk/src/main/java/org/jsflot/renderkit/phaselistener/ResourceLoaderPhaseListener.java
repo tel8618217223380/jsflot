@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.inconspicuous.jsmin.JSMin;
+import org.jsflot.components.ComponentRendererUtil;
 
 public class ResourceLoaderPhaseListener implements PhaseListener {
 
@@ -51,10 +52,10 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 
 	public void beforePhase(PhaseEvent event) {
 		if (event.getPhaseId() == PhaseId.RESTORE_VIEW) {
-			log.info("Processing new  Request!");
+			if (ComponentRendererUtil.getDebug()) { log.info("Processing new  Request!"); }
 		}
 
-		log.info("before - " + event.getPhaseId().toString());
+		if (ComponentRendererUtil.getDebug()) { log.info("before - " + event.getPhaseId().toString()); }
 	}
 
 	public PhaseId getPhaseId() {
@@ -62,10 +63,10 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 	}
 
 	public void afterPhase(PhaseEvent event) {
-		log.info("after - " + event.getPhaseId().toString());
+		if (ComponentRendererUtil.getDebug()) { log.info("after - " + event.getPhaseId().toString()); }
 
 		if (event.getPhaseId() == PhaseId.RENDER_RESPONSE) {
-			log.info("Done with Request!\n");
+			if (ComponentRendererUtil.getDebug()) { log.info("Done with Request!\n"); }
 		}
 
 		FacesContext facesContext = event.getFacesContext();
@@ -103,7 +104,7 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 	}
 
 	private void serveResource(FacesContext facesContext, String resourceName) {
-		log.info("serverResource(): resourceName: " + resourceName);
+		if (ComponentRendererUtil.getDebug()) { log.info("serverResource(): resourceName: " + resourceName); }
 
 		String resourceType = getResourceType(resourceName);
 		String contentType = getContentType(resourceType);
@@ -121,7 +122,7 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			URL url = ResourceLoaderPhaseListener.class.getResource(resourcePath);
 			if (url == null) {
 				// resource not found
-				log.info("URL is NULL: " + resourcePath);
+				if (ComponentRendererUtil.getDebug()) { log.info("URL is NULL: " + resourcePath); }
 				facesContext.responseComplete();
 				return;
 			}
@@ -131,7 +132,7 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 			response.setStatus(200);
 			ServletOutputStream outputStream = response.getOutputStream();
 			
-			log.info("JSFlotDebug: " + System.getProperties().get("JSFlotDebug"));
+			if (ComponentRendererUtil.getDebug()) {  log.info("JSFlotDebug: " + System.getProperties().get("JSFlotDebug")); }
 			if (resourcePath.endsWith(".js") && 
 					!(System.getProperties().get("JSFlotDebug") != null && System.getProperties().get("JSFlotDebug").equals("true"))) {
 				//Javascript file
@@ -158,19 +159,19 @@ public class ResourceLoaderPhaseListener implements PhaseListener {
 	}
 
 	public static String getResourceName(Map requestMap) {
-		log.info("getResourceName()");
+		if (ComponentRendererUtil.getDebug()) { log.info("getResourceName()"); }
 		String resourceName = (String) requestMap.get("name");
 		return resourceName;
 	}
 
 	public static String getResourceType(String resourceName) {
-		log.info("getResourceType()");
+		if (ComponentRendererUtil.getDebug()) { log.info("getResourceType()"); }
 		String resourceType = resourceName.substring(resourceName.lastIndexOf('.') + 1, resourceName.length());
 		return resourceType;
 	}
 
 	public static String getContentType(String resourceType) {
-		log.info("getContentType()");
+		if (ComponentRendererUtil.getDebug()) { log.info("getContentType()"); }
 		String contentType = null;
 		if (resourceType.equals("js"))
 			contentType = "text/javascript";
