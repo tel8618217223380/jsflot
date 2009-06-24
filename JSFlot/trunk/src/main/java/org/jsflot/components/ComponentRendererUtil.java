@@ -26,10 +26,13 @@ import java.util.Iterator;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIForm;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 public class ComponentRendererUtil {
 	public static final String CLIENT_ID = "org.jsflot.CLIENT_ID";
 	public static final String AJAX_REQUEST = "org.jsflot.AJAX_REQUEST";
+	public static final String DEBUGVAR = "JSFlotDebug";
 
 	/**
 	 * This method is copied from JBoss Richfaces 3.3.0.GA
@@ -96,4 +99,36 @@ public class ComponentRendererUtil {
 
         return null;
     }
+	
+	public static String getFacesPrefix(FacesContext context) {
+		String facesPrefix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesPrefix");
+		if (facesPrefix == null) {
+			facesPrefix = "";
+		}
+		
+		return facesPrefix;
+	}
+	
+	public static String getFacesSuffix(FacesContext context) {
+		String facesSuffix = (String) ((HttpSession) context.getExternalContext().getSession(true)).getAttribute("facesSuffix");
+		if (facesSuffix == null) {
+			facesSuffix = "";
+		}
+		
+		return facesSuffix;
+	}
+	
+	public static void setDebug(boolean debug) {
+		if (debug) {
+			System.getProperties().put(DEBUGVAR, "true");
+		} else {
+			System.getProperties().put(DEBUGVAR, "false");
+		}
+	}
+	
+	public static boolean getDebug() {
+		String debug = System.getProperties().getProperty(DEBUGVAR);
+		return debug != null && debug.equalsIgnoreCase("true");
+	}
+	
 }
