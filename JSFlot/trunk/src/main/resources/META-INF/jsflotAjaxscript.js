@@ -4,7 +4,7 @@ if (!window.JSFlot) {
 
 JSFlot.AJAX = {};
 
-JSFlot.AJAX.getFormData = function getFormData(form, options) {
+JSFlot.AJAX.getFormData = function getFormData(form, options, event) {
     var dataString = "";
 
     function addParam(name, value) {
@@ -48,6 +48,17 @@ JSFlot.AJAX.getFormData = function getFormData(form, options) {
     if (options) {
     	addParam("clientId", options._clientId);
     	addParam("componentValue", options._componentValue);
+    	if (options._clickedPosition) {
+    		addParam("jsflotClickX", options._clickedPosition.x == 0 ? "0" : options._clickedPosition.x);
+    		addParam("jsflotClickY", options._clickedPosition.y == 0 ? "0" : options._clickedPosition.y);
+    		addParam("jsflotClickSeries", options._clickedPosition.series.label);
+    		addParam("jsflotClickSeriesIndex", options._clickedPosition.seriesIndex == 0 ? "0" : options._clickedPosition.seriesIndex);
+    		addParam("jsflotClickIndex", options._clickedPosition.index == 0 ? "0" : options._clickedPosition.index);
+    	}
+    }
+    
+    if (event) {
+    	addParam("jsflotEvent", event);
     }
     
     return dataString;
@@ -90,7 +101,7 @@ JSFlot.AJAX.Submit = function(formId, event, url, options) {
 	
 	if (query) {
 		jsflotlog.debug("NEW AJAX REQUEST !!! with form: " + (query._form.id || query._form.name || query._form) + " URL: " + url);
-		var params = JSFlot.AJAX.getFormData(document.getElementById(formId), options);
+		var params = JSFlot.AJAX.getFormData(document.getElementById(formId), options, event);
 		
 		new Ajax.Request(url, {
 			method: 'post',
@@ -173,6 +184,7 @@ JSFlot.Options = function(clientId, componentValue, flotContainerId, rerenderId)
 JSFlot.Options.prototype = {
 	_clientId: null,
 	_componentValue: null,
+	_clickedPosition: null,
 	_rerenderID: null,
 	_flotContainerID: null,
 	_ajaxSingle: false,

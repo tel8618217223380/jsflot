@@ -24,23 +24,21 @@ package org.jsflot.components;
 
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.faces.application.Application;
-import javax.faces.component.ContextCallback;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.render.Renderer;
 import javax.faces.webapp.UIComponentTag;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.jsflot.xydata.XYDataList;
 import org.jsflot.xydata.XYDataPoint;
@@ -66,10 +64,45 @@ public class FlotChartRenderer extends Renderer {
 				// This is not the correct component. Return
 				return;
 			}
-			String componentValue = request.getParameter("componentValue");
-
-			ValueChangeEvent changeEvent = new ValueChangeEvent(((UIComponent) component), "0", componentValue);
-			((UIComponent) component).queueEvent(changeEvent);
+			
+			String event = request.getParameter(ComponentRendererUtil.JSFLOT_EVENT);
+			if (event != null && event.equalsIgnoreCase("drag")) {
+				String componentValue = request.getParameter("componentValue");
+				Double dragValue = null;
+				try {
+					dragValue = Double.parseDouble(componentValue);
+				} catch (NumberFormatException nfe) {
+					//If drag value cannot be found, return
+					return;
+				}
+				//ValueChangeEvent changeEvent = new ValueChangeEvent(((UIComponent) component), "0", componentValue);
+				//((UIComponent) component).queueEvent(changeEvent);
+				FlotChartDraggedEvent dragEvent = new FlotChartDraggedEvent(component, dragValue);
+				dragEvent.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+				dragEvent.queue();
+			} else if (event != null && event.equalsIgnoreCase("click")) {
+				String clickX = request.getParameter(ComponentRendererUtil.JSFLOT_CLICK_X);
+				String clickY = request.getParameter(ComponentRendererUtil.JSFLOT_CLICK_Y);
+				String clickIndex = request.getParameter(ComponentRendererUtil.JSFLOT_CLICK_INDEX);
+				String clickSeriesLabel = request.getParameter(ComponentRendererUtil.JSFLOT_SERIES_LABEL);
+				String clickSeriesIndex = request.getParameter(ComponentRendererUtil.JSFLOT_SERIES_INDEX);
+				
+				XYDataPoint clickedPoint = null;
+				Integer clickIndexInt = null;
+				Integer clickSeriesIndexInt = null;
+				try {
+					clickedPoint = new XYDataPoint(Double.parseDouble(clickX), Double.parseDouble(clickY));
+					clickIndexInt = Integer.parseInt(clickIndex);
+					clickSeriesIndexInt = Integer.parseInt(clickSeriesIndex);
+				} catch (NumberFormatException nfe) {
+					//No valid point clicked. Return
+					return;
+				}
+				
+				FlotChartClickedEvent clickEvent = new FlotChartClickedEvent(component, clickedPoint, clickIndexInt, clickSeriesIndexInt, clickSeriesLabel);
+				clickEvent.setPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+				clickEvent.queue();
+			}
 		}
 	}
 
@@ -214,6 +247,28 @@ public class FlotChartRenderer extends Renderer {
 		
 		return sb.toString();
 	}
+	
+	private String writeClickableContents(FlotChartRendererData chartData, FacesContext context, String id, String clientId, UIComponent component) {
+		StringBuffer sb = new StringBuffer();
+		String url = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURI();
+		if (chartData.getChartClickable() != null && chartData.getChartClickable().booleanValue()) {	
+			sb.append("$('" + id + "').observe('flotr:clickHit', function(event){\n");
+			sb.append("var clickPos = event.memo[0];\n");
+			sb.append("if (clickPos != null) {\n");
+				sb.append("var ajaxoptions = new JSFlot.Options('" + clientId + "', 1, '" + clientId + "', '" + clientId + "');\n");
+				sb.append("ajaxoptions._ajaxSingle = " + chartData.getAjaxSingle().booleanValue() + ";\n");
+				sb.append("ajaxoptions._clickedPosition = clickPos;\n");
+				if (chartData.getReRender() != null && !chartData.getReRender().equals("")) {
+					sb.append("ajaxoptions._otherRerenderIDs = '" + chartData.getReRender() + "';\n");
+				}
+				sb.append("JSFlot.AJAX.Submit('" + ComponentRendererUtil.getNestingForm(component).getId() + "', 'click', '" + url
+					+ "', ajaxoptions);\n");
+			sb.append("}\n");
+			sb.append("});\n");
+		}
+		
+		return sb.toString();
+	}
 
 	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, String clientId, FlotChartRendererData chartData, FacesContext context, UIComponent component) {
 		String jsflotId = id + "_jsflot";
@@ -236,6 +291,9 @@ public class FlotChartRenderer extends Renderer {
 			sb.append("var dragend;\n");
 			
 			sb.append(writeDraggableContents(chartData, context, id, clientId, component));
+			
+			sb.append(writeClickableContents(chartData, context, id, clientId, component));
+			
 		return sb.toString();
 	}
 
@@ -278,11 +336,13 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setYaxisLabelRotation(get(component, context, "yaxisLabelRotation"));
 		chartData.setYaxisTitleRotation(get(component, context, "yaxisTitleRotation"));
 		chartData.setChartDraggable(get(component, context, "chartDraggable"));
+		chartData.setChartClickable(get(component, context, "chartClickable"));
 		chartData.setAjaxSingle(get(component, context, "ajaxSingle"));
 		chartData.setReRender((String) get(component, context, "reRender"));
+
 		// Set ChartDraggedListener
 		String chartDraggedListener = (String) get(component, context, "chartDraggedListener");
-		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] { ActionEvent.class });
+		setMethodBinding(component, "chartDraggedListener", chartDraggedListener, new Class[] { FlotChartClickedEvent.class });
 
 		return chartData;
 	}

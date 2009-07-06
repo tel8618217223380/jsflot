@@ -262,6 +262,13 @@
 			</deferred-value>
 		</attribute>
 		<attribute>
+			<description>Specifies if the chart is clickable</description>
+			<name>chartClickable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
 			<description>Specifies if Ajax Request is Single</description>
 			<name>ajaxSingle</name>
 			<deferred-value>
@@ -271,6 +278,13 @@
 		<attribute>
 			<description>Specifies DOM IDs to reRender</description>
 			<name>reRender</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the chartDraggedListener</description>
+			<name>chartDraggedListener</name>
 			<deferred-value>
 				<type>java.lang.String</type>
 			</deferred-value>

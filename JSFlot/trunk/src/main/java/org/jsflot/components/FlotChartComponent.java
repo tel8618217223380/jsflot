@@ -25,12 +25,16 @@ package org.jsflot.components;
 import java.io.IOException;
 import java.util.Iterator;
 
+import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 
-public class FlotChartComponent extends UIInput {
+import org.jsflot.xydata.XYDataPoint;
+
+public class FlotChartComponent extends UICommand {
 
 	@Override
 	public String getFamily() {

@@ -2707,7 +2707,67 @@ Flotr.Graph = Class.create({
 			this.ignoreClick = false;
 			return;
 		}
+		var clickPos = this.clickHasHitDataPoint(this.getEventPosition(event));
+		if (clickPos != null) {
+			this.el.fire('flotr:clickHit', [clickPos, this]);
+			//alert('positionIndex: ' + clickPos.index + ' clickPos X: ' + clickPos.x + ' clickPos Y: ' + clickPos.y + ' seriesIndex: ' + clickPos.seriesIndex + ' seriesLabel: ' + clickPos.series.label);
+		}
 		this.el.fire('flotr:click', [this.getEventPosition(event), this]);
+	},
+	
+	clickHasHitDataPoint: function(clickPos) {
+		var series = this.series;
+		var n = {
+			dist:Number.MAX_VALUE,
+			x:null,
+			y:null,
+			series:null,
+			seriesIndex:null,
+			index:null
+		};
+		var options = this.options;
+		for(i = 0; i < series.length; i++){
+			s = series[i];
+			data = s.data;
+			xa = s.xaxis;
+			ya = s.yaxis;
+			xsens = (2*options.points.lineWidth)/xa.scale * s.mouse.sensibility;
+			ysens = (2*options.points.lineWidth)/ya.scale * s.mouse.sensibility;
+			
+			for(var j = 0, xpow, ypow; j < data.length; j++){
+				x = data[j][0];
+				y = data[j][1];
+				
+				if (y === null || 
+				    xa.min > x || xa.max < x || 
+				    ya.min > y || ya.max < y) continue;
+				
+				var xdiff = Math.abs(x - clickPos.x),
+				    ydiff = Math.abs(y - clickPos.y);
+				
+				// we use a different set of criteria to determin if there has been a hit
+				// depending on what type of graph we have
+				if(((!s.bars.show) && xdiff < xsens && ydiff < ysens) || 
+				    (s.bars.show && xdiff < s.bars.barWidth/2 && ((y > 0 && clickPos.y > 0 && clickPos.y < y) || (y < 0 && clickPos.y < 0 && clickPos.y > y)))){
+					var distance = Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+					if(distance < n.dist){
+						n.dist = distance;
+						n.x = x;
+						n.y = y;
+						n.xaxis = xa;
+						n.yaxis = ya;
+						n.series = s;
+						n.seriesIndex = i;
+						n.index = j;
+					}
+				}
+			}
+		}	
+		
+		if (n.x != null && n.y != null)
+			return n;
+		else
+			return null;
 	},
 	/**
 	 * Observes mouse movement over the graph area. Fires the 'flotr:mousemove' event.
