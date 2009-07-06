@@ -33,7 +33,13 @@ public class ComponentRendererUtil {
 	public static final String CLIENT_ID = "org.jsflot.CLIENT_ID";
 	public static final String AJAX_REQUEST = "org.jsflot.AJAX_REQUEST";
 	public static final String DEBUGVAR = "JSFlotDebug";
-
+	public static final String JSFLOT_EVENT = "jsflotEvent";
+	public static final String JSFLOT_CLICK_X = "jsflotClickX";
+	public static final String JSFLOT_CLICK_Y = "jsflotClickY";
+	public static final String JSFLOT_CLICK_INDEX = "jsflotClickIndex";
+	public static final String JSFLOT_SERIES_LABEL = "jsflotClickSeries";
+	public static final String JSFLOT_SERIES_INDEX = "jsflotClickSeriesIndex";
+	
 	/**
 	 * This method is copied from JBoss Richfaces 3.3.0.GA
 	 * Find nested form for given component

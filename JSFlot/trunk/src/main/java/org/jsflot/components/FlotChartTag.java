@@ -30,7 +30,10 @@ public class FlotChartTag extends UIComponentELTag {
 
 	private ValueExpression value; 
 	private ValueExpression valueChangeListener;
+	private ValueExpression actionListener;
+	private ValueExpression action;
 	private ValueExpression chartDraggable;
+	private ValueExpression chartClickable;
 	private ValueExpression showLines;
 	private ValueExpression fillLines;
 	private ValueExpression showDataPoints;
@@ -94,6 +97,22 @@ public class FlotChartTag extends UIComponentELTag {
 	public void setValueChangeListener(ValueExpression valueChangeListener) {
 		this.valueChangeListener = valueChangeListener;
 	}
+	
+	public ValueExpression getActionListener() {
+		return actionListener;
+	}
+	
+	public void setActionListener(ValueExpression actionListener) {
+		this.actionListener = actionListener;
+	}
+	
+	public ValueExpression getAction() {
+		return action;
+	}
+	
+	public void setAction(ValueExpression action) {
+		this.action = action;
+	}
 
 	public ValueExpression getChartDraggable() {
 		return chartDraggable;
@@ -101,6 +120,14 @@ public class FlotChartTag extends UIComponentELTag {
 
 	public void setChartDraggable(ValueExpression chartDraggable) {
 		this.chartDraggable = chartDraggable;
+	}
+	
+	public ValueExpression getChartClickable() {
+		return chartClickable;
+	}
+	
+	public void setChartClickable(ValueExpression chartClickable) {
+		this.chartClickable = chartClickable;
 	}
 
 	public ValueExpression getShowLines() {
@@ -396,7 +423,10 @@ public class FlotChartTag extends UIComponentELTag {
 	
 		component.setValueExpression("value", this.value); 
 		component.setValueExpression("valueChangeListener", this.valueChangeListener);
+		component.setValueExpression("actionListener", this.actionListener);
+		component.setValueExpression("action", this.action);
 		component.setValueExpression("chartDraggable", this.chartDraggable);
+		component.setValueExpression("chartClickable", this.chartClickable);
 		component.setValueExpression("showLines", this.showLines);
 		component.setValueExpression("fillLines", this.fillLines);
 		component.setValueExpression("showDataPoints", this.showDataPoints);
@@ -440,7 +470,10 @@ public class FlotChartTag extends UIComponentELTag {
 		
 		this.value= null; 
 		this.valueChangeListener= null;
+		this.actionListener = null;
+		this.action = null;
 		this.chartDraggable= null;
+		this.chartClickable = null;
 		this.showLines= null;
 		this.fillLines= null;
 		this.showDataPoints= null;

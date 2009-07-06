@@ -61,6 +61,7 @@ public class FlotChartRendererData {
 	private Integer xaxisTitleRotation = 0;
 	private Integer yaxisTitleRotation = 90;
 	private Boolean chartDraggable = false;
+	private Boolean chartClickable = false;
 	private Boolean ajaxSingle = false;
 	private String reRender = null;
 	
@@ -610,6 +611,22 @@ public class FlotChartRendererData {
 			this.chartDraggable = new Boolean((String) chartDraggableObj);
 		} else if (chartDraggableObj instanceof Boolean) {
 			this.chartDraggable = (Boolean) chartDraggableObj;
+		}
+	}
+	
+	public Boolean getChartClickable() {
+		return chartClickable;
+	}
+	
+	public void setChartClickable(Boolean chartClickable) {
+		this.chartClickable = chartClickable;
+	}
+	
+	public void setChartClickable(Object chartClickableObj) {
+		if (chartClickableObj instanceof String) {
+			this.chartClickable = new Boolean((String) chartClickableObj);
+		} else if (chartClickableObj instanceof Boolean) {
+			this.chartClickable = (Boolean) chartClickableObj;
 		}
 	}
 	
