@@ -23,13 +23,13 @@ public class JettyServer {
 
 	private static void start() throws Exception {
 		if (jettyServer != null && jettyServer.isRunning()) {
-			log.warning("JettyServer.start() ble kalt, men serveren er allerede startet.");
+			log.warning("JettyServer.start() called, but the server is already started.");
 			return;
 		}
 		configure();
 		jettyServer.start();
 		localPort = jettyServer.getConnectors()[0].getLocalPort();
-		log.info("JettyServer startet paa http://localhost:" + localPort + "/");
+		log.info("JettyServer started at http://localhost:" + localPort + "/");
 	}
 
 	private static void configure() throws Exception {
@@ -51,13 +51,13 @@ public class JettyServer {
 			FileInputStream configStream = new FileInputStream(configFile);
 			properties.load(configStream);
 			configStream.close();
-			log.info("Server properties fra " + configFile.getAbsolutePath());
+			log.info("Server properties from " + configFile.getAbsolutePath());
 			for (Enumeration<Object> e = properties.keys(); e.hasMoreElements();) {
 				Object property = (String) e.nextElement();
 				log.info("\t\t* " + property + "=" + properties.get(property));
 			}
 		} else {
-			String melding = "Fant ikke " + configFile.getAbsolutePath() + ". Kan ikke starte.";
+			String melding = "Could not find " + configFile.getAbsolutePath() + ". Unable to start.";
 			log.severe(melding);
 			throw new RuntimeException(melding);
 		}
@@ -73,11 +73,11 @@ public class JettyServer {
 			jettyConfigFile = new File("../../jetty.xml");
 		}
 		if (jettyConfigFile.exists()) {
-			log.info("konfigurerer Jetty med jetty.xml: " + jettyConfigFile.getAbsolutePath());
+			log.info("Configuring Jetty with jetty.xml: " + jettyConfigFile.getAbsolutePath());
 			XmlConfiguration configuration = new XmlConfiguration(jettyConfigFile.toURL());
 			configuration.configure(jettyServer);
 		} else {
-			String melding = "Fant ikke " + jettyConfigFile.getAbsolutePath() + ". Kan ikke starte.";
+			String melding = "Unable to find " + jettyConfigFile.getAbsolutePath() + ". Unble to start.";
 			log.severe(melding);
 			throw new RuntimeException(melding);
 		}
@@ -91,7 +91,7 @@ public class JettyServer {
 		try {
 			artifactId = System.getProperty("context.root", repoDir.getParentFile().getParentFile().getName());
 		} catch (Exception e) {
-			String melding = "artifactId (context.root) er : " + artifactId + ".'basedir' må ha minst to nivåer (f. eks. /stiTil/basedir). Kan ikke starte.";
+			String melding = "artifactId (context.root) is : " + artifactId + ".'basedir' must have at least to levels (i.e. /pathTo/basedir). Unable to start.";
 			log.severe(melding);
 			throw new RuntimeException(melding);
 		}
@@ -107,12 +107,12 @@ public class JettyServer {
 						jettyServer.addHandler(new WebAppContext(warFile.getAbsolutePath(), "/" + artifactId));
 					}
 				} else {
-					String melding = "Fant ingen webapplikasjoner (.war) i: " + repoDir.getAbsolutePath() + ". Kan ikke starte.";
+					String melding = "Unable to find any webapplications (.war) in: " + repoDir.getAbsolutePath() + ". Unable to start.";
 					log.severe(melding);
 					throw new RuntimeException(melding);
 				}
 			} else {
-				String melding = "Kan ikke lese: " + repoDir.getAbsolutePath() + ". Kan ikke starte.";
+				String melding = "Unable to read: " + repoDir.getAbsolutePath() + ". Unable to start.";
 				log.severe(melding);
 				throw new RuntimeException(melding);
 			}
@@ -131,9 +131,9 @@ public class JettyServer {
 		if (jettyServer != null) {
 			try {
 				jettyServer.stop();
-				log.info("JettyServer stoppet paa http://localhost:" + localPort + "/");
+				log.info("JettyServer Stopped on http://localhost:" + localPort + "/");
 			} catch (InterruptedException e) {
-				log.severe("Klarte ikke stoppe Jetty server.");
+				log.severe("Unable to stop JettyServer.");
 				throw new RuntimeException(e);
 			}
 		}
