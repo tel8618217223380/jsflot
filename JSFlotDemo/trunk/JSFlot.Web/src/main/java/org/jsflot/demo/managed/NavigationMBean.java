@@ -26,7 +26,7 @@ public class NavigationMBean {
 	}
 	
 	public void navigateToTutorialPage(ActionEvent event) {
-		System.out.println("Navigating to Tutorial page");
+		//System.out.println("Navigating to Tutorial page");
 	}
 	
 	public void setTutorialNavigation(String tutorialNavigation) {

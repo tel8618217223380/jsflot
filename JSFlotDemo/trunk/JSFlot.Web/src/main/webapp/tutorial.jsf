@@ -63,14 +63,6 @@
 						<a4j:actionparam name="tutorialNavigation" value="jsflotTooltip.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
 					</rich:panelMenuItem>
 				</rich:panelMenuGroup>
-				<rich:panelMenuGroup label="Classes" expanded="true">
-					<rich:panelMenuItem label="XYDataPoint, XYDataList and XYDataSetCollection" actionListener="#{navigationMbean.navigateToTutorialPage}">
-						<a4j:actionparam name="tutorialNavigation" value="jsflotDataPointClasses.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
-					</rich:panelMenuItem>
-					<rich:panelMenuItem label="FlotChartRendererData" actionListener="#{navigationMbean.navigateToTutorialPage}">
-						<a4j:actionparam name="tutorialNavigation" value="jsflotFlotChartRendererData.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
-					</rich:panelMenuItem>
-				</rich:panelMenuGroup>
 			</rich:panelMenu>
 			<ui:include src="/tutorial/#{navigationMbean.tutorialNavigation}"></ui:include>
 		</h:panelGrid>
