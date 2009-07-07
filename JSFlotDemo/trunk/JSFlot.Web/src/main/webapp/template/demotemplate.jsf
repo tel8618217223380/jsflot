@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel='stylesheet' type='text/css'
+	href='${request.contextPath}/stylesheets/standard.css' />
+<title>JSFlot Live Demo - Version 0.3.0 (r45)</title>
+<a4j:loadScript src="/reflection.js"></a4j:loadScript>
+<jsflot:resources excludes="prototype" debug="true"/>
+<script type="text/javascript">
+    if ( ! document.cookie.match( /blackbird=/ ) ) {
+      document.cookie = 'blackbird={pos:0,size:0,load:true};';
+    }
+  </script>
+</head>
+
+<body>
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	try {
+		var pageTracker = _gat._getTracker("UA-4187272-4");
+		pageTracker._trackPageview();
+	} catch (err) {
+	}
+</script>
+<script type="text/javascript">
+	window.google_analytics_uacct = "UA-4187272-4";
+</script>
+
+<h:form id="managerForm">
+
+	<rich:panel id="headerPanel" bodyClass="white" style="width: 958px;">
+		<h:panelGrid columns="2"
+			columnClasses="left, right">
+			<a4j:commandLink action="#{navigationMbean.navigateToLiveDemo}"
+				styleClass="topmenu">
+				<h:graphicImage value="/jsflotdemoheader.jpg"
+					styleClass="reflect rheight65 ropacity50"></h:graphicImage>
+			</a4j:commandLink>
+			<ui:include src="googleadd.html" />
+		</h:panelGrid>
+	</rich:panel>
+
+	<a4j:loadScript src="/scripts/modalpanelscript.js"></a4j:loadScript>
+	<a4j:status onstart="showModalInfoWindow();"
+		onstop="hideModalInfoWindow()"></a4j:status>
+
+	<rich:modalPanel id="ajaxLoadingModalBox" minHeight="200"
+		minWidth="450" left="350" top="350" height="100" width="250"
+		zindex="2000">
+		<f:facet name="header">
+			<h:outputText value="Request being processed"></h:outputText>
+		</f:facet>
+		<h:outputText value="Your request is being processed, please wait."></h:outputText>
+	</rich:modalPanel>
+
+	<a4j:outputPanel id="JSFLotDemoContentsPanel" ajaxRendered="true">
+		<rich:toolBar id="toolbar" height="30" width="962">
+			<rich:toolBarGroup>
+				<a4j:commandLink action="#{navigationMbean.navigateToLiveDemo}"
+					styleClass="topmenu">
+					<h:outputText value="Live Demo" />
+				</a4j:commandLink>
+				<a4j:commandLink
+					action="#{navigationMbean.navigateToGettingStarted}"
+					styleClass="topmenu">
+					<h:outputText value="Getting Started" />
+				</a4j:commandLink>
+				<a4j:commandLink action="#{navigationMbean.navigateToFeatures}"
+					styleClass="topmenu">
+					<h:outputText value="Features" />
+				</a4j:commandLink>
+				<a4j:commandLink action="#{navigationMbean.navigateToTutorial}"
+					styleClass="topmenu">
+					<a4j:actionparam name="tutorialNavigation" value="firstpage.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					<h:outputText value="Tutorial" />
+				</a4j:commandLink>
+			</rich:toolBarGroup>
+		</rich:toolBar>
+
+		<ui:insert name="contents">
+			contents
+		</ui:insert>
+
+	</a4j:outputPanel>
+	<!--/h:panelGrid-->
+	
+	<rich:panel>
+		JSFlot is Copyright 2009 to Joachim Haagen Skeie. Current version demoed: 0.3.0 (revision 45).
+	</rich:panel>
+
+</h:form>
+</body>
+</html>

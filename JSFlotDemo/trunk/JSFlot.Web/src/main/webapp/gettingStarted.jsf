@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:dsj="http://dsj.devsiden.info"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+<ui:composition template="/template/demotemplate.jsf">
+	<ui:define name="contents">
+		<rich:panel bodyClass="text10">
+			<f:facet name="header">Installation</f:facet>
+			Installation is straight forward and includes only a few steps.
+			<ol>
+				<li>Download the Jar file from the <a
+					href="http://code.google.com/p/jsflot/downloads/list"
+					target="_blank">Google Code Download page</a></li>
+				<li>Add the JSFlot JAR file to the classpath</li>
+				<li>Include the Taglib to the top of the XHTML or JSF Page: <pre>xmlns:jsflot="http://www.jsflot.org/taglib/jsflot</pre></li>
+				<li>Add the resource tag responsible for including the
+				JavaScript dependencies inside the HEAD tag of your page: <pre>&lt;jsflot:resources /&gt;</pre></li>
+				<li>To draw a graph use the jsflot:flotChart tag</li>
+				<li>Learn more about the customizations of JSFlot from the Live Demonstration or from the Tutorial.</li>
+			</ol>
+		</rich:panel>
+		<a4j:region id="sourceRegion">
+			<rich:simpleTogglePanel id="sourceCodePanel" opened="false"
+				switchType="ajax">
+				<f:facet name="header">View Tag Useage</f:facet>
+				<rich:insert id="codeinsert" src="/insert/index.insert"
+					highlight="xml"></rich:insert>
+				<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="mbeanSourceCodePanel" opened="false"
+				switchType="ajax">
+				<f:facet name="header">View Backing Bean code Useage</f:facet>
+				<rich:insert id="mbeancodeinsert" src="/insert/chartMBean.insert"
+					highlight="java"></rich:insert>
+				<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="modelSourceCodePanel" opened="false"
+				switchType="ajax">
+				<f:facet name="header">View Chart Data Code (From the JSFlot project)</f:facet>
+				<rich:insert id="modelcodeinsert" src="/insert/chartdata.insert"
+					highlight="java"></rich:insert>
+				<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+			</rich:simpleTogglePanel>
+		</a4j:region>
+		<rich:spacer height="2"></rich:spacer>
+		<rich:panel bodyClass="text10">
+			<f:facet name="header">Building JSFlot</f:facet>
+			<p>JSFlot is built with <a href="http://maven.apache.org/"
+				target="_blank">Maven 2</a>, and the source download includes a
+			pom.xml file.</p>
+
+			<p>To simply build the Jar file, unzip the source download and
+			navigate with a command-line tool to the unzipped directory. From
+			within the Source directory simply run<br />
+			<pre>mvn install</pre>
+			<br />This will generate a target directory, inside which, the
+			JSFlot JAR file will be placed.</p>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

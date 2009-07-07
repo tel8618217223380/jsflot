@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel>
+	<f:facet name="header">Chart Type Options</f:facet>
+	<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+		<h:outputText value="ChartType"></h:outputText>
+		<h:selectOneListbox id="chartTypeListbox" size="1"
+			value="#{chartMbean.chartData.chartType}">
+			<f:selectItem itemLabel="Line Chart" itemValue="line" />
+			<f:selectItem itemLabel="Pie Chart" itemValue="pie" />
+			<f:selectItem itemLabel="Bar Chart" itemValue="bar" />
+			<f:selectItem itemLabel="Stacked Bar Chart"
+				itemValue="stackedBar" />
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectOneListbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px;">
+				Choose the chart type used to render the JSFlot Chart<br /><br />
+				Attribute: <b>chartType</b><br />
+				Possible values: <br />
+				<ul>
+					<li>line</li>
+					<li>pie</li>
+					<li>bar</li>
+					<li>stackedBar</li>
+				</ul>
+				Default value: line<br />
+				Example: <b>&lt;jsflot:flotChart chartType="line" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Mode"></h:outputText>
+		<h:selectOneListbox value="#{chartMbean.chartData.mode}" size="1">
+			<f:selectItem itemLabel="Series" itemValue="Series" />
+			<f:selectItem itemLabel="Time" itemValue="Time" />
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectOneListbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				In an XY Plot the options are Series (normal) and Time which displays dates on the X axis and in the tooltip<br /><br />
+				attribute: <b>mode</b><br />
+				Possible values: <br />
+				<ul>
+					<li>Series</li>
+					<li>Time</li>
+				</ul>
+				Default value: Series<br />
+				Example: <b>&lt;jsflot:flotChart mode="Time" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Time Format"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.timeFormat}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Sets the Time Format of the X-Axis if in Time mode.<br /><br />
+				attribute: <b>timeFormat</b><br />
+				Possible values: (in combination)<br />
+				<ul>
+					<li>%h: hour</li>
+					<li>%H: hour</li>
+					<li>%M: minute</li>
+					<li>%S: second</li>
+					<li>%s: millisecond</li>
+					<li>%d: date</li>
+					<li>%m: month</li>
+					<li>%y: year</li>
+					<li>%b: month name</li>
+				</ul>
+				Default value: Determined at render-time based on input data.<br />
+				Example: <b>&lt;jsflot:flotChart timeFormat=" %d/%m/%y %h:%M:%S" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Drag and Drop Support"></h:outputText>
+		<h:selectBooleanCheckbox
+			value="#{chartMbean.chartData.chartDraggable}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the chart is draggable. The ActionListener is invoked when the chart is dragged upon.<br /><br />
+				attribute: <b>chartDraggable</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: false<br />
+				Example: <b>&lt;jsflot:flotChart chartDraggable="true" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+		
+		<h:outputText value="Click Support"></h:outputText>
+		<h:selectBooleanCheckbox
+			value="#{chartMbean.chartData.chartClickable}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the chart is clickable The ActionListener is invoked when a chart data point is clicked.<br /><br />
+				attribute: <b>chartClickable</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: false<br />
+				Example: <b>&lt;jsflot:flotChart chartClickable="true" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+
+		<h:outputText value="Markers"></h:outputText>
+		<h:selectBooleanCheckbox value="#{chartMbean.chartData.markers}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the data point markers are shown or not.<br /><br />
+				attribute: <b>markers</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: false<br />
+				Example: <b>&lt;jsflot:flotChart markers="true" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Marker Position"></h:outputText>
+		<h:selectOneListbox id="markerPositionListbox" size="1"
+			value="#{chartMbean.chartData.markerPosition}">
+			<f:selectItem itemLabel="Left Top" itemValue="lt" />
+			<f:selectItem itemLabel="Center Top" itemValue="ct" />
+			<f:selectItem itemLabel="Right Top" itemValue="rt" />
+			<f:selectItem itemLabel="Left Middle" itemValue="lm" />
+			<f:selectItem itemLabel="Center Middle" itemValue="cm" />
+			<f:selectItem itemLabel="Right Middle" itemValue="rm" />
+			<f:selectItem itemLabel="Left Bottom" itemValue="lb" />
+			<f:selectItem itemLabel="Center Bottom" itemValue="cb" />
+			<f:selectItem itemLabel="Right Bottom" itemValue="rb" />
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectOneListbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines where, relative to the datapoint, the marker are shown.<br /><br />
+				attribute: <b>markerPosition</b><br />
+				Possible values: <br />
+				<ul>
+					<li>"lt" (Left Top)</li>
+					<li>"ct" (Center Top)</li>
+					<li>"rt" (Right Top)</li>
+					<li>"lm" (Left Middle)</li>
+					<li>"cm" (Center Middle)</li>
+					<li>"rm" (Right Middle)</li>
+					<li>"lb" (Left Bottom)</li>
+					<li>"cb" (Center Bottom)</li>
+					<li>"rb" (Right Bottom)</li>
+				</ul>
+				Default value: lt<br />
+				Example: <b>&lt;jsflot:flotChart markers="cb" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+
+		<h:outputText value="Crosshair"></h:outputText>
+		<h:selectOneListbox id="crosshairListbox" size="1"
+			value="#{chartMbean.chartData.crosshair}">
+			<f:selectItem itemLabel="none" itemValue="none" />
+			<f:selectItem itemLabel="x" itemValue="x" />
+			<f:selectItem itemLabel="y" itemValue="y" />
+			<f:selectItem itemLabel="xy" itemValue="xy" />
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectOneListbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Specifies if a crosshair is shown or not as well as which axes the crosshair is shown for.<br /><br />
+				attribute: <b>crosshair</b><br />
+				Possible values: <br />
+				<ul>
+					<li>"none"</li>
+					<li>"x"</li>
+					<li>"y"</li>
+					<li>"xy"</li>
+				</ul>
+				Default value: none<br />
+				Example: <b>&lt;jsflot:flotChart markers="xy" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+	</h:panelGrid>
+</rich:panel>
+
+</ui:composition>

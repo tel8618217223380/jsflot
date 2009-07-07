@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot X-Axis</f:facet>
+	The Chart X-Axis can be configured using 7 attributed to the jsflot:flotchart tag. <br />
+	<b>showXaxisLabels</b><br />
+	Determines whether or not the X Axis displays label for the tick points. Defaults to "true", but can be 
+	overridden to "false" if needed.  <br />
+	<b>xaxisTitle</b><br />
+	If this varible is set, it contains a String value representing the X-Axis label. <br /> 
+	<b>xaxisTitleRotation</b><br />
+	The number of degrees that the title is rotated. <br /> 
+	<b>xaxisLabelRotation</b><br />
+	The number of degrees that the labels are rotated. <br />
+	<b>numberOfXAxisTicks</b><br />
+	JSFlot will calculate an appropriate number of X-Axis ticks. However this number can be overridden using this 
+	attribute. Keep in mind though, that JSFlot might alter your suggested number somewhat for rendering purposes. <br /> 
+	<b>xaxisMinValue</b><br />
+	JSFlot will calculate a sensible minimum value for the X-Axis based on the data supplied to JSFlot. This number can be overridden, 
+	but keep in mind that some datapoints might be outside your desired minimum value.  <br />
+	<b>xaxisMaxValue</b><br />
+	JSFlot will calculate a sensible maximum value for the X-Axis based on the data supplied to JSFlot. This number can be overridden, 
+	but keep in mind that some datapoints might be outside your desired maximum value. <br />
+</rich:panel>
+
+</ui:composition>
