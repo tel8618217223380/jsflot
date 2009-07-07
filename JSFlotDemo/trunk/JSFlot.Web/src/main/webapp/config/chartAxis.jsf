@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel>
+	<f:facet name="header">Chart Axis Options</f:facet>
+	<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+		<h:outputText value="Show X Axis Labels"></h:outputText>
+		<h:selectBooleanCheckbox
+			value="#{chartMbean.chartData.showXaxisLabels}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the X axis displays labels or not<br /><br />
+				attribute: <b>showXaxisLabels</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: true<br />
+				Example: <b>&lt;jsflot:flotChart showXaxisLabels="false" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Title"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.xaxisTitle}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the X Axis Title<br /><br />
+				attribute: <b>xaxisTitle</b><br />
+				Possible values: Any String value or null<br />
+				Default value: null<br />
+				Example: <b>&lt;jsflot:flotChart xaxisTitle="Unit sales" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Title Rotation"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.xaxisTitleRotation}"
+			maxValue="360">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the X Axis Title Rotation<br /><br />
+				attribute: <b>xaxisTitleRotation</b><br />
+				Possible values: Any Integer value<br />
+				Default value: 0<br />
+				Example: <b>&lt;jsflot:flotChart xaxisTitleRotation="25" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Number og Ticks"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.numberOfXAxisTicks}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the number of labels that are shown along the X Axis<br /><br />
+				attribute: <b>numberOfXAxisTicks</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at Render-time based on actual data input<br />
+				Example: <b>&lt;jsflot:flotChart numberOfXAxisTicks="10" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Label Rotation"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.xaxisLabelRotation}"
+			maxValue="360">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the X Axis Title Rotation<br /><br />
+				attribute: <b>xaxisLabelRotation</b><br />
+				Possible values: Any Integer value<br />
+				Default value: 0<br />
+				Example: <b>&lt;jsflot:flotChart xaxisLabelRotation="45" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Minium Value"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.xaxisMinValue}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Override JSFlots dynamic minimum value for the X Axis<br /><br />
+				attribute: <b>xaxisMinValue</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at render time based on actual input data<br />
+				Example: <b>&lt;jsflot:flotChart xaxisMinValue="-2" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="X Axis Maximum Value"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.xaxisMaxValue}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Override JSFlots dynamic maximum value for the X Axis<br /><br />
+				attribute: <b>xaxisMaxValue</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at render time based on actual input data<br />
+				Example: <b>&lt;jsflot:flotChart xaxisMaxValue="100" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Show Y Axis Labels"></h:outputText>
+		<h:selectBooleanCheckbox
+			value="#{chartMbean.chartData.showYaxisLabels}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the Y axis displays labels or not<br /><br />
+				attribute: <b>showYaxisLabels</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: true<br />
+				Example: <b>&lt;jsflot:flotChart showYaxisLabels="false" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Title"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.yaxisTitle}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the Y Axis Title<br /><br />
+				attribute: <b>yaxisTitle</b><br />
+				Possible values: Any String value or null<br />
+				Default value: null<br />
+				Example: <b>&lt;jsflot:flotChart yaxisTitle="Unit sales" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Title Rotation"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.yaxisTitleRotation}"
+			maxValue="360">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the Y Axis Title Rotation<br /><br />
+				attribute: <b>yaxisTitleRotation</b><br />
+				Possible values: Any Integer value<br />
+				Default value: 0<br />
+				Example: <b>&lt;jsflot:flotChart yaxisTitleRotation="25" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Number og Ticks"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.numberOfYAxisTicks}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the number of labels that are shown along the Y Axis<br /><br />
+				attribute: <b>numberOfYAxisTicks</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at Render-time based on actual data input<br />
+				Example: <b>&lt;jsflot:flotChart numberOfYAxisTicks="10" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Label Rotation"></h:outputText>
+		<rich:inputNumberSpinner
+			value="#{chartMbean.chartData.yaxisLabelRotation}"
+			maxValue="360">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</rich:inputNumberSpinner>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Choose the Y Axis Title Rotation<br /><br />
+				attribute: <b>yaxisLabelRotation</b><br />
+				Possible values: Any Integer value<br />
+				Default value: 0<br />
+				Example: <b>&lt;jsflot:flotChart yaxisLabelRotation="45" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Minimum"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.yaxisMinValue}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Override JSFlots dynamic minimum value for the Y Axis<br /><br />
+				attribute: <b>yaxisMinValue</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at render time based on actual input data<br />
+				Example: <b>&lt;jsflot:flotChart yaxisMinValue="-2" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+
+		<h:outputText value="Y Axis Maximum Value"></h:outputText>
+		<h:inputText value="#{chartMbean.chartData.yaxisMaxValue}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:inputText>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Override JSFlots dynamic maximum value for the Y Axis<br /><br />
+				attribute: <b>yaxisMaxValue</b><br />
+				Possible values: Any Integer value<br />
+				Default value: Determined at render time based on actual input data<br />
+				Example: <b>&lt;jsflot:flotChart yaxisMaxValue="100" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
+	</h:panelGrid>
+</rich:panel>
+
+</ui:composition>

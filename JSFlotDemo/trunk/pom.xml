@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.jsflot</groupId>
+	<artifactId>JSFlot.Parent</artifactId>
+	<version>0.1</version>
+	<name>JSFLot Parent</name>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>JSFlot.Web</module>
+		<module>JSFlot.Server</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.13</version>
+				<type>jar</type>
+			</dependency>
+
+			<!-- VIEW JSF -->
+			<dependency>
+				<groupId>javax.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>1.2_12</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.faces</groupId>
+				<artifactId>jsf-impl</artifactId>
+				<version>1.2_12</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>richfaces-ui</artifactId>
+				<version>3.3.0.GA</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.facelets</groupId>
+				<artifactId>jsf-facelets</artifactId>
+				<version>1.1.13</version>
+			</dependency>
+			<dependency>
+				<groupId>com.uwyn</groupId>
+				<artifactId>jhighlight</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<!-- //VIEW JSF -->
+
+			<!-- JSF Flot -->
+			<dependency>
+				<groupId>org.jsflot</groupId>
+				<artifactId>jsflot</artifactId>
+				<version>0.2.6</version>
+			</dependency>
+			<!-- //JSF Flot -->
+
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty</artifactId>
+				<version>6.1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jsp-api-2.1</artifactId>
+				<version>6.1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jsp-2.1</artifactId>
+				<version>6.1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-management</artifactId>
+				<version>6.1.11</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>1.3.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>maven-repo</id>
+			<name>Maven Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>prime-repo</id>
+			<name>Prime Technology Maven Repository</name>
+			<url>http://repository.prime.com.tr/</url>
+			<layout>default</layout>
+		</repository>
+		<!-- JBoss RichFaces Repository -->
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+			<id>repository.jboss.com</id>
+			<name>Jboss Repository for Maven</name>
+			<url>http://repository.jboss.com/maven2/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+</project>

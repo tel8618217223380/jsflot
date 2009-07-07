@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:dsj="http://dsj.devsiden.info"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+<ui:composition template="/template/demotemplate.jsf">
+	<ui:define name="contents">
+		<rich:panel>
+			<rich:panel bodyClass="text10">
+				<f:facet name="header">Java Data Classes</f:facet>
+				<b>XYDataPoint.java</b><br />
+				- The XYDataPoint is simply what it states, and holds a single set of X and Y coordinates.<br /> 
+				<b>XYDataList</b><br />
+				- The XYDataList serves two purposes. First it holds a java.util.List&lt;XYDataPoint&gt; list of a set of XYDataPoints to represent a complete data series.<br /> 
+				- Second it has additional fields for storing the seires label, as well as information regarding this series line and data point rendering.<br />
+				<b>XYDataSetCollection</b><br />
+				- This class is simply a collection of XYDataList. A fully populated XYDataSetCollection holds a minimum of 1 XYDataList references.<br /> 
+				- The jsflot:flotChart taglib expects to get a reference to a XYDataSetCollection in its Value parameter.<br />
+			</rich:panel>
+			<rich:spacer height="1" />
+			<rich:panel bodyClass="text10">
+				<f:facet name="header">Line Chart</f:facet>
+				<b>Line Chart Example</b><br />
+				<h:graphicImage url="/images/linechartexample.jpg"></h:graphicImage><br />
+				<b>Data Points configuration</b><br />
+				- Data points can be rendered as values, or as JavaScript dates.<br />
+				- Each data point can be either hidden or shown on the chart. Settings are both globally (for all series), or on a per series basis.<br />
+				- An optional Tooltip is available to show extra information regarding the data point that the mouse points to.<br />
+				- The tooltip position can be either corner. Alternatively the tooltip can follow the mouse.<br />
+				<b>Axis Configuration</b><br />
+				- The X and Y Axis can have an optional title.<br />
+				- The values for both X and Y axis are chosen based on the data being rendered. However, custom ranges can be defined for either axis.<br />
+				- By default both the X and Y axis show 5 ticks (labels). This number can be overridden by suggesting any number. JSFlot will determine the closest match automatically.<br />
+				<b>Chart Title Configuration</b><br />
+				- Both a title and a subtitle are available, which can be shown at the same time.<br />
+				<b>Legend Configuration</b><br />
+				- The graph can show a legend, positioned at either corner of the graph<br />
+				- The legend can be arranged in any number of columns ranging from 1 to the number of series currently displayed<br />
+				- Both a background color and a background color opacity can be configured<br />
+				<b>Chart Line Options</b><br />
+				- The chart lines can optionally be filled to create an area chart. This can be configured globally, or per series.<br />
+				- If data points are shown, the chart line can optionally be switched off<br />
+				<b>Chart Dimensions</b><br />
+				- By default the chart occupies 600 by 300 pixels. Both the width and the height can be configured to any number<br />
+			</rich:panel>
+			<rich:spacer height="1" />
+			<rich:panel bodyClass="text10">
+				<f:facet name="header">Pie Chart</f:facet>
+				<b>Pie Chart Example</b><br />
+				<h:graphicImage url="/images/pieexample.jpg"></h:graphicImage><br />
+			</rich:panel>
+			<rich:spacer height="1" />
+			<rich:panel bodyClass="text10">
+				<f:facet name="header">Bar Chart</f:facet>
+				<b>Bar Chart Example</b><br />
+				<h:graphicImage url="/images/barchartexample.jpg"></h:graphicImage><br />
+			</rich:panel>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+</html>

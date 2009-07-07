@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+	<rich:panel>
+		<f:facet name="header">Chart Dimension</f:facet>
+		<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+			<h:outputText value="Height"></h:outputText>
+			<h:inputText value="#{chartMbean.chartData.height}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:inputText>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determine the height (pixels) of the graph.<br /><br />
+					Attribute: <b>height</b><br />
+					Possible values: Any Integer Number<br />
+					Default value: 300 <br />
+					Example: <b>&lt;jsflot:flotChart height="450" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Width"></h:outputText>
+			<h:inputText value="#{chartMbean.chartData.width}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:inputText>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determine the width of the graph.<br /><br />
+					Attribute: <b>width</b><br />
+					Possible values: Any Integer Number<br />
+					Default value: 600 <br />
+					Example: <b>&lt;jsflot:flotChart width="750" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+		</h:panelGrid>
+	</rich:panel>
+
+</ui:composition>
