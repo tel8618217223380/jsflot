@@ -64,7 +64,7 @@
 			<dependency>
 				<groupId>org.jsflot</groupId>
 				<artifactId>jsflot</artifactId>
-				<version>0.2.6</version>
+				<version>0.3.0</version>
 			</dependency>
 			<!-- //JSF Flot -->
 
