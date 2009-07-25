@@ -124,7 +124,14 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId, otherRerenderID
 
 	jsflotlog.debug('looking for the enclosingDiv: ' + rerenderId);
 	JSFlot.AJAX.updateElement(ajaxResponse, rerenderId);
-		
+	//ReRender complete. Trigger Prototype Event options._rerenderID
+	var elementDiv = ajaxResponse.getElementById(rerenderId);
+	if (elementDiv) {
+		//jsflotlog.debug('jsflot:ajaxLoaded trigger');
+		//elementDiv.fire('jsflot:ajaxLoaded', '');
+		//jsflotlog.debug('jsflot:ajaxLoaded triggered');
+	}
+	
 	//Process other RerenderIDs
 	jsflotlog.debug('looking for the other ReRenderIDs: ' + otherRerenderIDs);
 	if (otherRerenderIDs.indexOf(",") != -1)  {
@@ -138,6 +145,8 @@ JSFlot.AJAX.processXHRResponse = function(transport, rerenderId, otherRerenderID
 		//Single reRender ID
 		JSFlot.AJAX.updateElement(ajaxResponse, otherRerenderIDs);
 	}
+	
+	
 }
 
 JSFlot.AJAX.updateElement = function(ajaxResponse, reRenderID) {

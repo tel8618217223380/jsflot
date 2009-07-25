@@ -1,8 +1,11 @@
-Version 0.2.6 Improved Drag effect
+Version 0.3.0 Click Action, Improved Drag effect, valueChangeListener replaced with actionListener
 - Changed the ID naming of some of the rendered DOM elements to match the JSF ID naming Scheme
 - Improved the Drag effect, so that extending the standard Flotr library is not needed
 - Updated Flotr to Revision 125
-- JSFlot is silent unless debug="true" is set on the jsflot:resources tag. 
+- JSFlot is silent unless debug="true" is set on the jsflot:resources tag.
+- Added click Event. The JSFlot actionListener is called when a datapoint is clicked. 
+- Removed ValueChangeListener on drag event, replaced with actionEvent
+- Live Demo much improved
 
 Version 0.2.5 JSMin, ajaxSingle, reRender
 - Added JSMin to ResourceLoaderPhaseListener to automatically pack all Javascript files served from JSFlot. This effectively halves the size of all Javascript files transferred to the client. (http://inconspicuous.org/projects/jsmin/jsmin.java)
