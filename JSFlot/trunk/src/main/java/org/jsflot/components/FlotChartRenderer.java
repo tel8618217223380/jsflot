@@ -24,6 +24,7 @@ package org.jsflot.components;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -63,7 +64,7 @@ public class FlotChartRenderer extends Renderer {
 			if (ajaxClientId == null || !ajaxClientId.equals(clientId)) {
 				// This is not the correct component. Return
 				return;
-			}
+			} 
 			
 			String event = request.getParameter(ComponentRendererUtil.JSFLOT_EVENT);
 			if (event != null && event.equalsIgnoreCase("drag")) {
@@ -105,9 +106,45 @@ public class FlotChartRenderer extends Renderer {
 			}
 		}
 	}
+	
+	private boolean isAjaxRequest(FacesContext context, UIComponent component) {
+		boolean ajaxRequest = false;
+		
+		String clientId = component.getClientId(context);
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		String requestedWith = request.getHeader("X-Requested-With");
+		if (requestedWith !=  null && request.equals("XMLHttpRequest")) {
+			//Prototype and JQuery sets this header variable
+			ajaxRequest = true;
+		}
+		
+		if (!ajaxRequest) {
+			//JBoss Richfaces uses the AJAXREQUEST parameter to determine AJAX Requests
+			String richFacesAjaxRequest = request.getParameter("AJAXREQUEST");
+			if (richFacesAjaxRequest != null) {
+				ajaxRequest = true;
+			}
+		}
+		
+		if (!ajaxRequest) {
+			//JSFlot uses the ComponentRendererUtil.AJAX_REQUEST parameter
+			String ajaxRequestParam = request.getParameter(ComponentRendererUtil.AJAX_REQUEST);
+			if (ajaxRequestParam != null && ajaxRequestParam.equalsIgnoreCase("true")) {
+				String ajaxClientId = request.getParameter("clientId");
+				if (ajaxClientId != null && ajaxClientId.equals(clientId)) {
+					// This is not the correct component. Return
+					ajaxRequest = true;
+				}
+			}
+		}
+		
+		return ajaxRequest;
+	}
 
 	@Override
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+		boolean ajaxRequest = isAjaxRequest(context, component);
+		
 		Boolean rendered = (Boolean) get(component, context, "rendered");
 		if (rendered == null) {
 			rendered = new Boolean("true");
@@ -116,11 +153,11 @@ public class FlotChartRenderer extends Renderer {
 		if (rendered) {
 			ResponseWriter writer = context.getResponseWriter();
 			// renderScriptOnce(context, component, writer);
-			writeComponentContents(context, writer, component);
+			writeComponentContents(context, writer, component, ajaxRequest);
 		}
 	}
 
-	private void writeComponentContents(FacesContext context, ResponseWriter writer, UIComponent component) throws IOException {
+	private void writeComponentContents(FacesContext context, ResponseWriter writer, UIComponent component, boolean ajaxRequest) throws IOException {
 		String clientId = component.getClientId(context);
 		String id = (String) get(component, context, "id");
 		if (id == null) {
@@ -156,7 +193,7 @@ public class FlotChartRenderer extends Renderer {
 		}
 
 		XYDataSetCollection xyCollection = (XYDataSetCollection) get(component, context, "value");
-		String functionBody = generateFunctionBody(xyCollection, id, clientId, chartData, context, component);
+		String functionBody = generateFunctionBody(xyCollection, id, clientId, chartData, context, component, ajaxRequest);
 
 		writer.startElement("div", component);
 		writer.writeAttribute("id", clientId, null);
@@ -270,14 +307,23 @@ public class FlotChartRenderer extends Renderer {
 		return sb.toString();
 	}
 
-	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, String clientId, FlotChartRendererData chartData, FacesContext context, UIComponent component) {
+	private String generateFunctionBody(XYDataSetCollection xyCollection, String id, String clientId, FlotChartRendererData chartData, FacesContext context, UIComponent component, 
+			boolean ajaxRequest) {
 		String jsflotId = id + "_jsflot";
 		StringBuilder sb = new StringBuilder();
 
 		String dataArrayString = generateDataOptions(xyCollection, chartData);
 		String chartOptions = generateChartOptions(chartData);
 
-		//sb.append("document.observe('dom:loaded', function() {\n");
+		if (ajaxRequest) {
+				sb.append("drawJSFlotChart();\n");
+		} else {
+			sb.append("document.observe('dom:loaded', function() {\n");
+				sb.append("drawJSFlotChart();\n");
+			sb.append("});\n\n");
+		}
+		
+		sb.append("function drawJSFlotChart() {\n");
 			sb.append("var options = " + chartOptions + ";\n");
 			sb.append("function " + jsflotId + "drawGraph(opts){\n");
 				sb.append("var o = Object.extend(Object.clone(options), opts || {});\n");
@@ -293,7 +339,7 @@ public class FlotChartRenderer extends Renderer {
 			sb.append(writeDraggableContents(chartData, context, id, clientId, component));
 			
 			sb.append(writeClickableContents(chartData, context, id, clientId, component));
-			
+		sb.append("}\n");
 		return sb.toString();
 	}
 
