@@ -130,10 +130,7 @@ public class FlotChartRenderer extends Renderer {
 			String ajaxRequestParam = request.getParameter(ComponentRendererUtil.AJAX_REQUEST);
 			if (ajaxRequestParam != null && ajaxRequestParam.equalsIgnoreCase("true")) {
 				String ajaxClientId = request.getParameter("clientId");
-				if (ajaxClientId != null && ajaxClientId.equals(clientId)) {
-					// This is the correct component for this ajax Request.
 					ajaxRequest = true;
-				}
 			}
 		}
 		
