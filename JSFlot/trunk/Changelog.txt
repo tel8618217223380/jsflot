@@ -1,3 +1,7 @@
+Version 0.3.5 IE 6 and 7 Support
+- Added support for IE 6 and 7.
+- Ajax redraw supported by Prototype, JQuery and JBoss Richfaces expressively
+
 Version 0.3.0 Click Action, Improved Drag effect, valueChangeListener replaced with actionListener
 - Changed the ID naming of some of the rendered DOM elements to match the JSF ID naming Scheme
 - Improved the Drag effect, so that extending the standard Flotr library is not needed

@@ -120,8 +120,7 @@ public class FlotChartRenderer extends Renderer {
 		
 		if (!ajaxRequest) {
 			//JBoss Richfaces uses the AJAXREQUEST parameter to determine AJAX Requests
-			String richFacesAjaxRequest = request.getParameter("AJAXREQUEST");
-			if (richFacesAjaxRequest != null) {
+			if (request.getParameter("AJAXREQUEST") != null) {
 				ajaxRequest = true;
 			}
 		}
@@ -132,7 +131,7 @@ public class FlotChartRenderer extends Renderer {
 			if (ajaxRequestParam != null && ajaxRequestParam.equalsIgnoreCase("true")) {
 				String ajaxClientId = request.getParameter("clientId");
 				if (ajaxClientId != null && ajaxClientId.equals(clientId)) {
-					// This is not the correct component. Return
+					// This is the correct component for this ajax Request.
 					ajaxRequest = true;
 				}
 			}
