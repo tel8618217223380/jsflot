@@ -7,9 +7,12 @@
       xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
 
 	<jsflot:flotChart id="valueTimeChart"
-		value="#{chartMbean.chartSeries}" 
-		valueChangeListener="#{chartMbean.chartDraggedListener}"
+		value="#{chartMbean.chartSeries}"
+		actionListener="#{chartMbean.chartActionListener}"
+		testChartDraggedAction="#{chartMbean.chartDraggedListener}"
 		chartDraggable="#{chartMbean.chartData.chartDraggable}"
+		chartClickable="#{chartMbean.chartData.chartClickable}"
+		reRender="clickText"
 		showLines="#{chartMbean.chartData.showLines}"
 		fillLines="#{chartMbean.chartData.fillLines}"
 		showDataPoints="#{chartMbean.chartData.showDataPoints}"
@@ -32,18 +35,18 @@
 		xaxisTitleRotation="#{chartMbean.chartData.xaxisTitleRotation}"
 		xaxisLabelRotation="#{chartMbean.chartData.xaxisLabelRotation}"
 		showYaxisLabels="#{chartMbean.chartData.showYaxisLabels}"
-		yaxisTitle="#{chartMbean.chartData.yaxisTitle}" 
+		yaxisTitle="#{chartMbean.chartData.yaxisTitle}"
 		yaxisTitleRotation="#{chartMbean.chartData.yaxisTitleRotation}"
 		yaxisLabelRotation="#{chartMbean.chartData.yaxisLabelRotation}"
-		numberOfXAxisTicks="#{chartMbean.chartData.numberOfXAxisTicks}" 
+		numberOfXAxisTicks="#{chartMbean.chartData.numberOfXAxisTicks}"
 		xaxisMinValue="#{chartMbean.chartData.xaxisMinValue}"
 		xaxisMaxValue="#{chartMbean.chartData.xaxisMaxValue}"
 		numberOfYAxisTicks="#{chartMbean.chartData.numberOfYAxisTicks}"
-		yaxisMinValue="#{chartMbean.chartData.yaxisMinValue}" 
+		yaxisMinValue="#{chartMbean.chartData.yaxisMinValue}"
 		markers="#{chartMbean.chartData.markers}"
 		markerPosition="#{chartMbean.chartData.markerPosition}"
 		yaxisMaxValue="#{chartMbean.chartData.yaxisMaxValue}"
-		crosshair="#{chartMbean.chartData.crosshair}" >
+		crosshair="#{chartMbean.chartData.crosshair}">
 	</jsflot:flotChart>
 				
 </ui:composition>

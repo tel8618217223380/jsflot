@@ -305,6 +305,7 @@
 			</rich:tabPanel>
 			<rich:panel id="linechartPanel" label="XY Line Chart"
 				style="width: 650px;">
+				<f:facet name="header">JSFlot Live Demonstration</f:facet>
 					JSFlot is a JavaServer Faces (JSF) component library that uses the JavaScript 
 					framework Flotr to draw charts. The charts are drawn in the browser using JavaScript and 
 					JSON notation, and as such no bitmap or vector graphics are passed from the server to the client, 
@@ -312,18 +313,10 @@
 					passed into the draw JavaScript function.<br />
 				<br />
 					The main advantages of this approach is less overhead on 
-					the server side (parsing and rendering of data, as well as less time spent with drawing an passing 
+					the server side (parsing and rendering of data, as well as less time spent with drawing and passing 
 					a bitmap file (JPEG, GIF, PNG, etc) from the server to the browser.<br />
 				<br />
-				<b>Flotr has been tested in the following browsers</b>
-				<br />
-					- Firefox 2.0.0.12<br />
-					- Opera 9.25 and 9.50 beta1<br />
-					- Microsoft Internet Explorer 6 and 7 (Canvas emulated using ExCanvas)<br />
-					- Safari 3.0.4 (for Windows)<br />
-					- JSFlot har also been tested on Safari 4 beta running on MacOS X 10.5.6<br />
-				<br />
-					The JSFlot charting library is simple to install, easy to configure and easy to use in your custom application.<br />
+					<b>The JSFlot charting library is simple to install, easy to configure and easy to use in your custom applications.</b><br />
 				<rich:spacer height="2"></rich:spacer>
 				<table style="width: 100%;">
 					<tr>

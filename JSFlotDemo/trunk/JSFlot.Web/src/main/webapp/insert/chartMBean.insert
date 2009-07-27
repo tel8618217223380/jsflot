@@ -6,6 +6,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
+import org.jsflot.components.ComponentRendererUtil;
+import org.jsflot.components.FlotChartClickedEvent;
+import org.jsflot.components.FlotChartDraggedEvent;
 import org.jsflot.components.FlotChartRendererData;
 import org.jsflot.xydata.XYDataList;
 import org.jsflot.xydata.XYDataPoint;
@@ -20,6 +23,7 @@ public class ChartMBean {
 	private int minX = 0;
 	private int maxX = 10;
 	private FlotChartRendererData chartData;
+	private String clickedString = "None";
 	
 	public ChartMBean() {
 		// TODO Auto-generated constructor stub
@@ -127,16 +131,28 @@ public class ChartMBean {
 	public void setChartData(FlotChartRendererData chartData) {
 		this.chartData = chartData;
 	}
+	
+	public String getClickedString() {
+		return clickedString;
+	}
+	
+	public void setClickedString(String clickedString) {
+		this.clickedString = clickedString;
+	}
 
 	public void chartDraggedListener(ValueChangeEvent event) {
-		Log.info("chartDraggedListener called");
-		double chartMoved = 0;
-		String newValue = (String)event.getNewValue();
-		String oldValue = (String)event.getOldValue();
 		
-		try {
-			chartMoved = Double.parseDouble(newValue);
-			
+	}
+	
+	public void chartActionListener(ActionEvent event) {
+		if (event instanceof FlotChartClickedEvent) {
+			FlotChartClickedEvent flotEvent = (FlotChartClickedEvent)event;
+			setClickedString("Chart Last Clicked at point (" + flotEvent.getClickedDataPoint().getX() + "," + flotEvent.getClickedDataPoint().getY() + "). Data Point index: " + flotEvent.getClickedDataPointIndex() 
+						+ " on series: " + flotEvent.getClickedSeriesLabel() + ", which is series index: " + flotEvent.getClickedSeriesIndex());
+		} else if (event instanceof FlotChartDraggedEvent) {
+			FlotChartDraggedEvent dragEvent = (FlotChartDraggedEvent)event;
+			Double chartMoved = dragEvent.getDragValue();
+
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
 				chartMoved /= 60000;
 			}
@@ -148,9 +164,10 @@ public class ChartMBean {
 			//Ensure that minX and maxX does not go out of bounds
 			if (minX < 0) { minX = 0; maxX = 10; }
 			if (maxX > 100) { maxX = 100; minX = 90;}
-		} catch (NumberFormatException nfe) {
-			nfe.printStackTrace();
-			chartMoved = 0;
 		}
+	}
+	
+	public void testChartDraggedAction(FlotChartDraggedEvent dragEvent) {
+		Log.info("chartDraggedAction");
 	}
 }
