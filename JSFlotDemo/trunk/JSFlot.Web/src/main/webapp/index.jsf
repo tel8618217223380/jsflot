@@ -345,6 +345,7 @@
 					testChartDraggedAction="#{chartMbean.chartDraggedListener}"
 					chartDraggable="#{chartMbean.chartData.chartDraggable}"
 					chartClickable="#{chartMbean.chartData.chartClickable}"
+					chartZoomable="#{chartMbean.chartData.chartZoomable}"
 					reRender="clickText"
 					showLines="#{chartMbean.chartData.showLines}"
 					fillLines="#{chartMbean.chartData.fillLines}"
