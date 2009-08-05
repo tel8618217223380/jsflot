@@ -194,11 +194,30 @@ public class FlotChartRenderer extends Renderer {
 		writer.startElement("div", component);
 		writer.writeAttribute("id", clientId, null);
 		
+			int height = 600;
+			int zoomHeight = 75;
+			try {
+				height = Integer.parseInt(chartData.getHeight());
+			} catch (NumberFormatException nfe) {
+				//Nothing to do...
+			}
+			
+			if (chartData.getChartZoomable() != null && chartData.getChartZoomable().booleanValue()) {
+				height -= zoomHeight;
+				writer.startElement("div", component);
+				writer.writeAttribute("id", id + "_zoomable", null);
+				writer.writeAttribute("height", zoomHeight, null);
+				writer.writeAttribute("width", chartData.getWidth(), null);
+				writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + zoomHeight + "px;", null);
+				writer.endElement("div");
+				writer.write("\n");
+			}
+		
 			writer.startElement("div", component);
 			writer.writeAttribute("id", id, null);
-			writer.writeAttribute("height", chartData.getWidth(), null);
-			writer.writeAttribute("width", chartData.getHeight(), null);
-			writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + chartData.getHeight() + "px;", null);
+			writer.writeAttribute("height", height, null);
+			writer.writeAttribute("width", chartData.getWidth(), null);
+			writer.writeAttribute("style", "width:" + chartData.getWidth() + "px;height:" + height + "px;", null);
 			writer.endElement("div");
 			writer.write("\n");
 	
@@ -326,15 +345,38 @@ public class FlotChartRenderer extends Renderer {
 				sb.append("return Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],o);\n");
 			sb.append("}\n");
 			
+			if (chartData.getChartZoomable() != null && chartData.getChartZoomable().booleanValue()) {
+				sb.append("function " + jsflotId + "ZoomDrawGraph(opts){\n");
+					sb.append("var o = { xaxis: {showLabels: false}, yaxis: {showLabels: false}, legend: {show: false}, lines: { show: true, lineWidth: 1 }, shadowSize: 0, grid: { color: '#999', outlineWidth: 1 }, selection: { mode: 'xy' } };\n");
+					sb.append("return Flotr.draw($('" + id + "_zoomable'), [ " + dataArrayString + " ],o);\n");
+				sb.append("}\n");
+				
+				sb.append("var " + jsflotId + "_zoomable = " + jsflotId + "ZoomDrawGraph();\n");
+			}
 			sb.append("var " + jsflotId + " = " + jsflotId + "drawGraph();\n");
 			sb.append("var startingx = " + jsflotId + ".axes.x.min;\n");
 			sb.append("var endingx = startingx;\n");
 			sb.append("var dragstart;\n");
 			sb.append("var dragend;\n");
 			
+			if (chartData.getChartZoomable() != null && chartData.getChartZoomable().booleanValue()) {
+				sb.append("$('" + id + "_zoomable').observe('flotr:select', function(evt){");
+					sb.append("var o = Object.extend(Object.clone(options), { xaxis: {min: evt.memo[0].x1, max: evt.memo[0].x2 } }, { yaxis: {min: evt.memo[0].y1, max: evt.memo[0].y2 } } || {});\n");
+					sb.append(jsflotId = "Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],o);\n");
+				sb.append("});");
+				
+				sb.append("$('" + id + "_zoomable').observe('flotr:click', function(evt){");
+				sb.append("var o = Object.extend(Object.clone(options), {} || {});\n");
+				sb.append(jsflotId = "Flotr.draw($('" + id + "'), [ " + dataArrayString + " ],o);\n");
+			sb.append("});");
+			}
+			
+			
 			sb.append(writeDraggableContents(chartData, context, id, clientId, component));
 			
 			sb.append(writeClickableContents(chartData, context, id, clientId, component));
+			
+			//sb.append(writeZoomableContents(chartData, context, id, clientId, component));
 		sb.append("}\n");
 		return sb.toString();
 	}
@@ -381,6 +423,7 @@ public class FlotChartRenderer extends Renderer {
 		chartData.setChartClickable(get(component, context, "chartClickable"));
 		chartData.setAjaxSingle(get(component, context, "ajaxSingle"));
 		chartData.setReRender((String) get(component, context, "reRender"));
+		chartData.setChartZoomable(get(component, context, "chartZoomable"));
 
 		// Set ChartDraggedListener
 		String chartDraggedListener = (String) get(component, context, "chartDraggedListener");

@@ -64,6 +64,7 @@ public class FlotChartRendererData {
 	private Boolean chartClickable = false;
 	private Boolean ajaxSingle = false;
 	private String reRender = null;
+	private Boolean chartZoomable;
 	
 	public FlotChartRendererData() {
 		// TODO Auto-generated constructor stub
@@ -652,5 +653,21 @@ public class FlotChartRendererData {
 	
 	public void setReRender(String reRender) {
 		this.reRender = reRender;
+	}
+	
+	public Boolean getChartZoomable() {
+		return chartZoomable;
+	}
+	
+	public void setChartZoomable(Boolean chartZoomable) {
+		this.chartZoomable = chartZoomable;
+	}
+	
+	public void setChartZoomable(Object chartZoomableObj) {
+		if (chartZoomableObj instanceof String) {
+			this.chartZoomable = new Boolean((String) chartZoomableObj);
+		} else if (chartZoomableObj instanceof Boolean) {
+			this.chartZoomable = (Boolean) chartZoomableObj;
+		}
 	}
 }
