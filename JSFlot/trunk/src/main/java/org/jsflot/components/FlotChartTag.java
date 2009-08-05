@@ -70,6 +70,7 @@ public class FlotChartTag extends UIComponentELTag {
 	private ValueExpression crosshair;
 	private ValueExpression ajaxSingle;
 	private ValueExpression reRender;
+	private ValueExpression chartZoomable;
 	
 	@Override
 	public String getComponentType() {
@@ -417,6 +418,14 @@ public class FlotChartTag extends UIComponentELTag {
 	public void setReRender(ValueExpression reRender) {
 		this.reRender = reRender;
 	}
+	
+	public ValueExpression getChartZoomable() {
+		return chartZoomable;
+	}
+	
+	public void setChartZoomable(ValueExpression chartZoomable) {
+		this.chartZoomable = chartZoomable;
+	}
 
 	protected void setProperties(UIComponent component) {
 		super.setProperties(component);
@@ -463,6 +472,7 @@ public class FlotChartTag extends UIComponentELTag {
 		component.setValueExpression("crosshair", this.crosshair);
 		component.setValueExpression("ajaxSingle", this.ajaxSingle);
 		component.setValueExpression("reRender", this.reRender);
+		component.setValueExpression("chartZoomable", this.chartZoomable);
 	};
 	
 	public void release() {
@@ -510,5 +520,6 @@ public class FlotChartTag extends UIComponentELTag {
 		this.crosshair= null;
 		this.ajaxSingle = null;
 		this.reRender = null;
+		this.chartZoomable = null;
 	};
 }

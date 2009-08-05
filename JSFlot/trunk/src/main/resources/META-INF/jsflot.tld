@@ -289,6 +289,13 @@
 				<type>java.lang.String</type>
 			</deferred-value>
 		</attribute>
+		<attribute>
+			<description>Specifies if a zoom overview is shown</description>
+			<name>chartZoomable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
 	</tag>
 	<tag>
 		<description>
