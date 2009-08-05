@@ -129,6 +129,26 @@
 			</rich:toolTip>
 		</rich:panel>
 
+		<h:outputText value="Zoom Support"></h:outputText>
+		<h:selectBooleanCheckbox
+			value="#{chartMbean.chartData.chartZoomable}">
+			<a4j:support event="onchange" reRender="valueTimeChart" />
+		</h:selectBooleanCheckbox>
+		<rich:panel styleClass="nopaddingPanel"
+			bodyClass="nopaddingPanelBody" style="border: 0px;">
+			<h:graphicImage value="/images/info.png" height="16" width="16" />
+			<rich:toolTip style="width: 350px">
+				Determines if the chart is zoomable.<br /><br />
+				attribute: <b>chartZoomable</b><br />
+				Possible values: <br />
+				<ul>
+					<li>true</li>
+					<li>false</li>
+				</ul>
+				Default value: false<br />
+				Example: <b>&lt;jsflot:flotChart chartZoomable="true" /&gt;</b><br />
+			</rich:toolTip>
+		</rich:panel>
 
 		<h:outputText value="Markers"></h:outputText>
 		<h:selectBooleanCheckbox value="#{chartMbean.chartData.markers}">
