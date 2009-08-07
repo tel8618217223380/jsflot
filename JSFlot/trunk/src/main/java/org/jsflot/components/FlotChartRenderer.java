@@ -159,6 +159,9 @@ public class FlotChartRenderer extends Renderer {
 		if (id == null) {
 			id = "testID";
 		}
+		if (id.equals(clientId)) {
+			id = id + "_chart";
+		}
 
 		FlotChartRendererData chartData = getChartData(component, context);
 		String reRenderIDs = chartData.getReRender();
