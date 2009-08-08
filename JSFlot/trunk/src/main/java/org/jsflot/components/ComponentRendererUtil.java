@@ -39,6 +39,7 @@ public class ComponentRendererUtil {
 	public static final String JSFLOT_CLICK_INDEX = "jsflotClickIndex";
 	public static final String JSFLOT_SERIES_LABEL = "jsflotClickSeries";
 	public static final String JSFLOT_SERIES_INDEX = "jsflotClickSeriesIndex";
+	public static final String JSFLOT_CLICK_POINT_LABEL = "jsflotClickPointLabel";
 	
 	/**
 	 * This method is copied from JBoss Richfaces 3.3.0.GA

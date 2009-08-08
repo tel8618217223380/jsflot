@@ -2745,7 +2745,7 @@ Flotr.Graph = Class.create({
 				var xdiff = Math.abs(x - clickPos.x),
 				    ydiff = Math.abs(y - clickPos.y);
 				
-				// we use a different set of criteria to determin if there has been a hit
+				// we use a different set of criteria to determine if there has been a hit
 				// depending on what type of graph we have
 				if(((!s.bars.show) && xdiff < xsens && ydiff < ysens) || 
 				    (s.bars.show && xdiff < s.bars.barWidth/2 && ((y > 0 && clickPos.y > 0 && clickPos.y < y) || (y < 0 && clickPos.y < 0 && clickPos.y > y)))){
