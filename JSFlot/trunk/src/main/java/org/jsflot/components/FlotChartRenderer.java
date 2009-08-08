@@ -460,7 +460,7 @@ public class FlotChartRenderer extends Renderer {
 				if (chartData.getMode().equalsIgnoreCase("Time")) {
 					String timeFormat = chartData.getTimeFormat();
 					if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
-						mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '" + chartData.getTimeFormat() + "') +'<br/>y = ' + yaxisConverter(obj.y); }");
+						mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '" + chartData.getTimeFormat() + "') +'<br/>y = ' + yaxisConverter(obj.y) + '<br/>label = ' + obj.series.data[obj.index][2]; }");
 					//} else {
 					//	mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '') +'<br/>y = ' + yaxisConverter(obj.y); }");
 					//	
@@ -468,7 +468,7 @@ public class FlotChartRenderer extends Renderer {
 					}
 
 				} else {
-					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y); }");
+					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y) + '<br/>label = ' + obj.series.data[obj.index][2]; }");
 				}
 				chartOptions.put("mouse", mouseOptions);
 			}
@@ -637,19 +637,27 @@ public class FlotChartRenderer extends Renderer {
 		if (list != null) {
 			for (int i = 0; i < list.size() - 1; i++) {
 				XYDataPoint p = list.get(i);
+				String pointLabel = "";
+				if (p.getPointLabel() != null) {
+					pointLabel = ", '" + p.getPointLabel() + "'";
+				}
 				if (chartData.getChartType().equalsIgnoreCase("bar")) {
-					sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append("]").append(", ");
+					sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
 				} else {
-					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append("]").append(", ");
+					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
 				}
 
 			}
 			// Last Row
 			XYDataPoint p = list.get(list.size() - 1);
+			String pointLabel = "";
+			if (p.getPointLabel() != null) {
+				pointLabel = ", '" + p.getPointLabel() + "'";
+			}
 			if (chartData.getChartType().equalsIgnoreCase("bar")) {
-				sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append("]");
+				sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append(pointLabel).append("]");
 			} else {
-				sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append("]");
+				sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(pointLabel).append("]");
 			}
 		}
 		sb.append("]");
