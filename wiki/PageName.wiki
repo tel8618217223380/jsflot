@@ -1,6 +1,0 @@
-#summary Feature Requests
-
-Add your feature requests by adding a comment to this Wiki Page. I will update a chart with the requests, as well as keep a total score for each request. 
-
- * Possibility to add labels to datapoint:  +1
- * Possibility to draw candle charts: +1
