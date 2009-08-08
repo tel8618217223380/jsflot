@@ -460,7 +460,7 @@ public class FlotChartRenderer extends Renderer {
 				if (chartData.getMode().equalsIgnoreCase("Time")) {
 					String timeFormat = chartData.getTimeFormat();
 					if (chartData.getTimeFormat() != null && chartData.getTimeFormat().length() > 1) {
-						mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '" + chartData.getTimeFormat() + "') +'<br/>y = ' + yaxisConverter(obj.y) + '<br/>label = ' + obj.series.data[obj.index][2]; }");
+						mouseOptions .put("trackFormatter", "function(obj) { return JSFlot.AJAX.pointLabelFormatter(obj); }");
 					//} else {
 					//	mouseOptions .put("trackFormatter", "function(obj){ return 'x = ' + Flotr.Date.format((new Date(obj.x*1)), '') +'<br/>y = ' + yaxisConverter(obj.y); }");
 					//	
@@ -468,7 +468,7 @@ public class FlotChartRenderer extends Renderer {
 					}
 
 				} else {
-					mouseOptions.put("trackFormatter", "function(obj){ return 'x = ' + obj.x +'<br/>y = ' + yaxisConverter(obj.y) + '<br/>label = ' + obj.series.data[obj.index][2]; }");
+					mouseOptions.put("trackFormatter", "function(obj) { return JSFlot.AJAX.pointLabelFormatter(obj); }");
 				}
 				chartOptions.put("mouse", mouseOptions);
 			}
