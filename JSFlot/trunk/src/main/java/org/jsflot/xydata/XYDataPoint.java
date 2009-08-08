@@ -26,6 +26,7 @@ public class XYDataPoint {
 	
 	private Number x;
 	private Number y;
+	private String pointLabel;
 	
 	public XYDataPoint() {
 		// TODO Auto-generated constructor stub
@@ -35,6 +36,14 @@ public class XYDataPoint {
 		super();
 		this.x = x;
 		this.y = y;
+		this.pointLabel = null;
+	}
+	
+	public XYDataPoint(Number x, Number y, String pointLabel) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.pointLabel = pointLabel;
 	}
 	
 	public Number getX() {
@@ -51,6 +60,14 @@ public class XYDataPoint {
 	
 	public void setY(Number y) {
 		this.y = y;
+	}
+	
+	public String getPointLabel() {
+		return pointLabel;
+	}
+	
+	public void setPointLabel(String pointLabel) {
+		this.pointLabel = pointLabel;
 	}
 
 }
