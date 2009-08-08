@@ -87,12 +87,13 @@ public class FlotChartRenderer extends Renderer {
 				String clickIndex = request.getParameter(ComponentRendererUtil.JSFLOT_CLICK_INDEX);
 				String clickSeriesLabel = request.getParameter(ComponentRendererUtil.JSFLOT_SERIES_LABEL);
 				String clickSeriesIndex = request.getParameter(ComponentRendererUtil.JSFLOT_SERIES_INDEX);
+				String clickPointLabel = request.getParameter(ComponentRendererUtil.JSFLOT_CLICK_POINT_LABEL);
 				
 				XYDataPoint clickedPoint = null;
 				Integer clickIndexInt = null;
 				Integer clickSeriesIndexInt = null;
 				try {
-					clickedPoint = new XYDataPoint(Double.parseDouble(clickX), Double.parseDouble(clickY));
+					clickedPoint = new XYDataPoint(Double.parseDouble(clickX), Double.parseDouble(clickY), clickPointLabel);
 					clickIndexInt = Integer.parseInt(clickIndex);
 					clickSeriesIndexInt = Integer.parseInt(clickSeriesIndex);
 				} catch (NumberFormatException nfe) {

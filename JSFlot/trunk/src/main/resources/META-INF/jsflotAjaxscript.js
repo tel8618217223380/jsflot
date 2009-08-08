@@ -52,6 +52,7 @@ JSFlot.AJAX.getFormData = function getFormData(form, options, event) {
     		addParam("jsflotClickX", options._clickedPosition.x == 0 ? "0" : options._clickedPosition.x);
     		addParam("jsflotClickY", options._clickedPosition.y == 0 ? "0" : options._clickedPosition.y);
     		addParam("jsflotClickSeries", options._clickedPosition.series.label);
+    		addParam("jsflotClickPointLabel", options._clickedPosition.series.data[options._clickedPosition.index][2]);
     		addParam("jsflotClickSeriesIndex", options._clickedPosition.seriesIndex == 0 ? "0" : options._clickedPosition.seriesIndex);
     		addParam("jsflotClickIndex", options._clickedPosition.index == 0 ? "0" : options._clickedPosition.index);
     	}
