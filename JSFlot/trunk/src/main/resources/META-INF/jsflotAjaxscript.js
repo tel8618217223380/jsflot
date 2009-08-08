@@ -175,6 +175,32 @@ JSFlot.AJAXQuery = function(form) {
     this._actionUrl = (this._form.action) ? this._form.action: this._form;
 };
 
+JSFlot.AJAX.yaxisConverter = function(yValue) {
+	var retVal = yValue;
+	if (yValue > 1000 && yValue < 1000000) {
+		retVal = yValue / 1000;
+		retVal = retVal + "k";
+	} 
+	if (yValue > 1000000 && yValue < 1000000000) {
+		retVal = yValue / 1000000;
+		retVal = retVal + "m";
+	}
+	if (yValue > 1000000000 && yValue < 1000000000000) {
+		retVal = yValue / 1000000000;
+		retVal = retVal + "t";
+	}
+	return retVal;
+}
+
+JSFlot.AJAX.pointLabelFormatter = function(pointObject) {
+	var retVal = "x = " + pointObject.x + "<br />y = " + JSFlot.AJAX.yaxisConverter(pointObject.y);
+	
+	if (pointObject.series.data[pointObject.index][2]) {
+		retVal = retVal + "<br/>Label = " + pointObject.series.data[pointObject.index][2];
+	}
+	return retVal;
+}
+
 
 JSFlot.AJAXQuery.prototype = {
 	_form: null,
