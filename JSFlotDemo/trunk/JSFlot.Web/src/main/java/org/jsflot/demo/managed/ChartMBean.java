@@ -23,7 +23,10 @@ public class ChartMBean {
 	private int minX = 0;
 	private int maxX = 10;
 	private FlotChartRendererData chartData;
-	private String clickedString = "None";
+	private String clickedString = "No Data Point Clicked Yet.";
+	private String clickedDataPointLabel = "";
+	private Integer clickedDataSeriesIndex = null;
+	private XYDataPoint clickedDataPoint = null;
 	
 	public ChartMBean() {
 		// TODO Auto-generated constructor stub
@@ -33,8 +36,8 @@ public class ChartMBean {
 			NumberFormat nf = NumberFormat.getNumberInstance();
 			nf.setMaximumFractionDigits(3);
 			
-			series1DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10));
-			series2DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10));
+			series1DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10, "Point: " + i));
+			series2DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10, "Point: " + i));
 			series3DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10));
 		}
 		series1DataList.setLabel("Series 1");
@@ -52,13 +55,13 @@ public class ChartMBean {
 		for (int i = minX; i <= maxX; i++) {
 			long startTime = 1196463600000l;
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
-				XYDataPoint p1 = new XYDataPoint(series1DataList.get(i).getX(), series1DataList.get(i).getY());
+				XYDataPoint p1 = new XYDataPoint(series1DataList.get(i).getX(), series1DataList.get(i).getY(), series1DataList.get(i).getPointLabel());
 				p1.setX(startTime + (p1.getX().doubleValue() * 1000 * 60 ));
 				
-				XYDataPoint p2 = new XYDataPoint(series2DataList.get(i).getX(), series2DataList.get(i).getY());
+				XYDataPoint p2 = new XYDataPoint(series2DataList.get(i).getX(), series2DataList.get(i).getY(), series2DataList.get(i).getPointLabel());
 				p2.setX(startTime + (p2.getX().doubleValue() * 1000 * 60 ));
 				
-				XYDataPoint p3 = new XYDataPoint(series3DataList.get(i).getX(), series3DataList.get(i).getY());
+				XYDataPoint p3 = new XYDataPoint(series3DataList.get(i).getX(), series3DataList.get(i).getY(), series3DataList.get(i).getPointLabel());
 				p3.setX(startTime + (p3.getX().doubleValue() * 1000 * 60 ));
 				
 				currentSeries1DataList.addDataPoint(p1);
@@ -139,9 +142,29 @@ public class ChartMBean {
 	public void setClickedString(String clickedString) {
 		this.clickedString = clickedString;
 	}
+	
+	public XYDataPoint getClickedDataPoint() {
+		return clickedDataPoint;
+	}
+	
+	public void setClickedDataPoint(XYDataPoint clickedDataPoint) {
+		this.clickedDataPoint = clickedDataPoint;
+	}
+	
+	public String getClickedDataPointLabel() {
+		return clickedDataPointLabel;
+	}
+	
+	public void setClickedDataPointLabel(String clickedDataPointLabel) {
+		this.clickedDataPointLabel = clickedDataPointLabel;
+	}
 
 	public void chartDraggedListener(ValueChangeEvent event) {
 		
+	}
+	
+	public void changeDataPointLabelActionListener(ActionEvent event) {
+		//Not much to do really...
 	}
 	
 	public void chartActionListener(ActionEvent event) {
@@ -149,6 +172,27 @@ public class ChartMBean {
 			FlotChartClickedEvent flotEvent = (FlotChartClickedEvent)event;
 			setClickedString("Chart Last Clicked at point (" + flotEvent.getClickedDataPoint().getX() + "," + flotEvent.getClickedDataPoint().getY() + "). Data Point index: " + flotEvent.getClickedDataPointIndex() 
 						+ " on series: " + flotEvent.getClickedSeriesLabel() + ", which is series index: " + flotEvent.getClickedSeriesIndex());
+			clickedDataSeriesIndex = flotEvent.getClickedSeriesIndex();
+			Integer clickedDataPointIndex = flotEvent.getClickedDataPointIndex();
+			XYDataList clickedList = null;
+			XYDataPoint clickedPoint = null;
+			
+			if (clickedDataSeriesIndex != null && clickedDataSeriesIndex.equals(0)) {
+				clickedList = series1DataList;
+			} else if (clickedDataSeriesIndex != null && clickedDataSeriesIndex.equals(1)) {
+				clickedList = series2DataList;
+			} else if (clickedDataSeriesIndex != null && clickedDataSeriesIndex.equals(2)) {
+				clickedList = series3DataList;
+			}
+			
+			if (clickedDataPointIndex != null) {
+				clickedPoint = clickedList.get(clickedDataPointIndex);
+			}
+			
+			if (clickedPoint != null) {
+				clickedDataPoint = clickedPoint;
+			}
+			
 		} else if (event instanceof FlotChartDraggedEvent) {
 			FlotChartDraggedEvent dragEvent = (FlotChartDraggedEvent)event;
 			Double chartMoved = dragEvent.getDragValue();
