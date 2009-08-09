@@ -346,7 +346,7 @@
 					chartDraggable="#{chartMbean.chartData.chartDraggable}"
 					chartClickable="#{chartMbean.chartData.chartClickable}"
 					chartZoomable="#{chartMbean.chartData.chartZoomable}"
-					reRender="clickText"
+					reRender="clickedPanel"
 					showLines="#{chartMbean.chartData.showLines}"
 					fillLines="#{chartMbean.chartData.fillLines}"
 					showDataPoints="#{chartMbean.chartData.showDataPoints}"
@@ -382,7 +382,17 @@
 					yaxisMaxValue="#{chartMbean.chartData.yaxisMaxValue}"
 					crosshair="#{chartMbean.chartData.crosshair}">
 				</jsflot:flotChart>
-				<h:outputText id="clickText" value="#{chartMbean.clickedString}" rendered="#{chartMbean.chartData.chartClickable}" style="font-weight: 900;"></h:outputText>
+		
+				<rich:panel id="clickedPanel" rendered="#{chartMbean.clickedDataPoint != null}">
+					<f:facet name="header">
+						<h:outputText id="clickText" value="#{chartMbean.clickedString}"></h:outputText>
+					</f:facet>
+					<h:outputText value="Point Label: " />
+					<h:inputText rendered="#{chartMbean.clickedDataPoint != null}" id="clickedPointInputText" value="#{chartMbean.clickedDataPoint.pointLabel}">
+						
+					</h:inputText>
+					<a4j:commandButton actionListener="#{chartMbean.changeDataPointLabelActionListener}" value="Edit Point Label"></a4j:commandButton>
+				</rich:panel>
 				<a4j:region id="sourceRegion">
 					<rich:simpleTogglePanel id="sourceCodePanel" opened="false"
 						switchType="ajax">
