@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+	<rich:panel>
+		<f:facet name="header">Chart Line Options</f:facet>
+		<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+			<h:outputText value="Fill Lines"></h:outputText>
+			<h:selectBooleanCheckbox value="#{chartMbean.chartData.fillLines}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectBooleanCheckbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determines if the lines should be filled (Area Chart)<br /><br />
+					Attribute: <b>fillLines</b><br />
+					Possible values: <br />
+					<ul>
+						<li>true</li>
+						<li>false</li>
+					</ul>
+					Default value: false <br />
+					Example: <b>&lt;jsflot:flotChart fillLines="true" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Show Lines"></h:outputText>
+			<h:selectBooleanCheckbox value="#{chartMbean.chartData.showLines}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectBooleanCheckbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Choose if the lines are shown<br /><br />
+					Attribute: <b>showLines</b><br />
+					Possible values: <br />
+					<ul>
+						<li>true</li>
+						<li>false</li>
+					</ul>
+					Default value: true <br />
+					Example: <b>&lt;jsflot:flotChart showLines="false" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Show Data points"></h:outputText>
+			<h:selectBooleanCheckbox
+				value="#{chartMbean.chartData.showDataPoints}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectBooleanCheckbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determines if the data points is displayed<br /><br />
+					Attribute: <b>showDataPoints</b><br />
+					Possible values: <br />
+					<ul>
+						<li>true</li>
+						<li>false</li>
+					</ul>
+					Default value: false <br />
+					Example: <b>&lt;jsflot:flotChart showDataPoints="true" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+		</h:panelGrid>
+	</rich:panel>
+
+</ui:composition>

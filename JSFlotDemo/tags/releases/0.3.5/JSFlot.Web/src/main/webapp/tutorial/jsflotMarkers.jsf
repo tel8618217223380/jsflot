@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">Markers</f:facet>
+	JSFlot are able to show markers for each datapoint. Markers are enabled by setting the attribute markers to "true". 
+	By using the attribute markerPosition, you can configure where, relative to the datapoint, that markers are displayed. 
+	Possible values are combinations of "l"(Left), "c"(Center) or "r"(Right" and "t"(Top), "m"(Middle) and "b"(Bottom) 	
+</rich:panel>
+
+</ui:composition>

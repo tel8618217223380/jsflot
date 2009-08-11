@@ -1,0 +1,7 @@
+		<jsflot:flotChart id="valueTimeChart"
+			value="#{chartMbean.chartSeries}"
+			actionListener="#{chartMbean.chartActionListener}"
+			testChartDraggedAction="#{chartMbean.chartDraggedListener}"
+			chartClickable="#{chartMbean.chartData.chartClickable}"
+			reRender="clickText" />
+		<h:outputText id="clickText" value="#{chartMbean.clickedString}" rendered="#{chartMbean.chartData.chartClickable}" style="font-weight: 900;"></h:outputText>

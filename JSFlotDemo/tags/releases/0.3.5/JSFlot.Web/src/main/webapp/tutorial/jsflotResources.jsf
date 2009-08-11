@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot resources</f:facet>
+	The resources tag is responsible for including all the required javascript files. Therefore it is neccessary to 
+	include the <b>&lt;jsflot:resources /&gt;</b> tag inside the HEAD portion of the HTML page. If you are using Facelets or 
+	another templating library (like Tiles) it makes it easy to include this tag on all pages. When JSFlot is updated 
+	to support JSF 2.0, this tag will become obsolete<br />
+	<br />
+	<b>Advanced Features</b><br />
+	There are a number of Javascript files that are included with JSFlot. If you for any reason do not want to inlude one 
+	or more of these files they can be excluded from the render. This might be useful if you are using JSFlot with other 
+	JSF libraries that already include a minimum version of the same JavaScript files (JBoss RichFaces uses the same prototype
+	library as JSFlot for instance). <br />
+	<br />
+	To exclude a Javascript file, use the excludes attribute. The following will, for instance, exclude the prototype libary
+	from being included by JSFlot:  <b>&lt;jsflot:resources excludes="prototype" /&gt;</b>. The excludes attribute takes a comma-separated
+	list of libraries to exclude. Possible values are:<br />
+	- prototype<br />
+	- base64<br />
+	- excanvas<br />
+	- canvas2image<br />
+	- canvastext<br />
+	- flotr<br />
+	Please be aware though, that excluding any of the required libraries might make JSFlot stop working as intended, or at all. <br />
+	<br />
+	An additional library, blackbird, can be included if you would like to debug JSFlot. Blackbird is included by specifying the attribute <b>debug="true"</b>.
+</rich:panel>
+
+</ui:composition>
