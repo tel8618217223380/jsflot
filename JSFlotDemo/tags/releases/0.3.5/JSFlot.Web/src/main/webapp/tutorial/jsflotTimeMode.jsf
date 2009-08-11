@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot Time Mode</f:facet>
+	JSFlot supports viewing Date/Time values along the X-axis, which is enabled by setting the mode attribute to "time" (Default is "Series"). 
+	JSFlot expects the data points for the X-axis to contain a number representing the number of <b>millisconds</b> since January 1st 1970. 
+	Based on the data values shown in the chart, JSFlot will attempt to format the date with a suitable time format. This can be overridden
+	via the timeFormat Attribute. <br />
+	<b>timeFormat</b><br />
+	%h: hour<br />
+	%H: hour<br />
+	%M: minute<br />
+	%S: second<br />
+	%s: millisecond<br />
+	%d: date<br />
+	%m: month<br />
+	%y: year<br />
+	%b: month name<br />
+</rich:panel>
+
+</ui:composition>

@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+	<rich:panel>
+		<f:facet name="header">Chart Legend Options</f:facet>
+		<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+			<h:outputText value="Legend Columns"></h:outputText>
+			<h:selectOneListbox value="#{chartMbean.chartData.legendColumns}"
+				size="1">
+				<f:selectItem itemLabel="One" itemValue="1" />
+				<f:selectItem itemLabel="Two" itemValue="2" />
+				<f:selectItem itemLabel="Three" itemValue="3" />
+				<f:selectItem itemLabel="Four" itemValue="4" />
+				<f:selectItem itemLabel="Five" itemValue="5" />
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectOneListbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Choose the number of columns shown for the legend<br /><br />
+					Attribute: <b>legendColumns</b><br />
+					Possible values: Any Integer Number <br />
+					Default value: 1<br />
+					Example: <b>&lt;jsflot:flotChart legendColumns="2" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Legend Opacity"></h:outputText>
+			<h:inputText value="#{chartMbean.chartData.legendOpacity}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:inputText>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Choose the opacity of the legend background<br /><br />
+					Attribute: <b>legendOpacity</b><br />
+					Possible values: Any Double Number from 0 to 1 <br />
+					Default value: 0.85<br />
+					Example: <b>&lt;jsflot:flotChart legendOpacity="0.45" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Legend Position"></h:outputText>
+			<h:selectOneListbox value="#{chartMbean.chartData.legendPosition}"
+				size="1">
+				<f:selectItem itemLabel="North East" itemValue="ne" />
+				<f:selectItem itemLabel="North West" itemValue="nw" />
+				<f:selectItem itemLabel="South East" itemValue="se" />
+				<f:selectItem itemLabel="South West" itemValue="sw" />
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectOneListbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Choose position of the legend. Possible values are nw, sw, ne and se<br /><br />
+					Attribute: <b>legendPosition</b><br />
+					Possible values: <br />
+					<ul>
+						<li>"nw" (North West)</li>
+						<li>"sw" (South West)</li>
+						<li>"ne" (North East)</li>
+						<li>"se" (South East)</li>
+					</ul>
+					Default value: "ne"<br />
+					Example: <b>&lt;jsflot:flotChart legendPosition="sw" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Legend Color"></h:outputText>
+			<h:inputText value="#{chartMbean.chartData.legendColor}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:inputText>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Choose the color of the legend background<br /><br />
+					Attribute: <b>legendColor</b><br />
+					Possible values: Any valid HTML Color value <br />
+					Default value: Determined at Render Time. <br />
+					Example: <b>&lt;jsflot:flotChart legendColor="#FE57AB" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+		</h:panelGrid>
+	</rich:panel>
+
+</ui:composition>

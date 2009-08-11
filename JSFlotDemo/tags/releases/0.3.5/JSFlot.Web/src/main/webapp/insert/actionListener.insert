@@ -1,0 +1,27 @@
+		public void chartActionListener(ActionEvent event) {
+			if (event instanceof FlotChartClickedEvent) {
+				FlotChartClickedEvent flotEvent = (FlotChartClickedEvent)event;
+				setClickedString("Chart Last Clicked at point (" + flotEvent.getClickedDataPoint().getX() 
+					+ "," + flotEvent.getClickedDataPoint().getY() 
+					+ "). Data Point index: " 
+					+ flotEvent.getClickedDataPointIndex() 
+					+ " on series: " + flotEvent.getClickedSeriesLabel() 
+					+ ", which is series index: " 
+					+ flotEvent.getClickedSeriesIndex());
+			} else if (event instanceof FlotChartDraggedEvent) {
+				FlotChartDraggedEvent dragEvent = (FlotChartDraggedEvent)event;
+				Double chartMoved = dragEvent.getDragValue();
+	
+				if (chartData.getMode().equalsIgnoreCase("Time")) {
+					chartMoved /= 60000;
+				}
+				
+				//Move the chart according to the drag-motion
+				minX += chartMoved;
+				maxX += chartMoved;
+				
+				//Ensure that minX and maxX does not go out of bounds
+				if (minX < 0) { minX = 0; maxX = 10; }
+				if (maxX > 100) { maxX = 100; minX = 90;}
+			}
+		}

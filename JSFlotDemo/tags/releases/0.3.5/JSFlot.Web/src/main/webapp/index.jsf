@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:dsj="http://dsj.devsiden.info"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+<ui:composition template="/template/demotemplate.jsf">
+	<ui:define name="contents">
+		<h:panelGrid columns="2" style="valign: top;"
+			styleClass="mainContents" columnClasses="mainContents, mainContents">
+			<rich:tabPanel id="linechartTabPanel" switchType="ajax" width="100%"
+				style="width: 300px;">
+				<rich:tab label="Global options">
+					<ui:include src="/config/chartType.jsf"></ui:include>
+					<ui:include src="/config/chartAxis.jsf"></ui:include>
+					<ui:include src="/config/chartTitle.jsf"></ui:include>
+					<ui:include src="/config/chartLegend.jsf"></ui:include>
+					<ui:include src="/config/chartLine.jsf"></ui:include>
+					<ui:include src="/config/chartDimensions.jsf"></ui:include>
+					<ui:include src="/config/chartTooltip.jsf"></ui:include>
+				</rich:tab>
+				<rich:tab label="Series 1 Options">
+					<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+						<h:outputText value="Label"></h:outputText>
+						<h:inputText value="#{chartMbean.series1DataList.label}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:inputText>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Choose the label for the series. "></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Fill Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series1DataList.fillLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if the series lines are filles (Area)"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series1DataList.showLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Determines if this series' lines are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Data points"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series1DataList.showDataPoints}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series' data points are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Markers"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series1DataList.markers}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series data point markers are shown or not."></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Marker Position"></h:outputText>
+						<h:selectOneListbox id="series1MarkerPositionListbox" size="1"
+							value="#{chartMbean.series3DataList.markerPosition}">
+							<f:selectItem itemLabel="Left Top" itemValue="lt" />
+							<f:selectItem itemLabel="Center Top" itemValue="ct" />
+							<f:selectItem itemLabel="Right Top" itemValue="rt" />
+							<f:selectItem itemLabel="Left Middle" itemValue="lm" />
+							<f:selectItem itemLabel="Center Middle" itemValue="cm" />
+							<f:selectItem itemLabel="Right Middle" itemValue="rm" />
+							<f:selectItem itemLabel="Left Bottom" itemValue="lb" />
+							<f:selectItem itemLabel="Center Bottom" itemValue="cb" />
+							<f:selectItem itemLabel="Right Bottom" itemValue="rb" />
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectOneListbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+					</h:panelGrid>
+				</rich:tab>
+				<rich:tab label="Series 2 Options">
+					<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+						<h:outputText value="Label"></h:outputText>
+						<h:inputText value="#{chartMbean.series2DataList.label}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:inputText>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Choose the label for the series. "></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Fill Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series2DataList.fillLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if the series lines are filles (Area)"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series2DataList.showLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Determines if this series' lines are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Data points"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series2DataList.showDataPoints}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series' data points are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Markers"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series2DataList.markers}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series data point markers are shown or not."></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Marker Position"></h:outputText>
+						<h:selectOneListbox id="series2MarkerPositionListbox" size="1"
+							value="#{chartMbean.series3DataList.markerPosition}">
+							<f:selectItem itemLabel="Left Top" itemValue="lt" />
+							<f:selectItem itemLabel="Center Top" itemValue="ct" />
+							<f:selectItem itemLabel="Right Top" itemValue="rt" />
+							<f:selectItem itemLabel="Left Middle" itemValue="lm" />
+							<f:selectItem itemLabel="Center Middle" itemValue="cm" />
+							<f:selectItem itemLabel="Right Middle" itemValue="rm" />
+							<f:selectItem itemLabel="Left Bottom" itemValue="lb" />
+							<f:selectItem itemLabel="Center Bottom" itemValue="cb" />
+							<f:selectItem itemLabel="Right Bottom" itemValue="rb" />
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectOneListbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+					</h:panelGrid>
+				</rich:tab>
+				<rich:tab label="Series 3 Options">
+					<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+						<h:outputText value="Label"></h:outputText>
+						<h:inputText value="#{chartMbean.series3DataList.label}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:inputText>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Choose the label for the series. "></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Fill Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series3DataList.fillLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if the series lines are filles (Area)"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Lines"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series3DataList.showLines}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText value="Determines if this series' lines are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Show Data points"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series3DataList.showDataPoints}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series' data points are shown"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Markers"></h:outputText>
+						<h:selectBooleanCheckbox
+							value="#{chartMbean.series3DataList.markers}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectBooleanCheckbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines if this series data point markers are shown or not."></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+
+						<h:outputText value="Marker Position"></h:outputText>
+						<h:selectOneListbox id="series3MarkerPositionListbox" size="1"
+							value="#{chartMbean.series3DataList.markerPosition}">
+							<f:selectItem itemLabel="Left Top" itemValue="lt" />
+							<f:selectItem itemLabel="Center Top" itemValue="ct" />
+							<f:selectItem itemLabel="Right Top" itemValue="rt" />
+							<f:selectItem itemLabel="Left Middle" itemValue="lm" />
+							<f:selectItem itemLabel="Center Middle" itemValue="cm" />
+							<f:selectItem itemLabel="Right Middle" itemValue="rm" />
+							<f:selectItem itemLabel="Left Bottom" itemValue="lb" />
+							<f:selectItem itemLabel="Center Bottom" itemValue="cb" />
+							<f:selectItem itemLabel="Right Bottom" itemValue="rb" />
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</h:selectOneListbox>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+					</h:panelGrid>
+				</rich:tab>
+			</rich:tabPanel>
+			<rich:panel id="linechartPanel" label="XY Line Chart"
+				style="width: 650px;">
+				<f:facet name="header">JSFlot Live Demonstration</f:facet>
+					JSFlot is a JavaServer Faces (JSF) component library that uses the JavaScript 
+					framework Flotr to draw charts. The charts are drawn in the browser using JavaScript and 
+					JSON notation, and as such no bitmap or vector graphics are passed from the server to the client, 
+					meaning that the browser reads, renders and displays the charts using only the JSON data points 
+					passed into the draw JavaScript function.<br />
+				<br />
+					The main advantages of this approach is less overhead on 
+					the server side (parsing and rendering of data, as well as less time spent with drawing and passing 
+					a bitmap file (JPEG, GIF, PNG, etc) from the server to the browser.<br />
+				<br />
+					<b>The JSFlot charting library is simple to install, easy to configure and easy to use in your custom applications.</b><br />
+				<rich:spacer height="2"></rich:spacer>
+				<table style="width: 100%;">
+					<tr>
+						<td style="width: 50%;"></td>
+						<td style="width: 50%; border: 1px #000 solid; text-align: right;">
+						<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+						<input type="hidden" name="cmd" value="_s-xclick" /> <input
+							type="hidden" name="hosted_button_id" value="5087585" /> <input
+							type="image"
+							src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif"
+							border="0" name="submit"
+							alt="PayPal - The safer, easier way to pay online!" /> <img
+							alt="" border="0"
+							src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1"
+							height="1" /><br />
+						Help support the development of JSFlot and the hosting of the Live
+						Demo.</form>
+						</td>
+					</tr>
+				</table>
+				<rich:spacer height="2"></rich:spacer>
+
+				<jsflot:flotChart id="valueTimeChart"
+					value="#{chartMbean.chartSeries}"
+					actionListener="#{chartMbean.chartActionListener}"
+					testChartDraggedAction="#{chartMbean.chartDraggedListener}"
+					chartDraggable="#{chartMbean.chartData.chartDraggable}"
+					chartClickable="#{chartMbean.chartData.chartClickable}"
+					chartZoomable="#{chartMbean.chartData.chartZoomable}"
+					reRender="clickedPanel"
+					showLines="#{chartMbean.chartData.showLines}"
+					fillLines="#{chartMbean.chartData.fillLines}"
+					showDataPoints="#{chartMbean.chartData.showDataPoints}"
+					legendColumns="#{chartMbean.chartData.legendColumns}"
+					legendOpacity="#{chartMbean.chartData.legendOpacity}"
+					legendPosition="#{chartMbean.chartData.legendPosition}"
+					legendColor="#{chartMbean.chartData.legendColor}"
+					height="#{chartMbean.chartData.height}"
+					width="#{chartMbean.chartData.width}"
+					showTooltip="#{chartMbean.chartData.showTooltip}"
+					tooltipPosition="#{chartMbean.chartData.tooltipPosition}"
+					tooltipFollowMouse="#{chartMbean.chartData.tooltipFollowMouse}"
+					mode="#{chartMbean.chartData.mode}"
+					timeFormat="#{chartMbean.chartData.timeFormat}"
+					title="#{chartMbean.chartData.title}"
+					subtitle="#{chartMbean.chartData.subtitle}"
+					chartType="#{chartMbean.chartData.chartType}"
+					showXaxisLabels="#{chartMbean.chartData.showXaxisLabels}"
+					xaxisTitle="#{chartMbean.chartData.xaxisTitle}"
+					xaxisTitleRotation="#{chartMbean.chartData.xaxisTitleRotation}"
+					xaxisLabelRotation="#{chartMbean.chartData.xaxisLabelRotation}"
+					showYaxisLabels="#{chartMbean.chartData.showYaxisLabels}"
+					yaxisTitle="#{chartMbean.chartData.yaxisTitle}"
+					yaxisTitleRotation="#{chartMbean.chartData.yaxisTitleRotation}"
+					yaxisLabelRotation="#{chartMbean.chartData.yaxisLabelRotation}"
+					numberOfXAxisTicks="#{chartMbean.chartData.numberOfXAxisTicks}"
+					xaxisMinValue="#{chartMbean.chartData.xaxisMinValue}"
+					xaxisMaxValue="#{chartMbean.chartData.xaxisMaxValue}"
+					numberOfYAxisTicks="#{chartMbean.chartData.numberOfYAxisTicks}"
+					yaxisMinValue="#{chartMbean.chartData.yaxisMinValue}"
+					markers="#{chartMbean.chartData.markers}"
+					markerPosition="#{chartMbean.chartData.markerPosition}"
+					yaxisMaxValue="#{chartMbean.chartData.yaxisMaxValue}"
+					crosshair="#{chartMbean.chartData.crosshair}">
+				</jsflot:flotChart>
+		
+				<rich:panel id="clickedPanel" rendered="#{chartMbean.clickedDataPoint != null}">
+					<f:facet name="header">
+						<h:outputText id="clickText" value="#{chartMbean.clickedString}"></h:outputText>
+					</f:facet>
+					<h:outputText value="Point Label: " />
+					<h:inputText rendered="#{chartMbean.clickedDataPoint != null}" id="clickedPointInputText" value="#{chartMbean.clickedDataPoint.pointLabel}">
+						
+					</h:inputText>
+					<a4j:commandButton actionListener="#{chartMbean.changeDataPointLabelActionListener}" value="Edit Point Label"></a4j:commandButton>
+				</rich:panel>
+				<a4j:region id="sourceRegion">
+					<rich:simpleTogglePanel id="sourceCodePanel" opened="false"
+						switchType="ajax">
+						<f:facet name="header">View Tag Useage</f:facet>
+						<rich:insert id="codeinsert" src="/insert/index.insert"
+							highlight="xml"></rich:insert>
+						<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+					</rich:simpleTogglePanel>
+
+					<rich:simpleTogglePanel id="mbeanSourceCodePanel" opened="false"
+						switchType="ajax">
+						<f:facet name="header">View Backing Bean code Useage</f:facet>
+						<rich:insert id="mbeancodeinsert" src="/insert/chartMBean.insert"
+							highlight="java"></rich:insert>
+						<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+					</rich:simpleTogglePanel>
+
+					<rich:simpleTogglePanel id="modelSourceCodePanel" opened="false"
+						switchType="ajax">
+						<f:facet name="header">View Chart Data Code (From the JSFlot project)</f:facet>
+						<rich:insert id="modelcodeinsert" src="/insert/chartdata.insert"
+							highlight="java"></rich:insert>
+						<!--rich:effect event="onclick" type="BlindDown" params="duration:0.8" /-->
+					</rich:simpleTogglePanel>
+				</a4j:region>
+			</rich:panel>
+		</h:panelGrid>
+	</ui:define>
+</ui:composition>
+</html>

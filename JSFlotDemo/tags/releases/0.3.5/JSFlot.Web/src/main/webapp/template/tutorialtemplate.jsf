@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+	<h:panelGrid columns="2" columnClasses="alignTop,alignTop"  style="width: 958px;">
+	<ui:insert name="tutorialMenu">
+		<rich:panelMenu  style="width:200px"  mode="ajax"
+        iconExpandedGroup="disc" iconCollapsedGroup="disc" 
+        iconExpandedTopGroup="chevronUp" iconGroupTopPosition="right" 
+        iconCollapsedTopGroup="chevronDown">
+			<rich:panelMenuGroup label="jsflot:resources" expanded="true">
+				<rich:panelMenuItem label="jsflot:resources">
+				
+				</rich:panelMenuItem>
+			</rich:panelMenuGroup>
+			<rich:panelMenuGroup label="jsflot:flotChart" expanded="true">
+				<rich:panelMenuItem label="actionListener">
+				
+				</rich:panelMenuItem>
+				<rich:panelMenuItem label="reRender">
+				
+				</rich:panelMenuItem>
+			</rich:panelMenuGroup>
+		</rich:panelMenu>
+	</ui:insert>
+	
+	<rich:panel style="width: 100%;">
+		<ui:insert name="tutorialContents">
+			TutContents
+		</ui:insert>
+	</rich:panel>
+	
+	</h:panelGrid>
+	
+	
+</html>

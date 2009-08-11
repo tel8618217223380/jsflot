@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">Introduction</f:facet>
+	Welcome to the JSFlot tutorial. JSFlot consists of two main JSF tags, the resources tag and the flotChart tag. The resources
+	tag is responsible for placing all the required JavaScript code in the rendered HTML page output, and must be included in each
+	page that are going to show JSFlot charts. Using templating technologies such as Facelets or Tiles makes this operation a 
+	one-time operation for each unique template within your application. 
+	<br />
+	<br />The flotChart tag is responsible for rendering the HTML output that is required for the browser to show the interactive charts. 
+	This tag includes a wide array of attributes that lets you configure and control how the JSFlot looks and behaves. Main features of 
+	flotChart tag is:<br /> 
+	<br /> * Support for Line, Pie, Clustered bar and Stacked bar charts
+	<br /> * Line and Bar charts supports a Time mode
+	<br /> * Interactive data points with tooltip
+	<br /> * Legend support
+	<br /> * Very attractive looks
+	<br /> * Support for Crosshair
+	<br /> * Drag and drop support that reports on the number of X-axis points that are dragged, triggers and actionListener
+	<br /> * Support for data-point clicks that trigger an actionListener
+	<br /> * Support major browsers and platforms
+	<br /> * Works with most other JSF libraries, including JBoss RichFaces?
+	<br /> * Easy to install the frameworks and tags are easy to use in your application
+	<br /> For more information regarding JSFlot features, please visit the <a4j:commandLink action="#{navigationMbean.navigateToFeatures}" styleClass="topmenu"><h:outputText value=" Features" /></a4j:commandLink> section of this Live Demonstration 	
+</rich:panel>
+
+</ui:composition>
