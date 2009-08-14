@@ -29,6 +29,9 @@
 					<rich:panelMenuItem label="actionListener" actionListener="#{navigationMbean.navigateToTutorialPage}">
 						<a4j:actionparam name="tutorialNavigation" value="jsflotActionListener.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
 					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Chart Zooming" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotZoom.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
 					<rich:panelMenuItem label="reRender" actionListener="#{navigationMbean.navigateToTutorialPage}">
 						<a4j:actionparam name="tutorialNavigation" value="jsflotReRender.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
 					</rich:panelMenuItem>

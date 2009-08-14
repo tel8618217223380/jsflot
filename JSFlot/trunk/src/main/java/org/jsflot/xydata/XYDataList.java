@@ -33,6 +33,7 @@ public class XYDataList {
 	private String label = "";
 	private boolean markers = false;
 	private String markerPosition = "ct";
+	private String color = null;
 	
 	public XYDataList() {
 		dataPointList = new ArrayList<XYDataPoint>();
@@ -78,6 +79,10 @@ public class XYDataList {
 		return dataPointList.add(new XYDataPoint(x, y));
 	}
 	
+	public void clear() {
+		dataPointList.clear();
+	}
+	
 	public boolean isMarkers() {
 		return markers;
 	}
@@ -92,6 +97,14 @@ public class XYDataList {
 	
 	public void setMarkerPosition(String markerPosition) {
 		this.markerPosition = markerPosition;
+	}
+	
+	public String getColor() {
+		return color;
+	}
+	
+	public void setColor(String color) {
+		this.color = color;
 	}
 	
 	public double calculateAvgPointDistance() {

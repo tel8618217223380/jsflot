@@ -81,6 +81,7 @@ public class ChartMBean {
 		currentSeries1DataList.setMarkers(series1DataList.isMarkers());
 		currentSeries1DataList.setShowDataPoints(series1DataList.isShowDataPoints());
 		currentSeries1DataList.setShowLines(series1DataList.isShowLines());
+		currentSeries1DataList.setColor(series1DataList.getColor());
 		
 		currentSeries2DataList.setLabel(series2DataList.getLabel());
 		currentSeries2DataList.setFillLines(series2DataList.isFillLines());
@@ -88,6 +89,7 @@ public class ChartMBean {
 		currentSeries2DataList.setMarkers(series2DataList.isMarkers());
 		currentSeries2DataList.setShowDataPoints(series2DataList.isShowDataPoints());
 		currentSeries2DataList.setShowLines(series2DataList.isShowLines());
+		currentSeries2DataList.setColor(series2DataList.getColor());
 		
 		currentSeries3DataList.setLabel(series3DataList.getLabel());
 		currentSeries3DataList.setFillLines(series3DataList.isFillLines());
@@ -95,6 +97,7 @@ public class ChartMBean {
 		currentSeries3DataList.setMarkers(series3DataList.isMarkers());
 		currentSeries3DataList.setShowDataPoints(series3DataList.isShowDataPoints());
 		currentSeries3DataList.setShowLines(series3DataList.isShowLines());
+		currentSeries3DataList.setColor(series3DataList.getColor());
 		
 		collection.addDataList(currentSeries1DataList);
 		collection.addDataList(currentSeries2DataList);

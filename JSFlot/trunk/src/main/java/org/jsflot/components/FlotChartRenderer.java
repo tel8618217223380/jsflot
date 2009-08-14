@@ -642,7 +642,7 @@ public class FlotChartRenderer extends Renderer {
 				if (p.getPointLabel() != null) {
 					pointLabel = ", '" + p.getPointLabel() + "'";
 				}
-				if (chartData.getChartType().equalsIgnoreCase("bar")) {
+				if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("bar")) {
 					sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
 				} else {
 					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
@@ -703,6 +703,10 @@ public class FlotChartRenderer extends Renderer {
 
 				if (list.getLabel() != null) {
 					seriesOptions.put("label", "'" + list.getLabel() + "'");
+				}
+				
+				if (list.getColor() != null && list.getColor().length() == 7) {
+					seriesOptions.put("color", "'" + list.getColor() + "'");
 				}
 
 				retVal += seriesOptions.toString(3).replace("\"", "");
