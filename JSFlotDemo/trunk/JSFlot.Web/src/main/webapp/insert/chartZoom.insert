@@ -1,0 +1,4 @@
+<jsflot:flotChart id="valueTimeChart"
+	value="#{chartMbean.chartSeries}"
+	actionListener="#{chartMbean.chartActionListener}"
+	chartZoomable="true" />
