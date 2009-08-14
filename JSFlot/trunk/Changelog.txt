@@ -1,8 +1,11 @@
-Version 0.3.5 IE 6 and 7 Support
+Version 0.4.0
+- Added possibility to override default chart colors.
+
+Version 0.3.5 IE 6 and 7 Support, Chart Zooming
 - Added support for IE 6 and 7.
 - Ajax redraw supported by Prototype, JQuery and JBoss Richfaces expressively
 - Support for Chart Zooming with Overview.
-- Fixed a bug where the chart would not render if the ID and the ClientId is different.
+- Fixed a bug where the chart would not render if the ID and the ClientId has the same value.
 - Added possibility to add a label for each data point on the chart. 
 
 Version 0.3.0 Click Action, Improved Drag effect, valueChangeListener replaced with actionListener

@@ -94,7 +94,7 @@
 
 						<h:outputText value="Marker Position"></h:outputText>
 						<h:selectOneListbox id="series1MarkerPositionListbox" size="1"
-							value="#{chartMbean.series3DataList.markerPosition}">
+							value="#{chartMbean.series1DataList.markerPosition}">
 							<f:selectItem itemLabel="Left Top" itemValue="lt" />
 							<f:selectItem itemLabel="Center Top" itemValue="ct" />
 							<f:selectItem itemLabel="Right Top" itemValue="rt" />
@@ -112,6 +112,19 @@
 							<rich:toolTip style="width: 350px">
 								<h:outputText
 									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+						
+						<h:outputText value="Series Color"></h:outputText>
+						<rich:colorPicker colorMode="hex" value="#{chartMbean.series1DataList.color}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</rich:colorPicker>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="If set, determines the color for this data series."></h:outputText>
 							</rich:toolTip>
 						</rich:panel>
 					</h:panelGrid>
@@ -187,7 +200,7 @@
 
 						<h:outputText value="Marker Position"></h:outputText>
 						<h:selectOneListbox id="series2MarkerPositionListbox" size="1"
-							value="#{chartMbean.series3DataList.markerPosition}">
+							value="#{chartMbean.series2DataList.markerPosition}">
 							<f:selectItem itemLabel="Left Top" itemValue="lt" />
 							<f:selectItem itemLabel="Center Top" itemValue="ct" />
 							<f:selectItem itemLabel="Right Top" itemValue="rt" />
@@ -205,6 +218,19 @@
 							<rich:toolTip style="width: 350px">
 								<h:outputText
 									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+						
+						<h:outputText value="Series Color"></h:outputText>
+						<rich:colorPicker colorMode="hex" value="#{chartMbean.series2DataList.color}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</rich:colorPicker>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="If set, determines the color for this data series."></h:outputText>
 							</rich:toolTip>
 						</rich:panel>
 					</h:panelGrid>
@@ -298,6 +324,19 @@
 							<rich:toolTip style="width: 350px">
 								<h:outputText
 									value="Determines where, relative to the datapoint, the marker are shown. Possible values are lt, ct, rt, lm, cm, rm, lb, cb and rb"></h:outputText>
+							</rich:toolTip>
+						</rich:panel>
+						
+						<h:outputText value="Series Color"></h:outputText>
+						<rich:colorPicker colorMode="hex" value="#{chartMbean.series3DataList.color}">
+							<a4j:support event="onchange" reRender="valueTimeChart" />
+						</rich:colorPicker>
+						<rich:panel styleClass="nopaddingPanel"
+							bodyClass="nopaddingPanelBody" style="border: 0px;">
+							<h:graphicImage value="/images/info.png" height="16" width="16" />
+							<rich:toolTip style="width: 350px">
+								<h:outputText
+									value="If set, determines the color for this data series."></h:outputText>
 							</rich:toolTip>
 						</rich:panel>
 					</h:panelGrid>
