@@ -10,6 +10,8 @@ import org.jsflot.components.ComponentRendererUtil;
 import org.jsflot.components.FlotChartClickedEvent;
 import org.jsflot.components.FlotChartDraggedEvent;
 import org.jsflot.components.FlotChartRendererData;
+import org.jsflot.xydata.BubbleDataPoint;
+import org.jsflot.xydata.CandlestickDataPoint;
 import org.jsflot.xydata.XYDataList;
 import org.jsflot.xydata.XYDataPoint;
 import org.jsflot.xydata.XYDataSetCollection;
@@ -20,6 +22,9 @@ public class ChartMBean {
 	private XYDataList series1DataList = new XYDataList();
 	private XYDataList series2DataList = new XYDataList();
 	private XYDataList series3DataList = new XYDataList();
+	
+	private XYDataList candle1DataList = new XYDataList();
+	
 	private int minX = 0;
 	private int maxX = 10;
 	private FlotChartRendererData chartData;
@@ -36,13 +41,16 @@ public class ChartMBean {
 			NumberFormat nf = NumberFormat.getNumberInstance();
 			nf.setMaximumFractionDigits(3);
 			
-			series1DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10, "Point: " + i));
-			series2DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10, "Point: " + i));
-			series3DataList.addDataPoint(new XYDataPoint(i, Math.random() * 10));
+			series1DataList.addDataPoint(new BubbleDataPoint(i, Math.random() * 10, Math.random() * 10,  "Point: " + i));
+			series2DataList.addDataPoint(new BubbleDataPoint(i, Math.random() * 10, Math.random() * 10, "Point: " + i));
+			series3DataList.addDataPoint(new BubbleDataPoint(i, Math.random() * 10, Math.random() * 10));
+			
+			candle1DataList.addDataPoint(new CandlestickDataPoint(i, Math.random() * 10, Math.random() * 10, Math.random() * 10, Math.random() * 10,  "Point: " + i));
 		}
 		series1DataList.setLabel("Series 1");
 		series2DataList.setLabel("Series 2");
 		series3DataList.setLabel("Series 3");
+		
 		
 	}
 	
@@ -52,25 +60,36 @@ public class ChartMBean {
 		XYDataList currentSeries2DataList = new XYDataList();
 		XYDataList currentSeries3DataList = new XYDataList();
 		
+		XYDataList currentCandle1DataList = new XYDataList();
+		
 		for (int i = minX; i <= maxX; i++) {
 			long startTime = 1196463600000l;
 			if (chartData.getMode().equalsIgnoreCase("Time")) {
-				XYDataPoint p1 = new XYDataPoint(series1DataList.get(i).getX(), series1DataList.get(i).getY(), series1DataList.get(i).getPointLabel());
-				p1.setX(startTime + (p1.getX().doubleValue() * 1000 * 60 ));
+				BubbleDataPoint p1 = (BubbleDataPoint)series1DataList.get(i);
+				BubbleDataPoint b1 = new BubbleDataPoint(p1.getX(), p1.getY(), p1.getRadius(),  p1.getPointLabel());
+				b1.setX(startTime + (b1.getX().doubleValue() * 1000 * 60 ));
 				
-				XYDataPoint p2 = new XYDataPoint(series2DataList.get(i).getX(), series2DataList.get(i).getY(), series2DataList.get(i).getPointLabel());
-				p2.setX(startTime + (p2.getX().doubleValue() * 1000 * 60 ));
+				BubbleDataPoint p2 = (BubbleDataPoint)series2DataList.get(i);
+				BubbleDataPoint b2 = new BubbleDataPoint(p2.getX(), p2.getY(), p2.getRadius(), p2.getPointLabel());
+				b2.setX(startTime + (b2.getX().doubleValue() * 1000 * 60 ));
 				
-				XYDataPoint p3 = new XYDataPoint(series3DataList.get(i).getX(), series3DataList.get(i).getY(), series3DataList.get(i).getPointLabel());
-				p3.setX(startTime + (p3.getX().doubleValue() * 1000 * 60 ));
+				BubbleDataPoint p3 = (BubbleDataPoint)series3DataList.get(i);
+				BubbleDataPoint b3 = new BubbleDataPoint(p3.getX(), p3.getY(), p3.getRadius(), p3.getPointLabel());
+				b3.setX(startTime + (b3.getX().doubleValue() * 1000 * 60 ));
 				
-				currentSeries1DataList.addDataPoint(p1);
-				currentSeries2DataList.addDataPoint(p2);
-				currentSeries3DataList.addDataPoint(p3);
+				currentSeries1DataList.addDataPoint(b1);
+				currentSeries2DataList.addDataPoint(b2);
+				currentSeries3DataList.addDataPoint(b3);
+				
+				CandlestickDataPoint c1 = (CandlestickDataPoint)candle1DataList.get(i);
+				CandlestickDataPoint c2 = new CandlestickDataPoint(c1.getX(), c1.getMin(), c1.getMax(), c1.getOpen(), c1.getClose(), c1.getPointLabel());
+				c2.setX(startTime + (c2.getX().doubleValue() * 1000 * 60 ));
+				currentCandle1DataList.addDataPoint(c2);
 			} else {
 				currentSeries1DataList.addDataPoint(series1DataList.get(i));
 				currentSeries2DataList.addDataPoint(series2DataList.get(i));
 				currentSeries3DataList.addDataPoint(series3DataList.get(i));
+				currentCandle1DataList.addDataPoint(candle1DataList.get(i));
 			}
 			
 		}
@@ -99,9 +118,21 @@ public class ChartMBean {
 		currentSeries3DataList.setShowLines(series3DataList.isShowLines());
 		currentSeries3DataList.setColor(series3DataList.getColor());
 		
-		collection.addDataList(currentSeries1DataList);
-		collection.addDataList(currentSeries2DataList);
-		collection.addDataList(currentSeries3DataList);
+		currentCandle1DataList.setLabel(series1DataList.getLabel());
+		currentCandle1DataList.setFillLines(series1DataList.isFillLines());
+		currentCandle1DataList.setMarkerPosition(series1DataList.getMarkerPosition());
+		currentCandle1DataList.setMarkers(series1DataList.isMarkers());
+		currentCandle1DataList.setShowDataPoints(series1DataList.isShowDataPoints());
+		currentCandle1DataList.setShowLines(series1DataList.isShowLines());
+		currentCandle1DataList.setColor(series1DataList.getColor());
+		
+		if (chartData.getChartType() != null && chartData.getChartType().equals("candles")) {
+			collection.addDataList(currentCandle1DataList);
+		} else {
+			collection.addDataList(currentSeries1DataList);
+			collection.addDataList(currentSeries2DataList);
+			collection.addDataList(currentSeries3DataList);
+		}
 		
 		return collection;
 	}
@@ -189,7 +220,7 @@ public class ChartMBean {
 			}
 			
 			if (clickedDataPointIndex != null) {
-				clickedPoint = clickedList.get(clickedDataPointIndex);
+				clickedPoint = clickedList.get(clickedDataPointIndex + minX);
 			}
 			
 			if (clickedPoint != null) {

@@ -23,7 +23,6 @@ THE SOFTWARE.
 package org.jsflot.xydata;
 
 public class XYDataPoint {
-	
 	private Number x;
 	private Number y;
 	private String pointLabel;

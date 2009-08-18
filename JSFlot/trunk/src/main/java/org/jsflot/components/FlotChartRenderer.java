@@ -41,6 +41,8 @@ import javax.faces.render.Renderer;
 import javax.faces.webapp.UIComponentTag;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jsflot.xydata.BubbleDataPoint;
+import org.jsflot.xydata.CandlestickDataPoint;
 import org.jsflot.xydata.XYDataList;
 import org.jsflot.xydata.XYDataPoint;
 import org.jsflot.xydata.XYDataSetCollection;
@@ -562,6 +564,9 @@ public class FlotChartRenderer extends Renderer {
 			} else if (chartData.getChartType().equals("pie")) {
 				chartTypeOptions.put("show", true);
 				chartOptions.put("pie", chartTypeOptions);
+			} else if (chartData.getChartType().equals("bubbles")) {
+				chartTypeOptions.put("show", true);
+				chartOptions.put("bubbles", chartTypeOptions);
 			}
 
 			JSONObject pointsOptions = new JSONObject();
@@ -642,10 +647,18 @@ public class FlotChartRenderer extends Renderer {
 				if (p.getPointLabel() != null) {
 					pointLabel = ", '" + p.getPointLabel() + "'";
 				}
+				String bubbleRadius = "";
+				
 				if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("bar")) {
 					sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
+				} else if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("bubbles")) { 
+					BubbleDataPoint b = (BubbleDataPoint)p;
+					sb.append("[").append(nf.format(b.getX().doubleValue() + offset)).append(",").append(nf.format(b.getY())).append(",").append(b.getRadius()).append(pointLabel).append("]").append(", ");
+				} else if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("candles")) {
+					CandlestickDataPoint c = (CandlestickDataPoint)p;
+					sb.append("[").append(nf.format(c.getX().doubleValue() + offset)).append(",").append(nf.format(c.getMin())).append(",").append(c.getMax()).append(",").append(c.getOpen()).append(",").append(c.getClose()).append(pointLabel).append("]").append(", ");
 				} else {
-					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(pointLabel).append("]").append(", ");
+					sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(bubbleRadius).append(pointLabel).append("]").append(", ");
 				}
 
 			}
@@ -657,6 +670,12 @@ public class FlotChartRenderer extends Renderer {
 			}
 			if (chartData.getChartType().equalsIgnoreCase("bar")) {
 				sb.append("[").append(nf.format(p.getX().doubleValue() + offset)).append(",").append(nf.format(p.getY())).append(pointLabel).append("]");
+			} else if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("bubbles")) { 
+				BubbleDataPoint b = (BubbleDataPoint)p;
+				sb.append("[").append(nf.format(b.getX().doubleValue() + offset)).append(",").append(nf.format(b.getY())).append(",").append(b.getRadius()).append(pointLabel).append("]").append(", ");
+			} else if (chartData.getChartType() != null && chartData.getChartType().equalsIgnoreCase("candles")) {
+				CandlestickDataPoint c = (CandlestickDataPoint)p;
+				sb.append("[").append(nf.format(c.getX().doubleValue() + offset)).append(",").append(nf.format(c.getMin())).append(",").append(c.getMax()).append(",").append(c.getOpen()).append(",").append(c.getClose()).append(pointLabel).append("]").append(", ");
 			} else {
 				sb.append("[").append(nf.format(p.getX())).append(",").append(nf.format(p.getY())).append(pointLabel).append("]");
 			}

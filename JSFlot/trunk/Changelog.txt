@@ -1,5 +1,8 @@
-Version 0.4.0
+Version 0.4.0 Bubble- and Candle Stick charts
 - Added possibility to override default chart colors.
+- Updated Flotr to Revision 146.
+- Added support for Bubble Charts
+- Added support for Candle Stick Charts
 
 Version 0.3.5 IE 6 and 7 Support, Chart Zooming
 - Added support for IE 6 and 7.
