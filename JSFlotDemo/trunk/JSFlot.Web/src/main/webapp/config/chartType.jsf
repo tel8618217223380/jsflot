@@ -16,8 +16,9 @@
 			<f:selectItem itemLabel="Line Chart" itemValue="line" />
 			<f:selectItem itemLabel="Pie Chart" itemValue="pie" />
 			<f:selectItem itemLabel="Bar Chart" itemValue="bar" />
-			<f:selectItem itemLabel="Stacked Bar Chart"
-				itemValue="stackedBar" />
+			<f:selectItem itemLabel="Stacked Bar Chart" itemValue="stackedBar" />
+			<f:selectItem itemLabel="Bubble Chart" itemValue="bubbles" />
+			<f:selectItem itemLabel="Candlestick Chart" itemValue="candles" />
 			<a4j:support event="onchange" reRender="valueTimeChart" />
 		</h:selectOneListbox>
 		<rich:panel styleClass="nopaddingPanel"
@@ -32,6 +33,8 @@
 					<li>pie</li>
 					<li>bar</li>
 					<li>stackedBar</li>
+					<li>bubbles</li>
+					<li>candles</li>
 				</ul>
 				Default value: line<br />
 				Example: <b>&lt;jsflot:flotChart chartType="line" /&gt;</b><br />
