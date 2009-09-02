@@ -2,6 +2,19 @@
 #labels Featured
 
 {{{
+Version 0.4.0 Bubble- and Candle Stick charts
+- Added possibility to override default chart colors.
+- Updated Flotr to Revision 146.
+- Added support for Bubble Charts
+- Added support for Candle Stick Charts
+
+Version 0.3.5 IE 6 and 7 Support, Chart Zooming
+- Added support for IE 6 and 7.
+- Ajax redraw supported by Prototype, JQuery and JBoss Richfaces expressively
+- Support for Chart Zooming with Overview.
+- Fixed a bug where the chart would not render if the ID and the ClientId has the same value.
+- Added possibility to add a label for each data point on the chart. 
+
 Version 0.3.0 Click Action, Improved Drag effect, valueChangeListener replaced with actionListener
 - Changed the ID naming of some of the rendered DOM elements to match the JSF ID naming Scheme
 - Improved the Drag effect, so that extending the standard Flotr library is not needed
