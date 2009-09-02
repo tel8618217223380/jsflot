@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<taglib
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.1">
+
+	<display-name>JSFlot</display-name>
+	<tlib-version>3.3.0</tlib-version>
+	<short-name>jsflot</short-name>
+	<uri>http://www.jsflot.org/taglib/jsflot</uri>
+	<tag>
+		<description>
+			Renderers a Chart based on the Flot JavaScript Charting Library
+		</description>
+		<name>flotChart</name>
+		<tag-class>org.jsflot.components.FlotChartTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>The actionListener of the chart</description>
+			<name>actionListener</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute> 
+		<attribute>
+			<description>An initial value or a value binding</description>
+			<name>actionListener</name>
+			<deferred-value>
+				<type>java.lang.Object</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The ID for this chart</description>
+			<name>id</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>An initial value or a value binding</description>
+			<name>value</name>
+			<deferred-value>
+				<type>java.lang.Object</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if this component is rendered or not</description>
+			<name>rendered</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart shows datapoints (marks on the graph).</description>
+			<name>showDataPoints</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart shows helper lines</description>
+			<name>showLines</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the chart lines are filled</description>
+			<name>fillLines</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the width of the chart</description>
+			<name>width</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the height of the chart</description>
+			<name>height</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>If the chart has a single datalist, the legend can be specified</description>
+			<name>legend</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The background Color of the Legend</description>
+			<name>legendColor</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The mode of the graph. Either Series or Time. Default is Series</description>
+			<name>mode</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The format of the graph. i.e. '%d/%m/%y %h:%M:%S'</description>
+			<name>timeFormat</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the graph should show a chosshair. Values are none, x, y or xy</description>
+			<name>crosshair</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines if the graph should show a spreadsheet.</description>
+			<name>spreadsheet</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>If specified, a graph title will be displayed</description>
+			<name>title</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>If specified, a graph sutitle will be displayed</description>
+			<name>subtitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the number of columns the legens has (defaults to 1)</description>
+			<name>legendColumns</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the opacity of the legend. Default 0.85</description>
+			<name>legendOpacity</name>
+			<deferred-value>
+				<type>java.lang.Double</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the where the legend is placed. Possible values are n, e, w, s, ne, nw, sw, se</description>
+			<name>legendPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the background color of the legend</description>
+			<name>legendBackgroundColor</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the data points have tooltips or not</description>
+			<name>showTooltip</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specified the where the tooltip is placed. Possible values are n, e, w, s, ne, nw, sw, se</description>
+			<name>tooltipPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the tooltop follows the mouse cursor</description>
+			<name>tooltipFollowMouse</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the Chart Type, Line, Pie or Bar</description>
+			<name>chartType</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the labels on the X Axis are displayed</description>
+			<name>showXaxisLabels</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the X axis labels are displayed</description>
+			<name>sAxisLabelRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the title for the X Axis</description>
+			<name>xaxisTitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the X axis title are displayed</description>
+			<name>xAxisTitleRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the labels on the Y Axis are displayed</description>
+			<name>showYaxisLabels</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the Y axis labels are displayed</description>
+			<name>yAxisLabelRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the title for the X Axis</description>
+			<name>yaxisTitle</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the rotation in which the Y axis title are displayed</description>
+			<name>yAxisTitleRotation</name>
+			<deferred-value>
+				<type>java.lang.Integer</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the series show markers or not</description>
+			<name>markers</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies where, relative to the data point, the marker are shown.</description>
+			<name>markerPosition</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the chart is draggable</description>
+			<name>chartDraggable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if the chart is clickable</description>
+			<name>chartClickable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if Ajax Request is Single</description>
+			<name>ajaxSingle</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies DOM IDs to reRender</description>
+			<name>reRender</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies the chartDraggedListener</description>
+			<name>chartDraggedListener</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Specifies if a zoom overview is shown</description>
+			<name>chartZoomable</name>
+			<deferred-value>
+				<type>java.lang.Boolean</type>
+			</deferred-value>
+		</attribute>
+	</tag>
+	<tag>
+		<description>
+			Renders Resources needed for JSFlot. Needed for inside the head tag of the XHTML page
+		</description>
+		<name>resources</name>
+		<tag-class>org.jsflot.components.ResourcesTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<description>Determines if any of the JS libraries shall be excluded</description>
+			<name>excludes</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>Determines JSFlot is running in Debug mode. Either "true" or "false". Default is "false"</description>
+			<name>debug</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
+	</tag>
+</taglib>
