@@ -17,12 +17,26 @@
 		<tag-class>org.jsflot.components.FlotChartTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
-			<description>The ID of the chart</description>
-			<name>id</name>
-			<required>true</required>
+			<description>The actionListener of the chart</description>
+			<name>actionListener</name>
+			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute> 
+		<attribute>
+			<description>An initial value or a value binding</description>
+			<name>actionListener</name>
+			<deferred-value>
+				<type>java.lang.Object</type>
+			</deferred-value>
+		</attribute>
+		<attribute>
+			<description>The ID for this chart</description>
+			<name>id</name>
+			<deferred-value>
+				<type>java.lang.String</type>
+			</deferred-value>
+		</attribute>
 		<attribute>
 			<description>An initial value or a value binding</description>
 			<name>value</name>

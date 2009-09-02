@@ -56,7 +56,7 @@ public class FlotChartRendererData {
 	private Double barWidth = 0.5;
 	private Boolean markers = false;
 	private String markerPosition = "ct";
-	private Integer xaxisLabelRotation = 45;
+	private Double xaxisLabelRotation = 45.55d;
 	private Integer yaxisLabelRotation = 0;
 	private Integer xaxisTitleRotation = 0;
 	private Integer yaxisTitleRotation = 90;
@@ -535,19 +535,19 @@ public class FlotChartRendererData {
 		this.markerPosition = markerPosition;
 	}
 
-	public Integer getXaxisLabelRotation() {
+	public Double getXaxisLabelRotation() {
 		return xaxisLabelRotation;
 	}
 
-	public void setXaxisLabelRotation(Integer xaxisLabelRotation) {
+	public void setXaxisLabelRotation(Double xaxisLabelRotation) {
 		this.xaxisLabelRotation = xaxisLabelRotation;
 	}
 	
 	public void setXaxisLabelRotation(Object xaxisLabelRotationObj) {
 		if (xaxisLabelRotationObj instanceof String) {
-			this.xaxisLabelRotation = Integer.parseInt((String)xaxisLabelRotationObj);
-		} else if (xaxisLabelRotationObj instanceof Integer) {
-			this.xaxisLabelRotation = (Integer)xaxisLabelRotationObj;
+			this.xaxisLabelRotation = Double.parseDouble((String)xaxisLabelRotationObj);
+		} else if (xaxisLabelRotationObj instanceof Double) {
+			this.xaxisLabelRotation = (Double)xaxisLabelRotationObj;
 		}
 	}
 

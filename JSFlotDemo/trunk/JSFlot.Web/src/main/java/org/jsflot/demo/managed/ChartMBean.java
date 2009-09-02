@@ -1,6 +1,8 @@
 package org.jsflot.demo.managed;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
@@ -32,6 +34,7 @@ public class ChartMBean {
 	private String clickedDataPointLabel = "";
 	private Integer clickedDataSeriesIndex = null;
 	private XYDataPoint clickedDataPoint = null;
+	private List<XYDataSetCollection> collectionList = new ArrayList<XYDataSetCollection>();
 	
 	public ChartMBean() {
 		// TODO Auto-generated constructor stub
@@ -52,6 +55,14 @@ public class ChartMBean {
 		series3DataList.setLabel("Series 3");
 		
 		
+	}
+	
+	public List<XYDataSetCollection> getChartCollections() {
+		collectionList.clear();
+		collectionList.add(getChartSeries());
+		collectionList.add(getChartSeries());
+		
+		return collectionList;
 	}
 	
 	public XYDataSetCollection getChartSeries() {
