@@ -381,7 +381,6 @@
 				<jsflot:flotChart id="valueTimeChart"
 					value="#{chartMbean.chartSeries}"
 					actionListener="#{chartMbean.chartActionListener}"
-					testChartDraggedAction="#{chartMbean.chartDraggedListener}"
 					chartDraggable="#{chartMbean.chartData.chartDraggable}"
 					chartClickable="#{chartMbean.chartData.chartClickable}"
 					chartZoomable="#{chartMbean.chartData.chartZoomable}"
@@ -421,7 +420,7 @@
 					yaxisMaxValue="#{chartMbean.chartData.yaxisMaxValue}"
 					crosshair="#{chartMbean.chartData.crosshair}">
 				</jsflot:flotChart>
-		
+						
 				<rich:panel id="clickedPanel" rendered="#{chartMbean.clickedDataPoint != null}">
 					<f:facet name="header">
 						<h:outputText id="clickText" value="#{chartMbean.clickedString}"></h:outputText>

@@ -28,6 +28,7 @@ import javax.faces.webapp.UIComponentELTag;
 
 public class FlotChartTag extends UIComponentELTag {
 
+	private ValueExpression id; 
 	private ValueExpression value; 
 	private ValueExpression valueChangeListener;
 	private ValueExpression actionListener;
@@ -82,6 +83,18 @@ public class FlotChartTag extends UIComponentELTag {
 		return "org.jsflot.components.FlotChartRenderer";
 	}
 
+	@Override
+	protected String getId() {
+		// TODO Auto-generated method stub
+		return super.getId();
+	}
+	
+	
+	@Override
+	public void setId(String id) {
+		// TODO Auto-generated method stub
+		super.setId(id);
+	}
 	
 	public ValueExpression getValue() {
 		return value;
@@ -430,6 +443,7 @@ public class FlotChartTag extends UIComponentELTag {
 	protected void setProperties(UIComponent component) {
 		super.setProperties(component);
 	
+		component.setValueExpression("id", this.id);
 		component.setValueExpression("value", this.value); 
 		component.setValueExpression("valueChangeListener", this.valueChangeListener);
 		component.setValueExpression("actionListener", this.actionListener);
@@ -478,6 +492,7 @@ public class FlotChartTag extends UIComponentELTag {
 	public void release() {
 		super.release();
 		
+		this.id = null;
 		this.value= null; 
 		this.valueChangeListener= null;
 		this.actionListener = null;
