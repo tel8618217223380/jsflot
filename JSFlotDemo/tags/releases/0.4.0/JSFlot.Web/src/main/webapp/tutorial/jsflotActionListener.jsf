@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot ActionListener</f:facet>
+	There are two types of events that gets delivered to the actionListener, drag events and click events. 
+	Both functionalities needs to be enabled via the chartDraggable and chartClickable attributes of the flotChart tag.
+	<br /><br /><rich:insert id="dragcodeinsert" src="/insert/dragandclick.insert" highlight="xml"></rich:insert>
+	<br />Since both of these events are channeled through the same actionListener, they are distinguished via the instance type
+	of the action event. In this Live Demonstration the actionListener method distinguish between click and drag events using
+	the event type: 
+	<br /><br /><rich:insert id="actionlistenercodeinsert" src="/insert/actionListener.insert" highlight="java"></rich:insert>
+</rich:panel>
+
+</ui:composition>
+
+

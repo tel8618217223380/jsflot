@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="jsflotLegend" style="width: 100%;">
+	<f:facet name="header">JSFlot Legend</f:facet>
+	The JSFlot chart will always show a legend for the chart. However, the legend can be customized via a number of attributes. <br />
+	<b>Position</b><br />
+	The attribute legendPosition accepts a String value representing the position of the chart legend, based on "compass barings". 
+	Possible values are "se", "ne", "sw" and "nw". The default value is "nw".<br />
+	<b>Columns</b><br />
+	The attribute legendColumns accepts a String value representing the number of columns in the legend.<br /> 
+	<b>Color</b><br />
+	The attribute legendColor accepts a String value representing the HTML color of the legend background.<br />  
+	<b>Opacity</b><br />
+	The attribute legendOpacity accepts a Double value representing the opacity of the legend background. A value 1 means no 
+	transparency, while a value of 0 mean full transparency. The default value is 0.85. <br />
+</rich:panel>
+
+</ui:composition>
+
+

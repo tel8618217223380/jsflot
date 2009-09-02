@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot ReRender</f:facet>
+	After either a click or a drag event has successfully completed, JSFlot has the capability to re-render other components
+	on the page. These components are identified by the ID that you give the components in the JSF markup. In the Live 
+	Demonstration a h:outputText is re-rendered after a click event with information regarding the data point clicked. 
+	The JSF markup to draw both the chart and the output text: 
+	<br /><br /><rich:insert id="rerenderinsert" src="/insert/rerender.insert" highlight="xml"></rich:insert>
+</rich:panel>
+
+</ui:composition>
+
+
