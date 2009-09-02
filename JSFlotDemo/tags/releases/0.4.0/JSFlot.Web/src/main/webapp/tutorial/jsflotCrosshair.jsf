@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+	
+<rich:panel id="firsttutPage" style="width: 100%;">
+	<f:facet name="header">JSFlot Crosshair</f:facet>
+	The crosshair is enabled via the crosshair attribute. When enabled the chart will display a crosshair instead of a mouse cursor. <br />
+	<b>crosshair</b><br /> 
+	Possible values are: <br />
+	"x" : The crosshair is displayed along the X-axis<br />
+	"y" : The crosshair is displayed along the Y-axis<br />
+	"xy" : The crosshair is displayed along both axes. <br />
+</rich:panel>
+
+</ui:composition>

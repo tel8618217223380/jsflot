@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+	<rich:panel>
+		<f:facet name="header">Chart Tooltip Options</f:facet>
+		<h:panelGrid columns="3" columnClasses="column1, column2, column3">
+			<h:outputText value="Show Tooltip"></h:outputText>
+			<h:selectBooleanCheckbox value="#{chartMbean.chartData.showTooltip}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectBooleanCheckbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determines if the chart has a tooltip for the data points<br /><br />
+					Attribute: <b>showTooltip</b><br />
+					Possible values: <br />
+					<ul>
+						<li>true</li>
+						<li>false</li>
+					</ul>
+					Default value: false <br />
+					Example: <b>&lt;jsflot:flotChart showTooltip="true" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Tooltip Position"></h:outputText>
+			<h:selectOneListbox value="#{chartMbean.chartData.tooltipPosition}"
+				size="1">
+				<f:selectItem itemLabel="North East" itemValue="ne" />
+				<f:selectItem itemLabel="North West" itemValue="nw" />
+				<f:selectItem itemLabel="South East" itemValue="se" />
+				<f:selectItem itemLabel="South West" itemValue="sw" />
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectOneListbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determines the position of the tooltip<br /><br />
+					Attribute: <b>tooltipPosition</b><br />
+					Possible values: <br />
+					<ul>
+						<li>"nw" (North West)</li>
+						<li>"sw" (South West)</li>
+						<li>"ne" (North East)</li>
+						<li>"se" (South East)</li>
+					</ul>
+					Default value: "ne" <br />
+					Example: <b>&lt;jsflot:flotChart tooltipPosition="sw" /&gt;</b><br />
+					<h:outputText
+						value=" Values are se, ne, sw or nw"></h:outputText>
+				</rich:toolTip>
+			</rich:panel>
+
+			<h:outputText value="Follow Mouse"></h:outputText>
+			<h:selectBooleanCheckbox
+				value="#{chartMbean.chartData.tooltipFollowMouse}">
+				<a4j:support event="onchange" reRender="valueTimeChart" />
+			</h:selectBooleanCheckbox>
+			<rich:panel styleClass="nopaddingPanel"
+				bodyClass="nopaddingPanelBody" style="border: 0px;">
+				<h:graphicImage value="/images/info.png" height="16" width="16" />
+				<rich:toolTip style="width: 350px">
+					Determines if the tooltip follows the mouse pointer<br /><br />
+					Attribute: <b>tooltipFollowMouse</b><br />
+					Possible values: <br />
+					<ul>
+						<li>true</li>
+						<li>false</li>
+					</ul>
+					Default value: false <br />
+					Example: <b>&lt;jsflot:flotChart tooltipFollowMouse="true" /&gt;</b><br />
+				</rich:toolTip>
+			</rich:panel>
+		</h:panelGrid>
+	</rich:panel>
+
+</ui:composition>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:dsj="http://dsj.devsiden.info"
+	xmlns:jsflot="http://www.jsflot.org/taglib/jsflot">
+
+<ui:composition template="/template/demotemplate.jsf">
+	<ui:define name="contents">
+		<h:panelGrid columns="2" columnClasses="alignTop,alignTop"  style="width: 958px;">
+			<rich:panelMenu  style="width:200px"  mode="ajax"
+	        iconExpandedGroup="disc" iconCollapsedGroup="disc"  
+	        iconExpandedTopGroup="chevronUp" iconGroupTopPosition="right" 
+	        iconCollapsedTopGroup="chevronDown">
+				<rich:panelMenuGroup label="Introduction" expanded="true">
+					<rich:panelMenuItem label="Introduction" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="firstpage.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+				</rich:panelMenuGroup>
+				<rich:panelMenuGroup label="jsflot:resources" expanded="true">
+					<rich:panelMenuItem label="jsflot:resources" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotResources.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+				</rich:panelMenuGroup>
+				<rich:panelMenuGroup label="jsflot:flotChart" expanded="true">
+					<rich:panelMenuItem label="actionListener" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotActionListener.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Chart Zooming" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotZoom.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="reRender" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotReRender.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Legend" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotLegend.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="X Axis" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotXaxis.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Y Axis" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotYAxis.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Markers" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotMarkers.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Time Mode" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotTimeMode.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Crosshair" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotCrosshair.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Titles" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotTitles.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Line and Data Points" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotLineAndDataPoints.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Chart Dimensions" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotChartDimensions.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+					<rich:panelMenuItem label="Tooltip" actionListener="#{navigationMbean.navigateToTutorialPage}">
+						<a4j:actionparam name="tutorialNavigation" value="jsflotTooltip.jsf" assignTo="#{navigationMbean.tutorialNavigation}"/>
+					</rich:panelMenuItem>
+				</rich:panelMenuGroup>
+			</rich:panelMenu>
+			<ui:include src="/tutorial/#{navigationMbean.tutorialNavigation}"></ui:include>
+		</h:panelGrid>
+	</ui:define>
+</ui:composition>
+</html>
